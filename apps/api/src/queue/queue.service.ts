@@ -7,46 +7,131 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { AddToQueueDto } from './dto/add-to-queue.dto';
 import { WebSocketGatewayService } from '../websocket/websocket.gateway';
+import { VoteTrackerService } from './vote-tracker.service';
 
 @Injectable()
 export class QueueService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly websocket: WebSocketGatewayService,
+    private readonly voteTracker: VoteTrackerService,
   ) {}
 
   /**
-   * Calculate queue score based on votes and recency
-   * Score = voteCount * 10 + recencyBonus
-   * Recency bonus: tracks voted in last 5 minutes get +20 points
+   * Calculate queue score based on votes, recency, diversity, and recently played
+   *
+   * Score formula:
+   * score = (votes × 1.0) + (recency_factor × 0.3) + (diversity_bonus × 0.2) - (recently_played_penalty × 0.5)
+   *
+   * Scaled to maintain similar ranges as before:
+   * - Base score: voteCount × 10
+   * - Recency factor: 0-30 points based on last vote time
+   * - Diversity bonus: +5 points if artist not in last 5 played tracks
+   * - Recently played penalty: -15 points if track or artist played in last 30 minutes
    */
-  private calculateScore(voteCount: number, lastVotedAt: Date | null): number {
+  private async calculateScore(
+    eventId: string,
+    trackId: string,
+    artistName: string,
+    voteCount: number,
+    lastVotedAt: Date | null,
+  ): Promise<number> {
     const baseScore = voteCount * 10;
-
-    if (!lastVotedAt) {
-      return baseScore;
-    }
-
-    // Recency bonus: tracks voted in last 5 minutes get boost
     const now = new Date();
-    const minutesAgo = (now.getTime() - lastVotedAt.getTime()) / (1000 * 60);
 
-    let recencyBonus = 0;
-    if (minutesAgo <= 5) {
-      recencyBonus = 20;
-    } else if (minutesAgo <= 15) {
-      recencyBonus = 10;
-    } else if (minutesAgo <= 30) {
-      recencyBonus = 5;
+    // Recency factor: boost recently voted tracks
+    let recencyFactor = 0;
+    if (lastVotedAt) {
+      const minutesAgo = (now.getTime() - lastVotedAt.getTime()) / (1000 * 60);
+      if (minutesAgo <= 5) {
+        recencyFactor = 30; // 0-5 min: +30
+      } else if (minutesAgo <= 15) {
+        recencyFactor = 20; // 5-15 min: +20
+      } else if (minutesAgo <= 30) {
+        recencyFactor = 10; // 15-30 min: +10
+      }
     }
 
-    return baseScore + recencyBonus;
+    // Diversity bonus: boost tracks from artists not recently played
+    let diversityBonus = 0;
+    const recentlyPlayed = await this.prisma.queueItem.findMany({
+      where: {
+        eventId,
+        isPlayed: true,
+      },
+      orderBy: {
+        playedAt: 'desc',
+      },
+      take: 5,
+      select: {
+        artistName: true,
+      },
+    });
+
+    const recentArtists = recentlyPlayed.map((item) => item.artistName);
+    if (!recentArtists.includes(artistName)) {
+      diversityBonus = 5;
+    }
+
+    // Recently played penalty: penalize tracks/artists played in last 30 minutes
+    let recentlyPlayedPenalty = 0;
+    const thirtyMinutesAgo = new Date(now.getTime() - 30 * 60 * 1000);
+
+    const recentlyPlayedSameTrack = await this.prisma.queueItem.findFirst({
+      where: {
+        eventId,
+        trackId,
+        isPlayed: true,
+        playedAt: {
+          gte: thirtyMinutesAgo,
+        },
+      },
+    });
+
+    if (recentlyPlayedSameTrack) {
+      // Same track played recently: heavy penalty
+      recentlyPlayedPenalty = 20;
+    } else {
+      // Check if same artist played recently
+      const recentlyPlayedSameArtist = await this.prisma.queueItem.findFirst({
+        where: {
+          eventId,
+          artistName,
+          isPlayed: true,
+          playedAt: {
+            gte: thirtyMinutesAgo,
+          },
+        },
+      });
+
+      if (recentlyPlayedSameArtist) {
+        recentlyPlayedPenalty = 10; // Same artist: moderate penalty
+      }
+    }
+
+    // Calculate final score
+    const score = baseScore + recencyFactor + diversityBonus - recentlyPlayedPenalty;
+
+    return Math.max(0, score); // Never return negative scores
   }
 
   /**
    * Add track to queue or increment vote count if already exists
    */
-  async addToQueue(eventId: string, dto: AddToQueueDto) {
+  async addToQueue(eventId: string, dto: AddToQueueDto, ipAddress: string) {
+    // Verify session ID is provided
+    if (!dto.addedBy) {
+      throw new BadRequestException('Session ID is required');
+    }
+
+    // Check anti-spam measures
+    await this.voteTracker.checkAndRecordVote(
+      eventId,
+      dto.trackId,
+      dto.addedBy,
+      ipAddress,
+    );
+
     // Verify event exists and is active
     const event = await this.prisma.event.findUnique({
       where: { id: eventId },
@@ -73,7 +158,13 @@ export class QueueService {
       // Increment vote count and update score
       const now = new Date();
       const newVoteCount = existingItem.voteCount + 1;
-      const newScore = this.calculateScore(newVoteCount, now);
+      const newScore = await this.calculateScore(
+        eventId,
+        dto.trackId,
+        dto.artistName,
+        newVoteCount,
+        now,
+      );
 
       const updatedItem = await this.prisma.queueItem.update({
         where: { id: existingItem.id },
@@ -95,7 +186,14 @@ export class QueueService {
     }
 
     // Add new track to queue
-    const score = this.calculateScore(1, new Date());
+    const now = new Date();
+    const score = await this.calculateScore(
+      eventId,
+      dto.trackId,
+      dto.artistName,
+      1,
+      now,
+    );
 
     const queueItem = await this.prisma.queueItem.create({
       data: {
@@ -350,13 +448,21 @@ export class QueueService {
       },
     });
 
-    const updates = queueItems.map((item) => {
-      const newScore = this.calculateScore(item.voteCount, item.lastVotedAt);
-      return this.prisma.queueItem.update({
-        where: { id: item.id },
-        data: { score: newScore },
-      });
-    });
+    const updates = await Promise.all(
+      queueItems.map(async (item) => {
+        const newScore = await this.calculateScore(
+          eventId,
+          item.trackId,
+          item.artistName,
+          item.voteCount,
+          item.lastVotedAt,
+        );
+        return this.prisma.queueItem.update({
+          where: { id: item.id },
+          data: { score: newScore },
+        });
+      }),
+    );
 
     await this.prisma.$transaction(updates);
 
@@ -442,5 +548,19 @@ export class QueueService {
         totalTracks: stats.totalTracks,
       },
     });
+  }
+
+  /**
+   * Get remaining votes for a session
+   */
+  async getRemainingVotes(eventId: string, sessionId: string) {
+    const remaining = this.voteTracker.getRemainingVotes(eventId, sessionId);
+    return {
+      remaining,
+      limit: 3,
+      message: remaining > 0
+        ? `You have ${remaining} vote${remaining !== 1 ? 's' : ''} remaining this hour`
+        : 'Vote limit reached. Try again in an hour',
+    };
   }
 }

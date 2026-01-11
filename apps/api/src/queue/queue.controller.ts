@@ -8,6 +8,7 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  Req,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,6 +17,7 @@ import {
   ApiParam,
   ApiQuery,
 } from '@nestjs/swagger';
+import { Request } from 'express';
 import { QueueService } from './queue.service';
 import { AddToQueueDto } from './dto/add-to-queue.dto';
 import { QueueItemResponseDto } from './dto/queue-item-response.dto';
@@ -73,8 +75,15 @@ export class QueueController {
   addToQueue(
     @Param('eventId') eventId: string,
     @Body() addToQueueDto: AddToQueueDto,
+    @Req() request: Request,
   ) {
-    return this.queueService.addToQueue(eventId, addToQueueDto);
+    // Extract IP address (handle proxy headers)
+    const ipAddress =
+      (request.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
+      request.socket.remoteAddress ||
+      'unknown';
+
+    return this.queueService.addToQueue(eventId, addToQueueDto, ipAddress);
   }
 
   @Delete(':trackId')
@@ -249,5 +258,29 @@ export class QueueController {
   })
   getStats(@Param('eventId') eventId: string) {
     return this.queueService.getQueueStats(eventId);
+  }
+
+  @Get('remaining-votes/:sessionId')
+  @ApiOperation({
+    summary: 'Get remaining votes for session',
+    description: 'Check how many votes a session has remaining in the current hour',
+  })
+  @ApiParam({
+    name: 'eventId',
+    description: 'Event ID',
+  })
+  @ApiParam({
+    name: 'sessionId',
+    description: 'Session ID',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Remaining votes count',
+  })
+  getRemainingVotes(
+    @Param('eventId') eventId: string,
+    @Param('sessionId') sessionId: string,
+  ) {
+    return this.queueService.getRemainingVotes(eventId, sessionId);
   }
 }

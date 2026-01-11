@@ -23,9 +23,11 @@ export default function EventVotingPage() {
     isConnected,
     isLoading,
     error,
+    remainingVotes,
     loadEvent,
     loadQueue,
     voteForTrack,
+    loadRemainingVotes,
     connectToEvent,
     disconnectFromEvent,
     setSessionId,
@@ -42,6 +44,7 @@ export default function EventVotingPage() {
 
     loadEvent(eventId);
     loadQueue(eventId);
+    loadRemainingVotes(eventId);
     connectToEvent(eventId);
 
     return () => {
@@ -106,7 +109,7 @@ export default function EventVotingPage() {
       <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="flex-1">
               <h1 className="text-xl font-bold text-gray-900 dark:text-white">
                 🎵 {event.name}
               </h1>
@@ -114,7 +117,17 @@ export default function EventVotingPage() {
                 Vote for tracks you want to hear
               </p>
             </div>
-            <ConnectionStatus isConnected={isConnected} />
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                  {remainingVotes}/3 votes
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  remaining this hour
+                </div>
+              </div>
+              <ConnectionStatus isConnected={isConnected} />
+            </div>
           </div>
         </div>
       </header>

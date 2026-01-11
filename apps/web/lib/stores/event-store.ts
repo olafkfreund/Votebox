@@ -16,11 +16,13 @@ interface EventState {
   sessionId: string | null;
   votedTracks: Set<string>;
   lastVoteTime: number | null;
+  remainingVotes: number;
 
   // Actions
   loadEvent: (eventId: string) => Promise<void>;
   loadQueue: (eventId: string) => Promise<void>;
   voteForTrack: (eventId: string, trackId: string, trackData: SpotifyTrack) => Promise<void>;
+  loadRemainingVotes: (eventId: string) => Promise<void>;
   connectToEvent: (eventId: string) => void;
   disconnectFromEvent: () => void;
   setSessionId: (sessionId: string) => void;
@@ -39,6 +41,7 @@ export const useEventStore = create<EventState>((set, get) => ({
   sessionId: null,
   votedTracks: new Set<string>(),
   lastVoteTime: null,
+  remainingVotes: 3,
 
   // Load event details
   loadEvent: async (eventId: string) => {
@@ -61,6 +64,22 @@ export const useEventStore = create<EventState>((set, get) => ({
       set({ queue });
     } catch (error: any) {
       set({ error: error.response?.data?.message || 'Failed to load queue' });
+    }
+  },
+
+  // Load remaining votes
+  loadRemainingVotes: async (eventId: string) => {
+    const { sessionId } = get();
+    if (!sessionId) return;
+
+    try {
+      const response = await apiClient.get<{ remaining: number }>(
+        `/events/${eventId}/queue/remaining-votes/${sessionId}`
+      );
+      set({ remainingVotes: response.remaining });
+    } catch (error: any) {
+      // Silent fail - not critical
+      console.error('Failed to load remaining votes:', error);
     }
   },
 
@@ -102,8 +121,9 @@ export const useEventStore = create<EventState>((set, get) => ({
         isLoading: false
       });
 
-      // Reload queue to show updated positions
+      // Reload queue and remaining votes
       await get().loadQueue(eventId);
+      await get().loadRemainingVotes(eventId);
     } catch (error: any) {
       set({
         error: error.response?.data?.message || 'Failed to vote',
