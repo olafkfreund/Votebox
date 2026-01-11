@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { VenueSettings } from './create-venue.dto';
 
 export class VenueResponseDto {
   @ApiProperty({ example: 'clu123abc456' })
@@ -17,7 +18,7 @@ export class VenueResponseDto {
   spotifyAccountId?: string;
 
   @ApiProperty({ example: { theme: 'dark', autoPlay: true } })
-  settings: Record<string, any>;
+  settings: VenueSettings;
 
   @ApiProperty({ example: true })
   isActive: boolean;

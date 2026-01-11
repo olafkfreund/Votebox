@@ -9,6 +9,12 @@ import {
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
+export interface VenueSettings {
+  theme?: string;
+  autoPlay?: boolean;
+  [key: string]: unknown;
+}
+
 export class CreateVenueDto {
   @ApiProperty({
     description: 'Venue name',
@@ -59,5 +65,5 @@ export class CreateVenueDto {
   })
   @IsOptional()
   @IsObject()
-  settings?: Record<string, any>;
+  settings?: VenueSettings;
 }

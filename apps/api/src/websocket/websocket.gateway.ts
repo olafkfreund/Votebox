@@ -11,6 +11,25 @@ import {
 import { Logger } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 
+interface QueueItem {
+  trackId: string;
+  trackName: string;
+  artistName: string;
+  albumArt: string;
+  duration: number;
+  voteCount: number;
+  position: number;
+}
+
+interface NowPlayingTrack {
+  trackId: string;
+  trackName: string;
+  artistName: string;
+  albumArt: string;
+  duration: number;
+  progress?: number;
+}
+
 @WebSocketGateway({
   cors: {
     origin: process.env.WEB_URL || 'http://localhost:3000',
@@ -62,14 +81,14 @@ export class WebSocketGatewayService
     });
   }
 
-  emitQueueUpdate(eventId: string, queue: any[]) {
+  emitQueueUpdate(eventId: string, queue: QueueItem[]) {
     this.server.to(`event:${eventId}`).emit('queueUpdate', {
       eventId,
       queue,
     });
   }
 
-  emitNowPlayingUpdate(eventId: string, track: any) {
+  emitNowPlayingUpdate(eventId: string, track: NowPlayingTrack) {
     this.server.to(`event:${eventId}`).emit('nowPlayingUpdate', {
       eventId,
       track,
