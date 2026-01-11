@@ -22,11 +22,18 @@ Start here if you're new to the project:
    - Running the application
    - Troubleshooting common issues
 
+3. **[docs/NIXOS.md](./docs/NIXOS.md)** - NixOS development guide
+   - Nix flake configuration
+   - Automatic environment setup with direnv
+   - Playwright browser integration
+   - NixOS-specific troubleshooting
+   - System services configuration
+
 ## 📋 Planning & Strategy
 
 Understand the project scope and timeline:
 
-3. **[PROJECT_PLAN.md](./PROJECT_PLAN.md)** - Complete project plan
+4. **[PROJECT_PLAN.md](./PROJECT_PLAN.md)** - Complete project plan
    - Development phases (12 weeks MVP)
    - Week-by-week breakdown
    - Feature roadmap
@@ -37,14 +44,14 @@ Understand the project scope and timeline:
 
 Deep dive into the technical architecture:
 
-4. **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System architecture
+5. **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System architecture
    - High-level architecture diagrams
    - Component interactions
    - Data flow diagrams
    - Scalability considerations
    - Performance targets
 
-5. **[TECH_STACK.md](./TECH_STACK.md)** - Technology choices
+6. **[TECH_STACK.md](./TECH_STACK.md)** - Technology choices
    - Frontend: Next.js, TypeScript, Tailwind
    - Backend: NestJS, TypeScript
    - Database: PostgreSQL with Prisma
@@ -52,14 +59,14 @@ Deep dive into the technical architecture:
    - Infrastructure: Docker, Kubernetes
    - Rationale for each choice
 
-6. **[DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md)** - Database design
+7. **[DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md)** - Database design
    - Complete Prisma schema
    - Entity relationships
    - Indexes and optimizations
    - Common queries
    - Migration strategies
 
-7. **[API_DESIGN.md](./API_DESIGN.md)** - API specifications
+8. **[API_DESIGN.md](./API_DESIGN.md)** - API specifications
    - REST endpoints
    - WebSocket events
    - Authentication flow
@@ -67,40 +74,60 @@ Deep dive into the technical architecture:
    - Error handling
    - Rate limiting
 
+9. **[docs/API.md](./docs/API.md)** - Complete API reference
+   - All endpoint documentation
+   - Request/response examples
+   - WebSocket event specifications
+   - Playback automation API
+   - Queue management API
+
+10. **[docs/TESTING.md](./docs/TESTING.md)** - Testing guide
+    - Testing strategy and overview
+    - Unit testing with Jest
+    - E2E testing with Playwright
+    - Test patterns and best practices
+    - CI/CD integration
+
 ## 🤖 AI Assistant Context
 
 Documentation for working with AI assistants:
 
-8. **[CLAUDE.md](./CLAUDE.md)** - Instructions for Claude
-   - Project context
-   - Developer profile
-   - Code generation guidelines
-   - Best practices
-   - Testing strategies
+11. **[CLAUDE.md](./CLAUDE.md)** - Instructions for Claude
+    - Project context
+    - Developer profile
+    - Code generation guidelines
+    - Best practices
+    - Testing strategies
 
-9. **[.claude/skill.md](./.claude/skill.md)** - Claude Code skill
-   - Project-specific patterns
-   - Common tasks
-   - Code examples
-   - Quick reference
+12. **[.claude/skill.md](./.claude/skill.md)** - Claude Code skill
+    - Project-specific patterns
+    - Common tasks
+    - Code examples
+    - Quick reference
 
 ## 🔧 Configuration Files
 
 Essential configuration examples:
 
-10. **[docker-compose.yml](./docker-compose.yml)** - Docker setup
+13. **[docker-compose.yml](./docker-compose.yml)** - Docker setup
     - PostgreSQL configuration
     - Redis configuration
     - API container
     - Web and Admin containers
     - Monitoring stack (optional)
 
-11. **[.env.example](./.env.example)** - Environment variables
+14. **[.env.example](./.env.example)** - Environment variables
     - Database credentials
     - API keys
     - JWT secrets
     - Spotify configuration
     - Feature flags
+
+15. **[flake.nix](./flake.nix)** - Nix flake configuration
+    - Development environment
+    - Playwright browsers
+    - PostgreSQL and Redis
+    - Automatic environment loading
 
 ## 📖 Quick Reference by Role
 
@@ -109,7 +136,8 @@ Essential configuration examples:
 **First time setup:**
 1. [GETTING_STARTED.md](./GETTING_STARTED.md)
 2. [DEVELOPMENT_SETUP.md](./DEVELOPMENT_SETUP.md)
-3. [CLAUDE.md](./CLAUDE.md)
+3. [docs/NIXOS.md](./docs/NIXOS.md) (if using NixOS)
+4. [CLAUDE.md](./CLAUDE.md)
 
 **Building features:**
 1. [ARCHITECTURE.md](./ARCHITECTURE.md) - Understand the system
@@ -184,13 +212,17 @@ Essential configuration examples:
 | README.md | Project overview | Everyone | Medium |
 | GETTING_STARTED.md | Quick start | New developers | Short |
 | DEVELOPMENT_SETUP.md | Development environment | Developers | Long |
+| docs/NIXOS.md | NixOS dev environment | NixOS developers | Medium |
 | PROJECT_PLAN.md | Timeline & roadmap | PM, stakeholders | Long |
 | ARCHITECTURE.md | System design | Developers, DevOps | Long |
 | TECH_STACK.md | Technology choices | Developers, DevOps | Long |
 | DATABASE_SCHEMA.md | Data model | Developers | Medium |
 | API_DESIGN.md | API specifications | Developers | Long |
+| docs/API.md | Complete API reference | Developers | Long |
+| docs/TESTING.md | Testing guide | Developers | Long |
 | CLAUDE.md | AI assistant context | Developers (AI) | Medium |
 | .claude/skill.md | Code patterns | Developers (AI) | Long |
+| flake.nix | Nix configuration | NixOS developers | Short |
 
 ## 🔄 Keeping Documentation Updated
 

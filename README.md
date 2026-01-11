@@ -174,6 +174,18 @@ Before you begin, ensure you have:
 - **Spotify Developer Account** ([Get one here](https://developer.spotify.com/dashboard))
 - **Code Editor** (VS Code recommended)
 
+### NixOS Users
+
+Using NixOS? We have full Nix flake support! See [docs/NIXOS.md](./docs/NIXOS.md) for NixOS-specific instructions.
+
+**Quick start for NixOS:**
+```bash
+cd Votebox
+nix develop  # or use direnv
+```
+
+All dependencies including Playwright browsers are provided via Nix!
+
 ---
 
 ## 🛠️ Quick Start
