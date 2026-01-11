@@ -5,10 +5,13 @@ import {
 } from '@nestjs/common';
 import { QueueService } from './queue.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { WebSocketGatewayService } from '../websocket/websocket.gateway';
+import { VoteTrackerService } from './vote-tracker.service';
 
 describe('QueueService', () => {
   let service: QueueService;
   let prismaService: PrismaService;
+  let voteTracker: VoteTrackerService;
 
   const mockPrismaService = {
     event: {
@@ -27,6 +30,20 @@ describe('QueueService', () => {
       aggregate: jest.fn(),
     },
     $transaction: jest.fn((operations) => Promise.all(operations)),
+  };
+
+  const mockWebSocketGateway = {
+    emitQueueUpdate: jest.fn(),
+    emitVoteUpdate: jest.fn(),
+    emitNowPlayingUpdate: jest.fn(),
+    emitEventStatusChange: jest.fn(),
+  };
+
+  const mockVoteTracker = {
+    checkAndRecordVote: jest.fn(),
+    getRemainingVotes: jest.fn().mockReturnValue(3),
+    getVoteStats: jest.fn(),
+    clearSessionVotes: jest.fn(),
   };
 
   const mockEvent = {
@@ -78,11 +95,20 @@ describe('QueueService', () => {
           provide: PrismaService,
           useValue: mockPrismaService,
         },
+        {
+          provide: WebSocketGatewayService,
+          useValue: mockWebSocketGateway,
+        },
+        {
+          provide: VoteTrackerService,
+          useValue: mockVoteTracker,
+        },
       ],
     }).compile();
 
     service = module.get<QueueService>(QueueService);
     prismaService = module.get<PrismaService>(PrismaService);
+    voteTracker = module.get<VoteTrackerService>(VoteTrackerService);
   });
 
   afterEach(() => {
@@ -91,14 +117,15 @@ describe('QueueService', () => {
 
   describe('addToQueue', () => {
     it('should add new track to queue', async () => {
+      mockVoteTracker.checkAndRecordVote.mockResolvedValue(undefined);
       mockPrismaService.event.findUnique.mockResolvedValue(mockEvent);
       mockPrismaService.queueItem.findFirst.mockResolvedValue(null);
+      mockPrismaService.queueItem.findMany.mockResolvedValue([]); // For diversity bonus
       mockPrismaService.queueItem.create.mockResolvedValue({
         ...mockQueueItem,
         ...addToQueueDto,
         id: 'new-queue-item',
       });
-      mockPrismaService.queueItem.findMany.mockResolvedValue([]);
       mockPrismaService.queueItem.findUnique.mockResolvedValue({
         ...mockQueueItem,
         ...addToQueueDto,
@@ -108,8 +135,14 @@ describe('QueueService', () => {
         _sum: { voteCount: 1 },
       });
 
-      const result = await service.addToQueue('event-123', addToQueueDto);
+      const result = await service.addToQueue('event-123', addToQueueDto, '192.168.1.1');
 
+      expect(mockVoteTracker.checkAndRecordVote).toHaveBeenCalledWith(
+        'event-123',
+        addToQueueDto.trackId,
+        addToQueueDto.addedBy,
+        '192.168.1.1',
+      );
       expect(mockPrismaService.event.findUnique).toHaveBeenCalledWith({
         where: { id: 'event-123' },
       });
@@ -118,16 +151,17 @@ describe('QueueService', () => {
     });
 
     it('should increment vote count for existing track', async () => {
+      mockVoteTracker.checkAndRecordVote.mockResolvedValue(undefined);
       mockPrismaService.event.findUnique.mockResolvedValue(mockEvent);
       mockPrismaService.queueItem.findFirst.mockResolvedValue(mockQueueItem);
+      mockPrismaService.queueItem.findMany.mockResolvedValue([]); // For diversity and recently played checks
       mockPrismaService.queueItem.update.mockResolvedValue({
         ...mockQueueItem,
         voteCount: 2,
         score: 40,
       });
-      mockPrismaService.queueItem.findMany.mockResolvedValue([]);
 
-      const result = await service.addToQueue('event-123', addToQueueDto);
+      const result = await service.addToQueue('event-123', addToQueueDto, '192.168.1.1');
 
       expect(mockPrismaService.queueItem.update).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -141,21 +175,41 @@ describe('QueueService', () => {
     });
 
     it('should throw NotFoundException if event not found', async () => {
+      mockVoteTracker.checkAndRecordVote.mockResolvedValue(undefined);
       mockPrismaService.event.findUnique.mockResolvedValue(null);
 
-      await expect(service.addToQueue('event-999', addToQueueDto)).rejects.toThrow(
+      await expect(service.addToQueue('event-999', addToQueueDto, '192.168.1.1')).rejects.toThrow(
         new NotFoundException('Event with ID event-999 not found'),
       );
     });
 
     it('should throw BadRequestException if event not active', async () => {
+      mockVoteTracker.checkAndRecordVote.mockResolvedValue(undefined);
       mockPrismaService.event.findUnique.mockResolvedValue({
         ...mockEvent,
         status: 'ENDED',
       });
 
-      await expect(service.addToQueue('event-123', addToQueueDto)).rejects.toThrow(
+      await expect(service.addToQueue('event-123', addToQueueDto, '192.168.1.1')).rejects.toThrow(
         new BadRequestException('Can only add tracks to active events'),
+      );
+    });
+
+    it('should throw BadRequestException if session ID not provided', async () => {
+      const dtoWithoutSession = { ...addToQueueDto, addedBy: undefined };
+
+      await expect(service.addToQueue('event-123', dtoWithoutSession, '192.168.1.1')).rejects.toThrow(
+        new BadRequestException('Session ID is required'),
+      );
+    });
+
+    it('should throw error from vote tracker if spam detected', async () => {
+      mockVoteTracker.checkAndRecordVote.mockRejectedValue(
+        new BadRequestException('Please wait 25 seconds before voting again')
+      );
+
+      await expect(service.addToQueue('event-123', addToQueueDto, '192.168.1.1')).rejects.toThrow(
+        new BadRequestException('Please wait 25 seconds before voting again'),
       );
     });
   });
