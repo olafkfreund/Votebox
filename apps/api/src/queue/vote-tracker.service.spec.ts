@@ -23,7 +23,7 @@ describe('VoteTrackerService', () => {
     }).compile();
 
     service = module.get<VoteTrackerService>(VoteTrackerService);
-    prismaService = module.get<PrismaService>(PrismaService);
+    _prismaService = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {

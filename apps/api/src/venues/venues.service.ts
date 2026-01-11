@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateVenueDto } from './dto/create-venue.dto';
 import { UpdateVenueDto } from './dto/update-venue.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -42,7 +43,7 @@ export class VenuesService {
       data: {
         ...venueData,
         hashedPassword,
-        settings: venueData.settings || {},
+        settings: (venueData.settings || {}) as Prisma.InputJsonValue,
       },
       select: {
         id: true,
@@ -196,9 +197,13 @@ export class VenuesService {
     }
 
     // Update venue
+    const { settings, ...rest } = updateVenueDto;
     const venue = await this.prisma.venue.update({
       where: { id },
-      data: updateVenueDto,
+      data: {
+        ...rest,
+        ...(settings && { settings: settings as Prisma.InputJsonValue }),
+      },
       select: {
         id: true,
         name: true,

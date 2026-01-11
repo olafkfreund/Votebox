@@ -104,8 +104,8 @@ describe('QueueService', () => {
     }).compile();
 
     service = module.get<QueueService>(QueueService);
-    prismaService = module.get<PrismaService>(PrismaService);
-    voteTracker = module.get<VoteTrackerService>(VoteTrackerService);
+    _prismaService = module.get<PrismaService>(PrismaService);
+    _voteTracker = module.get<VoteTrackerService>(VoteTrackerService);
   });
 
   afterEach(() => {

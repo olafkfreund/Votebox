@@ -58,8 +58,8 @@ describe('SpotifyAuthService', () => {
     }).compile();
 
     service = module.get<SpotifyAuthService>(SpotifyAuthService);
-    prismaService = module.get<PrismaService>(PrismaService);
-    configService = module.get<ConfigService>(ConfigService);
+    _prismaService = module.get<PrismaService>(PrismaService);
+    _configService = module.get<ConfigService>(ConfigService);
   });
 
   afterEach(() => {

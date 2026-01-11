@@ -417,21 +417,23 @@ export class QueueService {
       },
     });
 
-    const updates = queueItems.map(async (item) => {
-      const newScore = await this.calculateScore(
-        eventId,
-        item.trackId,
-        item.artistName,
-        item.voteCount,
-        item.lastVotedAt
-      );
-      return this.prisma.queueItem.update({
-        where: { id: item.id },
-        data: { score: newScore },
-      });
-    });
+    const updatePromises = await Promise.all(
+      queueItems.map(async (item) => {
+        const newScore = await this.calculateScore(
+          eventId,
+          item.trackId,
+          item.artistName,
+          item.voteCount,
+          item.lastVotedAt
+        );
+        return this.prisma.queueItem.update({
+          where: { id: item.id },
+          data: { score: newScore },
+        });
+      })
+    );
 
-    await this.prisma.$transaction(updates);
+    await this.prisma.$transaction(updatePromises);
 
     // Recalculate positions after score update
     await this.recalculatePositions(eventId);

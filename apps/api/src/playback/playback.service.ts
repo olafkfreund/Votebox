@@ -15,9 +15,10 @@ interface PlaybackState {
   transitionTimer: NodeJS.Timeout | null;
 }
 
-interface PlayNextResponse {
+export interface PlayNextResponse {
   message: string;
   nowPlaying: {
+    id?: string;
     trackId: string;
     trackName: string;
     artistName: string;
@@ -26,7 +27,7 @@ interface PlayNextResponse {
   };
 }
 
-interface SkipResponse {
+export interface SkipResponse {
   message: string;
   nowPlaying?: {
     trackId: string;
@@ -37,11 +38,12 @@ interface SkipResponse {
   };
 }
 
-interface StatusResponse {
+export interface StatusResponse {
   eventId: string;
   initialized: boolean;
   isPlaying: boolean;
   autoPlayEnabled: boolean;
+  deviceId?: string | null;
   currentTrack?: {
     trackId: string;
     trackName: string;
@@ -49,6 +51,7 @@ interface StatusResponse {
     albumArt: string;
     duration: number;
     progress: number;
+    startedAt?: Date;
   };
   queueSize?: number;
 }

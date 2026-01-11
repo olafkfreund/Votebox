@@ -55,7 +55,7 @@ describe('VenuesService', () => {
     }).compile();
 
     service = module.get<VenuesService>(VenuesService);
-    prismaService = module.get<PrismaService>(PrismaService);
+    _prismaService = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {
