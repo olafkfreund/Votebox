@@ -6,10 +6,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddToQueueDto } from './dto/add-to-queue.dto';
+import { WebSocketGatewayService } from '../websocket/websocket.gateway';
 
 @Injectable()
 export class QueueService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly websocket: WebSocketGatewayService,
+  ) {}
 
   /**
    * Calculate queue score based on votes and recency
@@ -83,6 +87,10 @@ export class QueueService {
       // Recalculate positions
       await this.recalculatePositions(eventId);
 
+      // Emit queue update via WebSocket
+      const updatedQueue = await this.getQueue(eventId);
+      this.websocket.emitQueueUpdate(eventId, updatedQueue);
+
       return updatedItem;
     }
 
@@ -112,6 +120,10 @@ export class QueueService {
 
     // Update event stats
     await this.updateEventStats(eventId);
+
+    // Emit queue update via WebSocket
+    const updatedQueue = await this.getQueue(eventId);
+    this.websocket.emitQueueUpdate(eventId, updatedQueue);
 
     return this.findOne(queueItem.id);
   }
@@ -185,6 +197,10 @@ export class QueueService {
     // Update event stats
     await this.updateEventStats(eventId);
 
+    // Emit queue update via WebSocket
+    const updatedQueue = await this.getQueue(eventId);
+    this.websocket.emitQueueUpdate(eventId, updatedQueue);
+
     return { message: 'Track removed from queue successfully' };
   }
 
@@ -216,6 +232,10 @@ export class QueueService {
 
     // Recalculate positions for remaining tracks
     await this.recalculatePositions(eventId);
+
+    // Emit queue update via WebSocket
+    const updatedQueue = await this.getQueue(eventId);
+    this.websocket.emitQueueUpdate(eventId, updatedQueue);
 
     return updatedItem;
   }
@@ -250,6 +270,10 @@ export class QueueService {
 
     // Recalculate positions for remaining tracks
     await this.recalculatePositions(eventId);
+
+    // Emit queue update via WebSocket
+    const updatedQueue = await this.getQueue(eventId);
+    this.websocket.emitQueueUpdate(eventId, updatedQueue);
 
     return updatedItem;
   }
