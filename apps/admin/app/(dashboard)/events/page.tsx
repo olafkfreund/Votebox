@@ -2,19 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import apiClient from '@/lib/api-client';
+import apiClient, { Event } from '@/lib/api-client';
 import Link from 'next/link';
-
-interface Event {
-  id: string;
-  name: string;
-  status: 'DRAFT' | 'SCHEDULED' | 'ACTIVE' | 'ENDED';
-  scheduledStart: string | null;
-  scheduledEnd: string | null;
-  actualStart: string | null;
-  actualEnd: string | null;
-  createdAt: string;
-}
 
 type FilterStatus = 'ALL' | 'DRAFT' | 'SCHEDULED' | 'ACTIVE' | 'ENDED';
 

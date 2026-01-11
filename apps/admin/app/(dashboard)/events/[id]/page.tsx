@@ -2,33 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import apiClient from '@/lib/api-client';
+import apiClient, { Event } from '@/lib/api-client';
 import Link from 'next/link';
-
-interface Event {
-  id: string;
-  name: string;
-  description: string | null;
-  status: 'DRAFT' | 'SCHEDULED' | 'ACTIVE' | 'ENDED';
-  scheduledStart: string | null;
-  scheduledEnd: string | null;
-  actualStart: string | null;
-  actualEnd: string | null;
-  playlistSource: string;
-  playlistConfig: {
-    genres?: string[];
-    excludeExplicit?: boolean;
-    playlistIds?: string[];
-  };
-  votingRules: {
-    votesPerHour?: number;
-    cooldownMinutes?: number;
-    maxQueueSize?: number;
-  };
-  recurrence: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
 export default function EventDetailsPage() {
   const params = useParams();

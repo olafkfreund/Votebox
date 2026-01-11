@@ -2,15 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import apiClient from '@/lib/api-client';
-
-interface Event {
-  id: string;
-  name: string;
-  status: string;
-  actualStart: string | null;
-  actualEnd: string | null;
-}
+import apiClient, { Event } from '@/lib/api-client';
 
 export default function AnalyticsPage() {
   const { venue } = useAuth();

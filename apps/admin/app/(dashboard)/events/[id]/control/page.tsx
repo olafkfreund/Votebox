@@ -2,45 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import apiClient from '@/lib/api-client';
+import apiClient, { QueueItem, PlaybackStatus, SpotifyDevice } from '@/lib/api-client';
 import Link from 'next/link';
-
-interface QueueItem {
-  id: string;
-  trackId: string;
-  trackName: string;
-  artistName: string;
-  albumArt: string;
-  voteCount: number;
-  position: number;
-}
-
-interface PlaybackStatus {
-  eventId: string;
-  initialized: boolean;
-  isPlaying: boolean;
-  autoPlayEnabled: boolean;
-  deviceId?: string | null;
-  currentTrack?: {
-    trackId: string;
-    trackName: string;
-    artistName: string;
-    albumArt: string;
-    duration: number;
-    progress?: number;
-    elapsed?: number;
-    remaining?: number;
-  } | null;
-  queueSize?: number;
-}
-
-interface SpotifyDevice {
-  id: string;
-  name: string;
-  type: string;
-  is_active: boolean;
-  volume_percent: number;
-}
 
 export default function EventControlPage() {
   const params = useParams();

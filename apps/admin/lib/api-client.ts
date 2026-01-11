@@ -11,7 +11,7 @@ interface ApiError {
   error?: string;
 }
 
-interface Venue {
+export interface Venue {
   id: string;
   name: string;
   slug: string;
@@ -20,12 +20,12 @@ interface Venue {
   settings: Record<string, unknown>;
 }
 
-interface Event {
+export interface Event {
   id: string;
   venueId: string;
   name: string;
   description: string | null;
-  status: string;
+  status: 'DRAFT' | 'SCHEDULED' | 'ACTIVE' | 'ENDED';
   scheduledStart: string | null;
   scheduledEnd: string | null;
   actualStart: string | null;
@@ -38,7 +38,7 @@ interface Event {
   updatedAt: string;
 }
 
-interface QueueItem {
+export interface QueueItem {
   id: string;
   eventId: string;
   trackId: string;
@@ -53,7 +53,7 @@ interface QueueItem {
   lastVotedAt: string | null;
 }
 
-interface PlaybackStatus {
+export interface PlaybackStatus {
   eventId: string;
   initialized: boolean;
   isPlaying: boolean;
@@ -72,7 +72,7 @@ interface PlaybackStatus {
   queueSize?: number;
 }
 
-interface SpotifyDevice {
+export interface SpotifyDevice {
   id: string;
   name: string;
   type: string;
@@ -80,7 +80,7 @@ interface SpotifyDevice {
   volume_percent: number;
 }
 
-interface Track {
+export interface Track {
   id: string;
   name: string;
   artist: string;

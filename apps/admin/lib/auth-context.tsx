@@ -2,16 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import apiClient from './api-client';
-
-interface Venue {
-  id: string;
-  name: string;
-  slug: string;
-  email: string;
-  spotifyAccountId: string | null;
-  settings: Record<string, unknown>;
-}
+import apiClient, { Venue } from './api-client';
 
 interface AuthContextType {
   venue: Venue | null;
