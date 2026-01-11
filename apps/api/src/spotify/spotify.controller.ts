@@ -158,7 +158,7 @@ export class SpotifyController {
     description: 'Venue not found',
   })
   async refreshToken(@Param('venueId') venueId: string) {
-    const accessToken = await this.spotifyAuthService.refreshAccessToken(venueId);
+    await this.spotifyAuthService.refreshAccessToken(venueId);
 
     return {
       success: true,

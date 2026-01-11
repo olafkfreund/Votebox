@@ -11,13 +11,13 @@ import {
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-enum PlaylistSource {
+export enum PlaylistSource {
   GENRE = 'GENRE',
   SPOTIFY_PLAYLIST = 'SPOTIFY_PLAYLIST',
   CUSTOM = 'CUSTOM',
 }
 
-enum Recurrence {
+export enum Recurrence {
   NONE = 'NONE',
   DAILY = 'DAILY',
   WEEKLY = 'WEEKLY',

@@ -10,8 +10,8 @@ import { VoteTrackerService } from './vote-tracker.service';
 
 describe('QueueService', () => {
   let service: QueueService;
-  let prismaService: PrismaService;
-  let voteTracker: VoteTrackerService;
+  let _prismaService: PrismaService;
+  let _voteTracker: VoteTrackerService;
 
   const mockPrismaService = {
     event: {

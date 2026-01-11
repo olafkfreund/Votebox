@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 describe('VoteTrackerService', () => {
   let service: VoteTrackerService;
-  let prismaService: PrismaService;
+  let _prismaService: PrismaService;
 
   const mockPrismaService = {
     // Mock Prisma service (not used in VoteTrackerService currently)

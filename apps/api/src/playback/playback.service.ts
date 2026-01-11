@@ -148,8 +148,10 @@ export class PlaybackService {
         nowPlaying: nextTrack,
       };
     } catch (error) {
-      this.logger.error(`Failed to play track: ${error.message}`, error.stack);
-      throw new BadRequestException(`Failed to start playback: ${error.message}`);
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      const stack = error instanceof Error ? error.stack : undefined;
+      this.logger.error(`Failed to play track: ${message}`, stack);
+      throw new BadRequestException(`Failed to start playback: ${message}`);
     }
   }
 
@@ -341,7 +343,8 @@ export class PlaybackService {
       try {
         await this.spotifyApi.pausePlayback(event.venueId, state.deviceId);
       } catch (error) {
-        this.logger.warn(`Failed to pause Spotify: ${error.message}`);
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        this.logger.warn(`Failed to pause Spotify: ${message}`);
       }
     }
 

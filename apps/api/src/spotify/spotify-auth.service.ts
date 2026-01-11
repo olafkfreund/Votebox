@@ -78,7 +78,7 @@ export class SpotifyAuthService {
   async handleCallback(code: string, state: string) {
     // Decode state to get venueId
     const decodedState = Buffer.from(state, 'base64').toString('utf-8');
-    const [stateToken, venueId] = decodedState.split(':');
+    const [_stateToken, venueId] = decodedState.split(':');
 
     if (!venueId) {
       throw new BadRequestException('Invalid state parameter');

@@ -8,7 +8,7 @@ jest.mock('bcrypt');
 
 describe('VenuesService', () => {
   let service: VenuesService;
-  let prismaService: PrismaService;
+  let _prismaService: PrismaService;
 
   const mockPrismaService = {
     venue: {

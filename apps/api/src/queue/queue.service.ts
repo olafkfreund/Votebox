@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
-  ConflictException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddToQueueDto } from './dto/add-to-queue.dto';
@@ -448,21 +447,19 @@ export class QueueService {
       },
     });
 
-    const updates = await Promise.all(
-      queueItems.map(async (item) => {
-        const newScore = await this.calculateScore(
-          eventId,
-          item.trackId,
-          item.artistName,
-          item.voteCount,
-          item.lastVotedAt,
-        );
-        return this.prisma.queueItem.update({
-          where: { id: item.id },
-          data: { score: newScore },
-        });
-      }),
-    );
+    const updates = queueItems.map(async (item) => {
+      const newScore = await this.calculateScore(
+        eventId,
+        item.trackId,
+        item.artistName,
+        item.voteCount,
+        item.lastVotedAt,
+      );
+      return this.prisma.queueItem.update({
+        where: { id: item.id },
+        data: { score: newScore },
+      });
+    });
 
     await this.prisma.$transaction(updates);
 

@@ -11,10 +11,10 @@ import { WebSocketGatewayService } from '../websocket/websocket.gateway';
 
 describe('PlaybackService', () => {
   let service: PlaybackService;
-  let prismaService: PrismaService;
-  let spotifyApi: SpotifyApiService;
-  let queueService: QueueService;
-  let websocket: WebSocketGatewayService;
+  let _prismaService: PrismaService;
+  let _spotifyApi: SpotifyApiService;
+  let _queueService: QueueService;
+  let _websocket: WebSocketGatewayService;
 
   const mockPrismaService = {
     event: {

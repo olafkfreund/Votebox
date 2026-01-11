@@ -14,8 +14,8 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('SpotifyAuthService', () => {
   let service: SpotifyAuthService;
-  let prismaService: PrismaService;
-  let configService: ConfigService;
+  let _prismaService: PrismaService;
+  let _configService: ConfigService;
 
   const mockPrismaService = {
     venue: {

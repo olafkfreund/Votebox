@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { SpotifyAuthService } from './spotify-auth.service';
 import axios, { AxiosInstance } from 'axios';
 
-interface SpotifyTrack {
+export interface SpotifyTrack {
   id: string;
   name: string;
   artists: Array<{ id: string; name: string }>;
@@ -17,7 +17,7 @@ interface SpotifyTrack {
   preview_url: string | null;
 }
 
-interface SpotifyPlaylist {
+export interface SpotifyPlaylist {
   id: string;
   name: string;
   description: string;
@@ -31,7 +31,7 @@ interface SpotifyPlaylist {
   };
 }
 
-interface SpotifySearchResponse {
+export interface SpotifySearchResponse {
   tracks: {
     items: SpotifyTrack[];
     total: number;
@@ -40,7 +40,7 @@ interface SpotifySearchResponse {
   };
 }
 
-interface SpotifyPlaylistTracksResponse {
+export interface SpotifyPlaylistTracksResponse {
   items: Array<{
     track: SpotifyTrack;
   }>;

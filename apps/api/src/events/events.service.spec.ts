@@ -9,7 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 describe('EventsService', () => {
   let service: EventsService;
-  let prismaService: PrismaService;
+  let _prismaService: PrismaService;
 
   const mockPrismaService = {
     venue: {

@@ -1,5 +1,4 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
 
 interface VoteRecord {
   sessionId: string;
@@ -18,7 +17,7 @@ export class VoteTrackerService {
   private readonly SAME_SONG_COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours
   private readonly HOUR_MS = 60 * 60 * 1000; // 1 hour
 
-  constructor(private readonly prisma: PrismaService) {
+  constructor() {
     // Clean up old cache entries every 5 minutes
     setInterval(() => this.cleanupCache(), 5 * 60 * 1000);
   }
