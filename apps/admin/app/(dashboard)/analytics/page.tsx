@@ -92,7 +92,10 @@ export default function AnalyticsPage() {
 
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
         <div className="mb-4">
-          <label htmlFor="event-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label
+            htmlFor="event-select"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+          >
             Select Event
           </label>
           <select
@@ -188,9 +191,7 @@ export default function AnalyticsPage() {
 
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
         <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Popular Tracks
-          </h3>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white">Popular Tracks</h3>
         </div>
         <div className="px-6 py-5">
           <div className="text-center py-12">
@@ -204,9 +205,7 @@ export default function AnalyticsPage() {
 
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
         <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Voting Patterns
-          </h3>
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white">Voting Patterns</h3>
         </div>
         <div className="px-6 py-5">
           <div className="text-center py-12">

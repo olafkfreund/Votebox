@@ -18,9 +18,7 @@ export default function Sidebar() {
   return (
     <div className="flex w-64 flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
       <div className="flex h-16 items-center justify-center border-b border-gray-200 dark:border-gray-700">
-        <h1 className="text-xl font-bold text-primary-600 dark:text-primary-400">
-          Votebox Admin
-        </h1>
+        <h1 className="text-xl font-bold text-primary-600 dark:text-primary-400">Votebox Admin</h1>
       </div>
 
       <div className="flex-1 overflow-y-auto">

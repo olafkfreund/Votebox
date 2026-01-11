@@ -34,12 +34,20 @@ interface PlaybackStatus {
   queueSize?: number;
 }
 
+interface SpotifyDevice {
+  id: string;
+  name: string;
+  type: string;
+  is_active: boolean;
+  volume_percent: number;
+}
+
 export default function EventControlPage() {
   const params = useParams();
   const eventId = params.id as string;
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [playbackStatus, setPlaybackStatus] = useState<PlaybackStatus | null>(null);
-  const [devices, setDevices] = useState<any[]>([]);
+  const [devices, setDevices] = useState<SpotifyDevice[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -174,7 +182,9 @@ export default function EventControlPage() {
             ← Back
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Event Control Panel</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Event Control Panel
+            </h1>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Manage live playback and queue
             </p>
@@ -258,7 +268,9 @@ export default function EventControlPage() {
                             style={{
                               width: `${
                                 playbackStatus.currentTrack.progress
-                                  ? (playbackStatus.currentTrack.progress / playbackStatus.currentTrack.duration) * 100
+                                  ? (playbackStatus.currentTrack.progress /
+                                      playbackStatus.currentTrack.duration) *
+                                    100
                                   : 0
                               }%`,
                             }}
@@ -269,7 +281,9 @@ export default function EventControlPage() {
                   </div>
                 </div>
               ) : (
-                <p className="text-sm text-gray-500 dark:text-gray-400">No track currently playing</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  No track currently playing
+                </p>
               )}
 
               <div className="mt-6 flex items-center justify-center space-x-4">
@@ -322,7 +336,10 @@ export default function EventControlPage() {
             ) : (
               <div className="divide-y divide-gray-200 dark:divide-gray-700">
                 {queue.map((item, index) => (
-                  <div key={item.id} className="px-6 py-4 flex items-center space-x-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <div
+                    key={item.id}
+                    className="px-6 py-4 flex items-center space-x-4 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  >
                     <div className="flex-shrink-0 text-gray-400 dark:text-gray-500 font-medium w-8">
                       #{index + 1}
                     </div>

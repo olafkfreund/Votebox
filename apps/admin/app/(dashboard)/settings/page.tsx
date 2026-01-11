@@ -77,13 +77,14 @@ export default function SettingsPage() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
           <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Venue Information
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Venue Information</h3>
           </div>
           <div className="px-6 py-5 space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Venue Name
               </label>
               <input
@@ -97,7 +98,10 @@ export default function SettingsPage() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Email Address
               </label>
               <input
@@ -170,7 +174,8 @@ export default function SettingsPage() {
                       Spotify Not Connected
                     </p>
                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                      Connect your Spotify account to create events and manage playback. You'll need a Spotify Premium account.
+                      Connect your Spotify account to create events and manage playback. You'll need
+                      a Spotify Premium account.
                     </p>
                   </div>
                 </div>
@@ -189,9 +194,7 @@ export default function SettingsPage() {
 
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
           <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Danger Zone
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Danger Zone</h3>
           </div>
           <div className="px-6 py-5 space-y-4">
             <div className="flex items-center justify-between">

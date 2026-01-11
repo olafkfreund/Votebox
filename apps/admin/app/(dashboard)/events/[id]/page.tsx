@@ -135,7 +135,9 @@ export default function EventDetailsPage() {
     return (
       <div className="text-center py-12">
         <span className="text-4xl">⚠️</span>
-        <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">{error || 'Event not found'}</p>
+        <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+          {error || 'Event not found'}
+        </p>
         <Link
           href="/events"
           className="mt-4 inline-flex items-center text-sm font-medium text-primary-600 hover:text-primary-500"
@@ -150,16 +152,15 @@ export default function EventDetailsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Link
-            href="/events"
-            className="text-gray-400 hover:text-gray-500"
-          >
+          <Link href="/events" className="text-gray-400 hover:text-gray-500">
             ← Back
           </Link>
           <div>
             <div className="flex items-center space-x-3">
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{event.name}</h1>
-              <span className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${getStatusColor(event.status)}`}>
+              <span
+                className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${getStatusColor(event.status)}`}
+              >
                 {event.status}
               </span>
             </div>
@@ -214,23 +215,33 @@ export default function EventDetailsPage() {
           </div>
           <div className="px-6 py-5 space-y-4">
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Scheduled Start</p>
-              <p className="mt-1 text-sm text-gray-900 dark:text-white">{formatDate(event.scheduledStart)}</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Scheduled Start
+              </p>
+              <p className="mt-1 text-sm text-gray-900 dark:text-white">
+                {formatDate(event.scheduledStart)}
+              </p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Scheduled End</p>
-              <p className="mt-1 text-sm text-gray-900 dark:text-white">{formatDate(event.scheduledEnd)}</p>
+              <p className="mt-1 text-sm text-gray-900 dark:text-white">
+                {formatDate(event.scheduledEnd)}
+              </p>
             </div>
             {event.actualStart && (
               <div>
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Actual Start</p>
-                <p className="mt-1 text-sm text-gray-900 dark:text-white">{formatDate(event.actualStart)}</p>
+                <p className="mt-1 text-sm text-gray-900 dark:text-white">
+                  {formatDate(event.actualStart)}
+                </p>
               </div>
             )}
             {event.actualEnd && (
               <div>
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Actual End</p>
-                <p className="mt-1 text-sm text-gray-900 dark:text-white">{formatDate(event.actualEnd)}</p>
+                <p className="mt-1 text-sm text-gray-900 dark:text-white">
+                  {formatDate(event.actualEnd)}
+                </p>
               </div>
             )}
             <div>
@@ -242,11 +253,15 @@ export default function EventDetailsPage() {
 
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
           <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Music Configuration</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+              Music Configuration
+            </h3>
           </div>
           <div className="px-6 py-5 space-y-4">
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Playlist Source</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Playlist Source
+              </p>
               <p className="mt-1 text-sm text-gray-900 dark:text-white">{event.playlistSource}</p>
             </div>
             {event.playlistConfig.genres && event.playlistConfig.genres.length > 0 && (
@@ -265,7 +280,9 @@ export default function EventDetailsPage() {
               </div>
             )}
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Explicit Content</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Explicit Content
+              </p>
               <p className="mt-1 text-sm text-gray-900 dark:text-white">
                 {event.playlistConfig.excludeExplicit ? 'Excluded' : 'Allowed'}
               </p>
@@ -285,13 +302,19 @@ export default function EventDetailsPage() {
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Cooldown Period</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Cooldown Period
+              </p>
               <p className="mt-1 text-sm text-gray-900 dark:text-white">
-                {event.votingRules.cooldownMinutes ? `${event.votingRules.cooldownMinutes} minutes` : 'Not set'}
+                {event.votingRules.cooldownMinutes
+                  ? `${event.votingRules.cooldownMinutes} minutes`
+                  : 'Not set'}
               </p>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Maximum Queue Size</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Maximum Queue Size
+              </p>
               <p className="mt-1 text-sm text-gray-900 dark:text-white">
                 {event.votingRules.maxQueueSize || 'Not set'}
               </p>
@@ -305,15 +328,21 @@ export default function EventDetailsPage() {
           </div>
           <div className="px-6 py-5 space-y-4">
             <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Guest Voting URL</p>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Guest Voting URL
+              </p>
               <p className="mt-1 text-sm text-primary-600 dark:text-primary-400 font-mono">
-                {typeof window !== 'undefined' ? `${window.location.origin}/v/${event.id}` : 'Loading...'}
+                {typeof window !== 'undefined'
+                  ? `${window.location.origin}/v/${event.id}`
+                  : 'Loading...'}
               </p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Display URL</p>
               <p className="mt-1 text-sm text-primary-600 dark:text-primary-400 font-mono">
-                {typeof window !== 'undefined' ? `${window.location.origin}/display/${event.id}` : 'Loading...'}
+                {typeof window !== 'undefined'
+                  ? `${window.location.origin}/display/${event.id}`
+                  : 'Loading...'}
               </p>
             </div>
           </div>

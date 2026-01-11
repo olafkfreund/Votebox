@@ -175,9 +175,7 @@ export default function DashboardPage() {
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
         <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Recent Events
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Recent Events</h3>
             <Link
               href="/events"
               className="text-sm font-medium text-primary-600 hover:text-primary-500"
@@ -251,9 +249,7 @@ export default function DashboardPage() {
                 Spotify Account Not Connected
               </h3>
               <div className="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
-                <p>
-                  You need to connect your Spotify account to create and manage events.
-                </p>
+                <p>You need to connect your Spotify account to create and manage events.</p>
               </div>
               <div className="mt-4">
                 <Link

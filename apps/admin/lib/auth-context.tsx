@@ -10,7 +10,7 @@ interface Venue {
   slug: string;
   email: string;
   spotifyAccountId: string | null;
-  settings: any;
+  settings: Record<string, unknown>;
 }
 
 interface AuthContextType {

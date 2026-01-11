@@ -39,7 +39,9 @@ export default function NewEventPage() {
         venueId: venue!.id,
         name: formData.name,
         description: formData.description,
-        scheduledStart: formData.scheduledStart ? new Date(formData.scheduledStart).toISOString() : null,
+        scheduledStart: formData.scheduledStart
+          ? new Date(formData.scheduledStart).toISOString()
+          : null,
         scheduledEnd: formData.scheduledEnd ? new Date(formData.scheduledEnd).toISOString() : null,
         playlistSource: formData.playlistSource,
         playlistConfig: {
@@ -92,13 +94,14 @@ export default function NewEventPage() {
 
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
           <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Basic Information
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Basic Information</h3>
           </div>
           <div className="px-6 py-5 space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Event Name *
               </label>
               <input
@@ -113,7 +116,10 @@ export default function NewEventPage() {
             </div>
 
             <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Description
               </label>
               <textarea
@@ -128,7 +134,10 @@ export default function NewEventPage() {
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <label htmlFor="scheduledStart" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label
+                  htmlFor="scheduledStart"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Start Date & Time
                 </label>
                 <input
@@ -141,7 +150,10 @@ export default function NewEventPage() {
               </div>
 
               <div>
-                <label htmlFor="scheduledEnd" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label
+                  htmlFor="scheduledEnd"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   End Date & Time
                 </label>
                 <input
@@ -155,13 +167,18 @@ export default function NewEventPage() {
             </div>
 
             <div>
-              <label htmlFor="recurrence" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="recurrence"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Recurrence
               </label>
               <select
                 id="recurrence"
                 value={formData.recurrence}
-                onChange={(e) => setFormData({ ...formData, recurrence: e.target.value as Recurrence })}
+                onChange={(e) =>
+                  setFormData({ ...formData, recurrence: e.target.value as Recurrence })
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
                 <option value="NONE">None</option>
@@ -175,20 +192,23 @@ export default function NewEventPage() {
 
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
           <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Music Selection
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Music Selection</h3>
           </div>
           <div className="px-6 py-5 space-y-6">
             <div>
-              <label htmlFor="playlistSource" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="playlistSource"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Playlist Source *
               </label>
               <select
                 id="playlistSource"
                 required
                 value={formData.playlistSource}
-                onChange={(e) => setFormData({ ...formData, playlistSource: e.target.value as PlaylistSource })}
+                onChange={(e) =>
+                  setFormData({ ...formData, playlistSource: e.target.value as PlaylistSource })
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
                 <option value="GENRE">By Genre</option>
@@ -249,7 +269,10 @@ export default function NewEventPage() {
                 onChange={(e) => setFormData({ ...formData, excludeExplicit: e.target.checked })}
                 className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
               />
-              <label htmlFor="excludeExplicit" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+              <label
+                htmlFor="excludeExplicit"
+                className="ml-2 block text-sm text-gray-900 dark:text-gray-300"
+              >
                 Exclude explicit content
               </label>
             </div>
@@ -258,13 +281,14 @@ export default function NewEventPage() {
 
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
           <div className="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Voting Rules
-            </h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">Voting Rules</h3>
           </div>
           <div className="px-6 py-5 space-y-6">
             <div>
-              <label htmlFor="votesPerHour" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="votesPerHour"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Votes Per Hour
               </label>
               <input
@@ -273,7 +297,9 @@ export default function NewEventPage() {
                 min="1"
                 max="10"
                 value={formData.votesPerHour}
-                onChange={(e) => setFormData({ ...formData, votesPerHour: parseInt(e.target.value) })}
+                onChange={(e) =>
+                  setFormData({ ...formData, votesPerHour: parseInt(e.target.value) })
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -282,7 +308,10 @@ export default function NewEventPage() {
             </div>
 
             <div>
-              <label htmlFor="cooldownMinutes" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="cooldownMinutes"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Cooldown (minutes)
               </label>
               <input
@@ -291,7 +320,9 @@ export default function NewEventPage() {
                 min="0"
                 max="60"
                 value={formData.cooldownMinutes}
-                onChange={(e) => setFormData({ ...formData, cooldownMinutes: parseInt(e.target.value) })}
+                onChange={(e) =>
+                  setFormData({ ...formData, cooldownMinutes: parseInt(e.target.value) })
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -300,7 +331,10 @@ export default function NewEventPage() {
             </div>
 
             <div>
-              <label htmlFor="maxQueueSize" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label
+                htmlFor="maxQueueSize"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Maximum Queue Size
               </label>
               <input
@@ -309,7 +343,9 @@ export default function NewEventPage() {
                 min="10"
                 max="100"
                 value={formData.maxQueueSize}
-                onChange={(e) => setFormData({ ...formData, maxQueueSize: parseInt(e.target.value) })}
+                onChange={(e) =>
+                  setFormData({ ...formData, maxQueueSize: parseInt(e.target.value) })
+                }
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
