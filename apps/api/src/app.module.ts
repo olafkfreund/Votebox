@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { VenuesModule } from './venues/venues.module';
 import { EventsModule } from './events/events.module';
+import { SpotifyModule } from './spotify/spotify.module';
 
 @Module({
   imports: [
@@ -15,11 +16,11 @@ import { EventsModule } from './events/events.module';
     PrismaModule,
     VenuesModule,
     EventsModule,
+    SpotifyModule,
     // Modules will be added here as we create them:
     // AuthModule,
     // VotesModule,
     // QueueModule,
-    // SpotifyModule,
     // WebsocketModule,
   ],
   controllers: [AppController],
