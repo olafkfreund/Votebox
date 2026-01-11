@@ -15,8 +15,7 @@ RUN npm ci
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 WORKDIR /app
-RUN npx prisma generate --schema=./packages/database/prisma/schema.prisma
-RUN npm run build --workspace=@votebox/api
+RUN npm run build
 
 # Production stage
 FROM node:20-alpine AS runner
