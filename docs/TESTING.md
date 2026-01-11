@@ -33,8 +33,9 @@ Votebox follows a multi-layer testing approach:
 
 ### 3. End-to-End Tests
 - **Scope**: Complete user journeys
-- **Framework**: Playwright (planned)
+- **Framework**: Playwright
 - **Coverage**: Happy paths + critical error cases
+- **Location**: `tests/e2e/*.spec.ts`
 
 ---
 
@@ -57,9 +58,12 @@ Votebox follows a multi-layer testing approach:
 - HTTP assertions
 - API endpoint testing
 
-**Playwright** (e2e tests - future)
+**Playwright**
 - Browser automation
 - Real user interaction testing
+- Multi-browser support (Chromium, Firefox, WebKit)
+- Mobile viewport testing
+- Automatic waiting and retry logic
 
 ---
 
@@ -93,6 +97,26 @@ npm test queue.service.spec.ts
 ### Specific Test Suite
 ```bash
 npm test -- --testNamePattern="VoteTrackerService"
+```
+
+### E2E Tests
+```bash
+# Run all E2E tests (headless)
+npm run test:e2e
+
+# Run E2E tests with UI
+npm run test:e2e:ui
+
+# Run E2E tests in headed mode (see browser)
+npm run test:e2e:headed
+
+# View test report
+npm run test:e2e:report
+```
+
+### Specific E2E Test File
+```bash
+npx playwright test tests/e2e/guest-voting.spec.ts
 ```
 
 ---
@@ -598,17 +622,239 @@ Before submitting code, ensure:
 - Spotify API integration tests
 - WebSocket integration tests
 
-### Week 4 (Current): E2E Tests
-- Complete user voting flow
-- Admin queue management
-- Multi-user scenarios
-- Error handling flows
+### Week 4: E2E Tests - **COMPLETE**
+- ✅ Complete user voting flow
+- ✅ Admin queue management
+- ✅ Playback automation
+- ✅ Multi-user scenarios
+- ✅ Error handling flows
+- ✅ Rate limiting validation
+- ✅ WebSocket reconnection
 
 ### Post-MVP: Performance Tests
 - Load testing with Artillery
 - Stress testing queue operations
 - WebSocket connection limits
 - Database query optimization
+
+---
+
+## End-to-End Testing with Playwright
+
+### Overview
+
+E2E tests validate complete user journeys through the application, testing both frontend and backend integration.
+
+**Test Files**:
+- `tests/e2e/guest-voting.spec.ts` - Guest voting experience
+- `tests/e2e/admin-queue.spec.ts` - Admin queue management
+- `tests/e2e/playback.spec.ts` - Playback automation
+
+### E2E Test Structure
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('Feature Name', () => {
+  let eventId: string;
+
+  test.beforeAll(async ({ request }) => {
+    // Setup: Create test data via API
+    const response = await request.post('http://localhost:4000/api/v1/venues', {
+      data: { /* venue data */ },
+    });
+    // ...
+  });
+
+  test.afterAll(async ({ request }) => {
+    // Cleanup: Delete test data
+  });
+
+  test('should perform user action', async ({ page }) => {
+    // Navigate to page
+    await page.goto('/path');
+
+    // Interact with elements
+    await page.click('[data-testid="button"]');
+
+    // Assert outcome
+    await expect(page.getByText('Success')).toBeVisible();
+  });
+});
+```
+
+### Guest Voting Tests
+
+**File**: `tests/e2e/guest-voting.spec.ts` (12 test cases)
+
+Test scenarios:
+1. ✅ Load event voting page successfully
+2. ✅ Show connection status (WebSocket)
+3. ✅ Display empty queue initially
+4. ✅ Display now playing section
+5. ✅ Search for tracks
+6. ✅ Vote for a track
+7. ✅ Show error when vote limit exceeded (rate limiting)
+8. ✅ Show error when voting too quickly (30s cooldown)
+9. ✅ Display queue ordered by score
+10. ✅ Handle WebSocket reconnection
+11. ✅ Track remaining votes (3/3 → 2/3 → 1/3)
+12. ✅ Real-time queue updates
+
+### Admin Queue Tests
+
+**File**: `tests/e2e/admin-queue.spec.ts` (8 test cases)
+
+Test scenarios:
+1. ✅ Clear entire queue (emergency)
+2. ✅ Force skip a track with reason
+3. ✅ Remove track from queue
+4. ✅ Recalculate all queue scores
+5. ✅ Return 404 for non-existent track
+6. ✅ Return 404 for non-existent event
+7. ✅ Get queue statistics
+8. ✅ Verify skipped tracks in statistics
+
+### Playback Automation Tests
+
+**File**: `tests/e2e/playback.spec.ts` (11 test cases)
+
+Test scenarios:
+1. ✅ Get uninitialized playback status
+2. ✅ Fail to play without initialization
+3. ✅ Return 404 for non-existent device
+4. ✅ Return 400 for invalid operations
+5. ⏭️ Initialize playback on device (requires Spotify)
+6. ⏭️ Play next track from queue (requires Spotify)
+7. ⏭️ Pause/resume playback (requires Spotify)
+8. ⏭️ Skip to next track (requires Spotify)
+9. ⏭️ Enable/disable auto-play (requires Spotify)
+10. ⏭️ Stop playback and cleanup (requires Spotify)
+11. ⏭️ Handle empty queue gracefully (requires Spotify)
+
+**Note**: Some playback tests are skipped because they require real Spotify device integration, which cannot be automated in CI environment.
+
+### Running E2E Tests Locally
+
+**Prerequisites**:
+```bash
+# Ensure services are running
+docker-compose up -d postgres redis
+
+# Run database migrations
+npm run db:migrate
+```
+
+**Run Tests**:
+```bash
+# All E2E tests (headless)
+npm run test:e2e
+
+# With UI (recommended for development)
+npm run test:e2e:ui
+
+# Watch specific test file
+npx playwright test tests/e2e/guest-voting.spec.ts --headed --debug
+```
+
+### E2E Test Configuration
+
+**File**: `playwright.config.ts`
+
+Key settings:
+- **Test Directory**: `./tests/e2e`
+- **Base URL**: `http://localhost:3000`
+- **Browsers**: Chromium, Mobile Chrome
+- **Parallel**: Yes (but sequential on CI)
+- **Retries**: 2 on CI, 0 locally
+- **Reporters**: HTML, list, JSON
+
+**Automatic Server Startup**:
+```typescript
+webServer: [
+  {
+    command: 'cd apps/api && npm run start:dev',
+    url: 'http://localhost:4000/health',
+    reuseExistingServer: !process.env.CI,
+  },
+  {
+    command: 'cd apps/web && npm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+  },
+],
+```
+
+### E2E Test Patterns
+
+**1. API-First Setup**
+
+Use `request` fixture to create test data:
+```typescript
+test.beforeAll(async ({ request }) => {
+  const venueResponse = await request.post('/api/v1/venues', {
+    data: venueData,
+  });
+  venue = await venueResponse.json();
+});
+```
+
+**2. Data Test IDs**
+
+Use `data-testid` attributes for stable selectors:
+```typescript
+await page.click('[data-testid="vote-button"]');
+await expect(page.locator('[data-testid="queue-list"]')).toBeVisible();
+```
+
+**3. Auto-Waiting**
+
+Playwright automatically waits for elements:
+```typescript
+// No need for manual waits
+await page.click('button'); // Waits for button to be ready
+await expect(page.getByText('Success')).toBeVisible(); // Auto-retries
+```
+
+**4. Network Mocking** (when needed)
+
+```typescript
+await page.route('**/api/spotify/search', route => {
+  route.fulfill({
+    status: 200,
+    body: JSON.stringify({ tracks: mockTracks }),
+  });
+});
+```
+
+### E2E CI/CD Integration
+
+**Workflow**: `.github/workflows/e2e.yml`
+
+Pipeline steps:
+1. Start PostgreSQL and Redis services
+2. Install dependencies
+3. Install Playwright browsers
+4. Generate Prisma Client
+5. Run database migrations
+6. Build applications
+7. Run E2E tests
+8. Upload test results/reports
+
+**Artifacts**:
+- Test results (on failure)
+- HTML report (always)
+- Screenshots/videos (on failure)
+
+### E2E Test Best Practices
+
+1. **Use API for Setup**: Create test data via API, not UI
+2. **Clean Up**: Always delete test data in `afterAll`
+3. **Unique Test Data**: Use unique IDs to avoid conflicts
+4. **Test Isolation**: Each test should be independent
+5. **Explicit Waits**: Use `waitForTimeout` sparingly, prefer auto-waiting
+6. **Stable Selectors**: Use `data-testid` over CSS classes
+7. **Test Error States**: Don't just test happy paths
 
 ---
 
