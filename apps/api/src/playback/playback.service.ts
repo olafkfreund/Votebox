@@ -50,9 +50,11 @@ export interface StatusResponse {
     artistName: string;
     albumArt: string;
     duration: number;
-    progress: number;
+    progress?: number;
     startedAt?: Date;
-  };
+    elapsed?: number;
+    remaining?: number;
+  } | null;
   queueSize?: number;
 }
 
