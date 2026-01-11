@@ -8,6 +8,7 @@ import { EventsModule } from './events/events.module';
 import { SpotifyModule } from './spotify/spotify.module';
 import { QueueModule } from './queue/queue.module';
 import { WebSocketModule } from './websocket/websocket.module';
+import { PlaybackModule } from './playback/playback.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { WebSocketModule } from './websocket/websocket.module';
     SpotifyModule,
     QueueModule,
     WebSocketModule,
+    PlaybackModule,
     // Modules will be added here as we create them:
     // AuthModule,
     // VotesModule,

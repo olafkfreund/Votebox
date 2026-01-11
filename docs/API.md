@@ -15,6 +15,7 @@ Complete API reference for the Votebox backend service.
 - [Event Management](#event-management)
 - [Queue Management](#queue-management)
 - [Admin Queue Controls](#admin-queue-controls)
+- [Playback Automation](#playback-automation)
 - [WebSocket Events](#websocket-events)
 - [Error Responses](#error-responses)
 
@@ -577,6 +578,245 @@ Future authentication will use:
   "updatedCount": 12
 }
 ```
+
+---
+
+## Playback Automation
+
+Automated playback endpoints for controlling Spotify playback on venue devices.
+
+### Initialize Playback
+
+**Endpoint**: `POST /events/:eventId/playback/initialize`
+
+**Description**: Initialize automated playback on a Spotify device
+
+**Request Body**:
+```json
+{
+  "deviceId": "spotify-device-id"
+}
+```
+
+**Response**: `200 OK`
+```json
+{
+  "message": "Playback initialized successfully",
+  "deviceId": "spotify-device-id"
+}
+```
+
+**Errors**:
+- `400 Bad Request`: Event not active or invalid device
+- `404 Not Found`: Event or device not found
+
+**Notes**:
+- Must be called before using other playback endpoints
+- Device must be an active Spotify device (computer, phone, speaker, etc.)
+- Use Spotify's Web API `/me/player/devices` to get available devices
+
+---
+
+### Play Next Track
+
+**Endpoint**: `POST /events/:eventId/playback/play-next`
+
+**Description**: Play the next highest-scoring track from the queue
+
+**Response**: `200 OK`
+```json
+{
+  "message": "Track started playing",
+  "nowPlaying": {
+    "id": "queue_789",
+    "trackUri": "spotify:track:...",
+    "trackName": "Dopesmoker",
+    "artistName": "Sleep",
+    "albumName": "Dopesmoker",
+    "albumArt": "https://...",
+    "duration": 3841000,
+    "startedAt": "2026-01-15T20:30:00Z"
+  }
+}
+```
+
+**Empty Queue Response**: `200 OK`
+```json
+{
+  "message": "Queue is empty",
+  "nowPlaying": null
+}
+```
+
+**Errors**:
+- `400 Bad Request`: Playback not initialized or Spotify error
+- `404 Not Found`: Event not found
+
+**Behavior**:
+- Automatically marks track as played in queue
+- Broadcasts `nowPlayingUpdate` via WebSocket
+- Schedules automatic transition when track ends (if auto-play enabled)
+
+---
+
+### Pause Playback
+
+**Endpoint**: `POST /events/:eventId/playback/pause`
+
+**Description**: Pause the currently playing track
+
+**Response**: `200 OK`
+```json
+{
+  "message": "Playback paused"
+}
+```
+
+**Errors**:
+- `400 Bad Request`: Playback already paused or not initialized
+- `404 Not Found`: Event not found
+
+---
+
+### Resume Playback
+
+**Endpoint**: `POST /events/:eventId/playback/resume`
+
+**Description**: Resume the current track or play next if no current track
+
+**Response**: `200 OK`
+```json
+{
+  "message": "Playback resumed"
+}
+```
+
+**Errors**:
+- `400 Bad Request`: Playback already active or not initialized
+- `404 Not Found`: Event not found
+
+**Behavior**:
+- Resumes current track if paused
+- Plays next track if no current track
+- Re-schedules automatic transition
+
+---
+
+### Skip to Next Track
+
+**Endpoint**: `POST /events/:eventId/playback/skip`
+
+**Description**: Immediately skip to the next track in queue
+
+**Response**: `200 OK` (same as play-next response)
+
+**Errors**:
+- `400 Bad Request`: Playback not initialized
+- `404 Not Found`: Event not found
+
+**Behavior**:
+- Clears any pending automatic transitions
+- Immediately plays highest-scoring track from queue
+
+---
+
+### Enable/Disable Auto-Play
+
+**Endpoint**: `POST /events/:eventId/playback/auto-play`
+
+**Description**: Control automatic track transitions
+
+**Request Body**:
+```json
+{
+  "enabled": true
+}
+```
+
+**Response**: `200 OK`
+```json
+{
+  "message": "Auto-play enabled",
+  "autoPlayEnabled": true
+}
+```
+
+**Errors**:
+- `400 Bad Request`: Playback not initialized
+
+**Behavior**:
+- When enabled: Automatically plays next track when current track ends
+- When disabled: Playback stops after current track finishes
+- Default: Enabled on initialization
+
+---
+
+### Get Playback Status
+
+**Endpoint**: `GET /events/:eventId/playback/status`
+
+**Description**: Get current playback state and progress
+
+**Response**: `200 OK` (Initialized)
+```json
+{
+  "eventId": "evt_123",
+  "initialized": true,
+  "isPlaying": true,
+  "deviceId": "spotify-device-id",
+  "currentTrack": {
+    "trackId": "track-123",
+    "trackName": "Dopesmoker",
+    "artistName": "Sleep",
+    "albumArt": "https://...",
+    "duration": 3841000,
+    "startedAt": "2026-01-15T20:30:00Z",
+    "elapsed": 45000,
+    "remaining": 3796000
+  },
+  "autoPlayEnabled": true
+}
+```
+
+**Response**: `200 OK` (Not Initialized)
+```json
+{
+  "eventId": "evt_123",
+  "initialized": false,
+  "isPlaying": false,
+  "currentTrack": null,
+  "autoPlayEnabled": false
+}
+```
+
+**Notes**:
+- `elapsed`: Milliseconds since track started
+- `remaining`: Milliseconds until track ends
+- No authentication required (read-only)
+
+---
+
+### Stop Playback
+
+**Endpoint**: `POST /events/:eventId/playback/stop`
+
+**Description**: Stop playback and cleanup state
+
+**Response**: `200 OK`
+```json
+{
+  "message": "Playback stopped"
+}
+```
+
+**Errors**:
+- `404 Not Found`: Playback not initialized
+
+**Behavior**:
+- Pauses Spotify playback
+- Clears playback state for event
+- Broadcasts `nowPlayingUpdate` with null
+- Requires re-initialization to resume
 
 ---
 
