@@ -169,6 +169,7 @@ export class PlaybackService {
       // Broadcast now playing update
       this.websocket.emitNowPlayingUpdate(eventId, {
         id: nextTrack.id,
+        trackId: nextTrack.trackId,
         trackUri: nextTrack.trackUri,
         trackName: nextTrack.trackName,
         artistName: nextTrack.artistName,
