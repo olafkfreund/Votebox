@@ -10,8 +10,6 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('SpotifyAuthService', () => {
   let service: SpotifyAuthService;
-  let _prismaService: PrismaService;
-  let _configService: ConfigService;
 
   const mockPrismaService = {
     venue: {
@@ -58,8 +56,6 @@ describe('SpotifyAuthService', () => {
     }).compile();
 
     service = module.get<SpotifyAuthService>(SpotifyAuthService);
-    _prismaService = module.get<PrismaService>(PrismaService);
-    _configService = module.get<ConfigService>(ConfigService);
   });
 
   afterEach(() => {

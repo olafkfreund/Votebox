@@ -7,8 +7,6 @@ import { VoteTrackerService } from './vote-tracker.service';
 
 describe('QueueService', () => {
   let service: QueueService;
-  let _prismaService: PrismaService;
-  let _voteTracker: VoteTrackerService;
 
   const mockPrismaService = {
     event: {
@@ -104,8 +102,6 @@ describe('QueueService', () => {
     }).compile();
 
     service = module.get<QueueService>(QueueService);
-    _prismaService = module.get<PrismaService>(PrismaService);
-    _voteTracker = module.get<VoteTrackerService>(VoteTrackerService);
   });
 
   afterEach(() => {

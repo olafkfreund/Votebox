@@ -417,21 +417,27 @@ export class QueueService {
       },
     });
 
-    const updatePromises = await Promise.all(
-      queueItems.map(async (item) => {
-        const newScore = await this.calculateScore(
-          eventId,
-          item.trackId,
-          item.artistName,
-          item.voteCount,
-          item.lastVotedAt
-        );
-        return this.prisma.queueItem.update({
-          where: { id: item.id },
-          data: { score: newScore },
-        });
-      })
-    );
+    // Calculate scores first (cannot be done in transaction)
+    const scoresMap = new Map<string, number>();
+    for (const item of queueItems) {
+      const newScore = await this.calculateScore(
+        eventId,
+        item.trackId,
+        item.artistName,
+        item.voteCount,
+        item.lastVotedAt
+      );
+      scoresMap.set(item.id, newScore);
+    }
+
+    // Update all items in a transaction
+    const updatePromises = queueItems.map((item) => {
+      const newScore = scoresMap.get(item.id)!;
+      return this.prisma.queueItem.update({
+        where: { id: item.id },
+        data: { score: newScore },
+      });
+    });
 
     await this.prisma.$transaction(updatePromises);
 

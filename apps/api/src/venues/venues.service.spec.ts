@@ -13,7 +13,6 @@ jest.mock('bcrypt');
 
 describe('VenuesService', () => {
   let service: VenuesService;
-  let _prismaService: PrismaService;
 
   const mockPrismaService = {
     venue: {
@@ -55,7 +54,6 @@ describe('VenuesService', () => {
     }).compile();
 
     service = module.get<VenuesService>(VenuesService);
-    _prismaService = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {

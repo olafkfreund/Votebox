@@ -5,7 +5,6 @@ import { PrismaService } from '../prisma/prisma.service';
 
 describe('VoteTrackerService', () => {
   let service: VoteTrackerService;
-  let _prismaService: PrismaService;
 
   const mockPrismaService = {
     // Mock Prisma service (not used in VoteTrackerService currently)
@@ -23,7 +22,6 @@ describe('VoteTrackerService', () => {
     }).compile();
 
     service = module.get<VoteTrackerService>(VoteTrackerService);
-    _prismaService = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {

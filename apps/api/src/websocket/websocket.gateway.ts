@@ -22,12 +22,17 @@ interface QueueItem {
 }
 
 interface NowPlayingTrack {
+  id?: string;
   trackId: string;
+  trackUri?: string;
   trackName: string;
   artistName: string;
+  albumName?: string;
   albumArt: string;
   duration: number;
   progress?: number;
+  startedAt?: Date;
+  elapsed?: number;
 }
 
 @WebSocketGateway({

@@ -6,7 +6,6 @@ import { PlaylistSource, Recurrence } from './dto/create-event.dto';
 
 describe('EventsService', () => {
   let service: EventsService;
-  let _prismaService: PrismaService;
 
   const mockPrismaService = {
     venue: {
@@ -85,7 +84,6 @@ describe('EventsService', () => {
     }).compile();
 
     service = module.get<EventsService>(EventsService);
-    _prismaService = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {

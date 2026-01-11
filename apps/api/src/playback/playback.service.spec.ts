@@ -8,10 +8,6 @@ import { WebSocketGatewayService } from '../websocket/websocket.gateway';
 
 describe('PlaybackService', () => {
   let service: PlaybackService;
-  let _prismaService: PrismaService;
-  let _spotifyApi: SpotifyApiService;
-  let _queueService: QueueService;
-  let _websocket: WebSocketGatewayService;
 
   const mockPrismaService = {
     event: {
@@ -96,10 +92,6 @@ describe('PlaybackService', () => {
     }).compile();
 
     service = module.get<PlaybackService>(PlaybackService);
-    _prismaService = module.get<PrismaService>(PrismaService);
-    _spotifyApi = module.get<SpotifyApiService>(SpotifyApiService);
-    _queueService = module.get<QueueService>(QueueService);
-    _websocket = module.get<WebSocketGatewayService>(WebSocketGatewayService);
   });
 
   afterEach(() => {
