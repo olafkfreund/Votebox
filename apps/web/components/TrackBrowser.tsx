@@ -16,7 +16,7 @@ interface TrackBrowserProps {
 }
 
 export function TrackBrowser({
-  eventId,
+  eventId: _eventId,
   onVote,
   canVote,
   searchQuery,
