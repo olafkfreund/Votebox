@@ -69,8 +69,8 @@ export class EventsService {
         recurrence: createEventDto.recurrence || 'NONE',
         recurrenceEnd: createEventDto.recurrenceEnd ? new Date(createEventDto.recurrenceEnd) : null,
         playlistSource: createEventDto.playlistSource,
-        playlistConfig: createEventDto.playlistConfig,
-        votingRules: createEventDto.votingRules || {},
+        playlistConfig: createEventDto.playlistConfig as Prisma.InputJsonValue,
+        votingRules: (createEventDto.votingRules || {}) as Prisma.InputJsonValue,
       },
     });
 
@@ -85,7 +85,7 @@ export class EventsService {
     }
 
     if (status) {
-      where.status = status;
+      where.status = status as Prisma.EventWhereInput['status'];
     }
 
     const events = await this.prisma.event.findMany({
@@ -228,8 +228,8 @@ export class EventsService {
           ? new Date(updateEventDto.recurrenceEnd)
           : undefined,
         playlistSource: updateEventDto.playlistSource,
-        playlistConfig: updateEventDto.playlistConfig,
-        votingRules: updateEventDto.votingRules,
+        playlistConfig: updateEventDto.playlistConfig as Prisma.InputJsonValue | undefined,
+        votingRules: updateEventDto.votingRules as Prisma.InputJsonValue | undefined,
       },
     });
 

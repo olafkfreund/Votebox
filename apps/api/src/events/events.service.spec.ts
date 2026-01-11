@@ -2,10 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { PlaylistSource, Recurrence } from './dto/create-event.dto';
 
 describe('EventsService', () => {
   let service: EventsService;
-  let _prismaService: PrismaService;
+  let prismaService: PrismaService;
 
   const mockPrismaService = {
     venue: {
@@ -66,8 +67,8 @@ describe('EventsService', () => {
     startTime: '2024-12-31T20:00:00Z',
     endTime: '2024-12-31T23:59:00Z',
     timezone: 'UTC',
-    recurrence: 'NONE' as const,
-    playlistSource: 'GENRE' as const,
+    recurrence: Recurrence.NONE,
+    playlistSource: PlaylistSource.GENRE,
     playlistConfig: { genres: ['rock'] },
     votingRules: { votesPerHour: 3 },
   };
