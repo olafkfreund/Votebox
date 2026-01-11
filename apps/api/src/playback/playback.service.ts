@@ -15,6 +15,44 @@ interface PlaybackState {
   transitionTimer: NodeJS.Timeout | null;
 }
 
+interface PlayNextResponse {
+  message: string;
+  nowPlaying: {
+    trackId: string;
+    trackName: string;
+    artistName: string;
+    albumArt: string;
+    duration: number;
+  };
+}
+
+interface SkipResponse {
+  message: string;
+  nowPlaying?: {
+    trackId: string;
+    trackName: string;
+    artistName: string;
+    albumArt: string;
+    duration: number;
+  };
+}
+
+interface StatusResponse {
+  eventId: string;
+  initialized: boolean;
+  isPlaying: boolean;
+  autoPlayEnabled: boolean;
+  currentTrack?: {
+    trackId: string;
+    trackName: string;
+    artistName: string;
+    albumArt: string;
+    duration: number;
+    progress: number;
+  };
+  queueSize?: number;
+}
+
 @Injectable()
 export class PlaybackService {
   private readonly logger = new Logger(PlaybackService.name);
@@ -80,7 +118,7 @@ export class PlaybackService {
   /**
    * Start playing the next track in the queue
    */
-  async playNext(eventId: string): Promise<any> {
+  async playNext(eventId: string): Promise<PlayNextResponse> {
     const state = this.getPlaybackState(eventId);
     const event = await this.getEvent(eventId);
 
@@ -226,7 +264,7 @@ export class PlaybackService {
   /**
    * Skip to next track immediately
    */
-  async skip(eventId: string): Promise<any> {
+  async skip(eventId: string): Promise<SkipResponse> {
     const state = this.getPlaybackState(eventId);
 
     this.clearTransitionTimer(state);
@@ -265,7 +303,7 @@ export class PlaybackService {
   /**
    * Get current playback status
    */
-  async getStatus(eventId: string): Promise<any> {
+  async getStatus(eventId: string): Promise<StatusResponse> {
     const state = this.playbackStates.get(eventId);
 
     if (!state) {

@@ -24,6 +24,20 @@ export enum Recurrence {
   MONTHLY = 'MONTHLY',
 }
 
+export interface PlaylistConfig {
+  genres?: string[];
+  excludeExplicit?: boolean;
+  playlistIds?: string[];
+  [key: string]: unknown;
+}
+
+export interface VotingRules {
+  votesPerHour?: number;
+  cooldownMinutes?: number;
+  maxQueueSize?: number;
+  [key: string]: unknown;
+}
+
 export class CreateEventDto {
   @ApiProperty({
     description: 'Venue ID that owns this event',
@@ -116,7 +130,7 @@ export class CreateEventDto {
     },
   })
   @IsObject()
-  playlistConfig: Record<string, any>;
+  playlistConfig: PlaylistConfig;
 
   @ApiPropertyOptional({
     description: 'Voting rules configuration (JSON)',
@@ -128,5 +142,5 @@ export class CreateEventDto {
   })
   @IsOptional()
   @IsObject()
-  votingRules?: Record<string, any>;
+  votingRules?: VotingRules;
 }

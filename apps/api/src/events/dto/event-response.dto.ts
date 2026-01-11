@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { PlaylistConfig, VotingRules } from './create-event.dto';
 
 export class EventResponseDto {
   @ApiProperty({ example: 'clu123abc456' })
@@ -40,7 +41,7 @@ export class EventResponseDto {
       excludeExplicit: false,
     },
   })
-  playlistConfig: Record<string, any>;
+  playlistConfig: PlaylistConfig;
 
   @ApiProperty({
     example: {
@@ -49,7 +50,7 @@ export class EventResponseDto {
       maxQueueSize: 50,
     },
   })
-  votingRules: Record<string, any>;
+  votingRules: VotingRules;
 
   @ApiProperty({ example: 'UPCOMING', enum: ['UPCOMING', 'ACTIVE', 'ENDED', 'CANCELLED'] })
   status: string;

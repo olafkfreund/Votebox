@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class EventsService {
@@ -77,7 +78,7 @@ export class EventsService {
   }
 
   async findAll(venueId?: string, status?: string) {
-    const where: any = {};
+    const where: Prisma.EventWhereInput = {};
 
     if (venueId) {
       where.venueId = venueId;

@@ -49,6 +49,23 @@ export interface SpotifyPlaylistTracksResponse {
   offset: number;
 }
 
+export interface SpotifyDevice {
+  id: string;
+  is_active: boolean;
+  is_private_session: boolean;
+  is_restricted: boolean;
+  name: string;
+  type: string;
+  volume_percent: number;
+}
+
+interface RecommendationsQueryParams {
+  limit: number;
+  seed_genres?: string;
+  seed_artists?: string;
+  seed_tracks?: string;
+}
+
 @Injectable()
 export class SpotifyApiService {
   private readonly baseUrl = 'https://api.spotify.com/v1';
@@ -279,7 +296,7 @@ export class SpotifyApiService {
     try {
       const client = await this.getClient(venueId);
 
-      const queryParams: any = {
+      const queryParams: RecommendationsQueryParams = {
         limit: params.limit || 20,
       };
 
@@ -381,11 +398,11 @@ export class SpotifyApiService {
   /**
    * Get available devices
    */
-  async getDevices(venueId: string): Promise<any[]> {
+  async getDevices(venueId: string): Promise<SpotifyDevice[]> {
     try {
       const client = await this.getClient(venueId);
 
-      const response = await client.get<{ devices: any[] }>('/me/player/devices');
+      const response = await client.get<{ devices: SpotifyDevice[] }>('/me/player/devices');
 
       return response.data.devices;
     } catch (error) {
