@@ -31,8 +31,18 @@ export interface Event {
   actualStart: string | null;
   actualEnd: string | null;
   playlistSource: string;
-  playlistConfig: Record<string, unknown>;
-  votingRules: Record<string, unknown>;
+  playlistConfig: {
+    genres?: string[];
+    excludeExplicit?: boolean;
+    playlistIds?: string[];
+    [key: string]: unknown;
+  };
+  votingRules: {
+    votesPerHour?: number;
+    cooldownMinutes?: number;
+    maxQueueSize?: number;
+    [key: string]: unknown;
+  };
   recurrence: string;
   createdAt: string;
   updatedAt: string;
