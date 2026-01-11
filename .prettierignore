@@ -1,0 +1,18 @@
+# Dependencies
+node_modules
+
+# Build outputs
+dist
+build
+.next
+out
+
+# Logs
+*.log
+
+# Testing
+coverage
+
+# Problematic files with CI formatting inconsistencies
+apps/admin/tsconfig.json
+apps/web/tsconfig.json
