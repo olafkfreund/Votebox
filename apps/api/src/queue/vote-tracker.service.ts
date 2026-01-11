@@ -29,7 +29,7 @@ export class VoteTrackerService {
     eventId: string,
     trackId: string,
     sessionId: string,
-    ipAddress: string,
+    ipAddress: string
   ): Promise<void> {
     const now = Date.now();
     const cacheKey = `${eventId}:${sessionId}`;
@@ -39,58 +39,46 @@ export class VoteTrackerService {
 
     // Clean old records (older than 2 hours)
     voteRecords = voteRecords.filter(
-      (record) => now - record.timestamp < this.SAME_SONG_COOLDOWN_MS,
+      (record) => now - record.timestamp < this.SAME_SONG_COOLDOWN_MS
     );
 
     // Check 1: Vote cooldown (30 seconds between any votes)
     const lastVote = voteRecords[voteRecords.length - 1];
     if (lastVote && now - lastVote.timestamp < this.VOTE_COOLDOWN_MS) {
       const remainingSeconds = Math.ceil(
-        (this.VOTE_COOLDOWN_MS - (now - lastVote.timestamp)) / 1000,
+        (this.VOTE_COOLDOWN_MS - (now - lastVote.timestamp)) / 1000
       );
-      throw new BadRequestException(
-        `Please wait ${remainingSeconds} seconds before voting again`,
-      );
+      throw new BadRequestException(`Please wait ${remainingSeconds} seconds before voting again`);
     }
 
     // Check 2: Rate limiting (3 votes per hour)
-    const votesInLastHour = voteRecords.filter(
-      (record) => now - record.timestamp < this.HOUR_MS,
-    );
+    const votesInLastHour = voteRecords.filter((record) => now - record.timestamp < this.HOUR_MS);
     if (votesInLastHour.length >= this.VOTES_PER_HOUR) {
       throw new BadRequestException(
-        `Vote limit reached. You can vote ${this.VOTES_PER_HOUR} times per hour`,
+        `Vote limit reached. You can vote ${this.VOTES_PER_HOUR} times per hour`
       );
     }
 
     // Check 3: Same song cooldown (can't vote for same track within 2 hours)
     const recentSameTrackVote = voteRecords.find(
-      (record) =>
-        record.trackId === trackId &&
-        now - record.timestamp < this.SAME_SONG_COOLDOWN_MS,
+      (record) => record.trackId === trackId && now - record.timestamp < this.SAME_SONG_COOLDOWN_MS
     );
     if (recentSameTrackVote) {
       const remainingMinutes = Math.ceil(
-        (this.SAME_SONG_COOLDOWN_MS - (now - recentSameTrackVote.timestamp)) /
-          (60 * 1000),
+        (this.SAME_SONG_COOLDOWN_MS - (now - recentSameTrackVote.timestamp)) / (60 * 1000)
       );
       throw new BadRequestException(
-        `You already voted for this track. Please wait ${remainingMinutes} minutes before voting for it again`,
+        `You already voted for this track. Please wait ${remainingMinutes} minutes before voting for it again`
       );
     }
 
     // Check 4: IP-based rate limiting (detect if same IP is using multiple sessions)
     const ipVotes = Array.from(this.voteCache.values())
       .flat()
-      .filter(
-        (record) =>
-          record.ipAddress === ipAddress && now - record.timestamp < this.HOUR_MS,
-      );
+      .filter((record) => record.ipAddress === ipAddress && now - record.timestamp < this.HOUR_MS);
 
     if (ipVotes.length >= this.VOTES_PER_HOUR * 2) {
-      throw new BadRequestException(
-        'Too many votes from this network. Please try again later',
-      );
+      throw new BadRequestException('Too many votes from this network. Please try again later');
     }
 
     // Record the vote
@@ -147,9 +135,7 @@ export class VoteTrackerService {
     const cutoff = now - this.SAME_SONG_COOLDOWN_MS;
 
     for (const [key, records] of this.voteCache.entries()) {
-      const validRecords = records.filter(
-        (record) => record.timestamp > cutoff,
-      );
+      const validRecords = records.filter((record) => record.timestamp > cutoff);
 
       if (validRecords.length === 0) {
         this.voteCache.delete(key);
@@ -167,9 +153,7 @@ export class VoteTrackerService {
     const voteRecords = this.voteCache.get(cacheKey) || [];
     const now = Date.now();
 
-    const votesInLastHour = voteRecords.filter(
-      (record) => now - record.timestamp < this.HOUR_MS,
-    );
+    const votesInLastHour = voteRecords.filter((record) => now - record.timestamp < this.HOUR_MS);
 
     return Math.max(0, this.VOTES_PER_HOUR - votesInLastHour.length);
   }

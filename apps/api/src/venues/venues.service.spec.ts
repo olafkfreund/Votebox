@@ -1,5 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConflictException, NotFoundException, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  NotFoundException,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { VenuesService } from './venues.service';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -81,10 +86,7 @@ describe('VenuesService', () => {
 
       expect(mockPrismaService.venue.findFirst).toHaveBeenCalledWith({
         where: {
-          OR: [
-            { email: createVenueDto.email },
-            { slug: createVenueDto.slug },
-          ],
+          OR: [{ email: createVenueDto.email }, { slug: createVenueDto.slug }],
         },
       });
       expect(bcrypt.hash).toHaveBeenCalledWith(createVenueDto.password, 10);
@@ -99,7 +101,7 @@ describe('VenuesService', () => {
       });
 
       await expect(service.create(createVenueDto)).rejects.toThrow(
-        new ConflictException('Email already registered'),
+        new ConflictException('Email already registered')
       );
     });
 
@@ -111,7 +113,7 @@ describe('VenuesService', () => {
       });
 
       await expect(service.create(createVenueDto)).rejects.toThrow(
-        new ConflictException('Slug already taken'),
+        new ConflictException('Slug already taken')
       );
     });
   });
@@ -132,10 +134,7 @@ describe('VenuesService', () => {
     });
 
     it('should include inactive venues when requested', async () => {
-      const mockVenues = [
-        mockVenue,
-        { ...mockVenue, id: 'test-id-456', isActive: false },
-      ];
+      const mockVenues = [mockVenue, { ...mockVenue, id: 'test-id-456', isActive: false }];
       mockPrismaService.venue.findMany.mockResolvedValue(mockVenues);
 
       const result = await service.findAll(true);
@@ -166,7 +165,7 @@ describe('VenuesService', () => {
       mockPrismaService.venue.findUnique.mockResolvedValue(null);
 
       await expect(service.findOne('non-existent')).rejects.toThrow(
-        new NotFoundException('Venue with ID non-existent not found'),
+        new NotFoundException('Venue with ID non-existent not found')
       );
     });
   });
@@ -188,7 +187,7 @@ describe('VenuesService', () => {
       mockPrismaService.venue.findUnique.mockResolvedValue(null);
 
       await expect(service.findBySlug('non-existent')).rejects.toThrow(
-        new NotFoundException("Venue with slug 'non-existent' not found"),
+        new NotFoundException("Venue with slug 'non-existent' not found")
       );
     });
   });
@@ -223,9 +222,9 @@ describe('VenuesService', () => {
         id: 'different-id',
       });
 
-      await expect(
-        service.update(mockVenue.id, { email: 'taken@email.com' }),
-      ).rejects.toThrow(new ConflictException('Email already registered'));
+      await expect(service.update(mockVenue.id, { email: 'taken@email.com' })).rejects.toThrow(
+        new ConflictException('Email already registered')
+      );
     });
   });
 
@@ -245,7 +244,7 @@ describe('VenuesService', () => {
 
       expect(bcrypt.compare).toHaveBeenCalledWith(
         updatePasswordDto.currentPassword,
-        mockVenue.hashedPassword,
+        mockVenue.hashedPassword
       );
       expect(bcrypt.hash).toHaveBeenCalledWith(updatePasswordDto.newPassword, 10);
       expect(mockPrismaService.venue.update).toHaveBeenCalled();
@@ -256,9 +255,9 @@ describe('VenuesService', () => {
       mockPrismaService.venue.findUnique.mockResolvedValue(mockVenue);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-      await expect(
-        service.updatePassword(mockVenue.id, updatePasswordDto),
-      ).rejects.toThrow(new UnauthorizedException('Current password is incorrect'));
+      await expect(service.updatePassword(mockVenue.id, updatePasswordDto)).rejects.toThrow(
+        new UnauthorizedException('Current password is incorrect')
+      );
     });
   });
 
@@ -323,8 +322,8 @@ describe('VenuesService', () => {
 
       await expect(service.remove(mockVenue.id)).rejects.toThrow(
         new BadRequestException(
-          'Cannot delete venue with active events. Please end all active events first.',
-        ),
+          'Cannot delete venue with active events. Please end all active events first.'
+        )
       );
     });
   });

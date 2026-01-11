@@ -19,9 +19,7 @@ export class EventsService {
     });
 
     if (!venue) {
-      throw new NotFoundException(
-        `Venue with ID ${createEventDto.venueId} not found`,
-      );
+      throw new NotFoundException(`Venue with ID ${createEventDto.venueId} not found`);
     }
 
     // Validate time range
@@ -41,31 +39,20 @@ export class EventsService {
         },
         OR: [
           {
-            AND: [
-              { startTime: { lte: startTime } },
-              { endTime: { gte: startTime } },
-            ],
+            AND: [{ startTime: { lte: startTime } }, { endTime: { gte: startTime } }],
           },
           {
-            AND: [
-              { startTime: { lte: endTime } },
-              { endTime: { gte: endTime } },
-            ],
+            AND: [{ startTime: { lte: endTime } }, { endTime: { gte: endTime } }],
           },
           {
-            AND: [
-              { startTime: { gte: startTime } },
-              { endTime: { lte: endTime } },
-            ],
+            AND: [{ startTime: { gte: startTime } }, { endTime: { lte: endTime } }],
           },
         ],
       },
     });
 
     if (overlappingEvent) {
-      throw new ConflictException(
-        `Event overlaps with existing event: ${overlappingEvent.name}`,
-      );
+      throw new ConflictException(`Event overlaps with existing event: ${overlappingEvent.name}`);
     }
 
     // Create event
@@ -79,9 +66,7 @@ export class EventsService {
         endTime,
         timezone: createEventDto.timezone || 'UTC',
         recurrence: createEventDto.recurrence || 'NONE',
-        recurrenceEnd: createEventDto.recurrenceEnd
-          ? new Date(createEventDto.recurrenceEnd)
-          : null,
+        recurrenceEnd: createEventDto.recurrenceEnd ? new Date(createEventDto.recurrenceEnd) : null,
         playlistSource: createEventDto.playlistSource,
         playlistConfig: createEventDto.playlistConfig,
         votingRules: createEventDto.votingRules || {},
@@ -120,10 +105,7 @@ export class EventsService {
           },
         },
       },
-      orderBy: [
-        { startTime: 'asc' },
-        { createdAt: 'desc' },
-      ],
+      orderBy: [{ startTime: 'asc' }, { createdAt: 'desc' }],
     });
 
     return events;
@@ -211,31 +193,20 @@ export class EventsService {
           },
           OR: [
             {
-              AND: [
-                { startTime: { lte: startTime } },
-                { endTime: { gte: startTime } },
-              ],
+              AND: [{ startTime: { lte: startTime } }, { endTime: { gte: startTime } }],
             },
             {
-              AND: [
-                { startTime: { lte: endTime } },
-                { endTime: { gte: endTime } },
-              ],
+              AND: [{ startTime: { lte: endTime } }, { endTime: { gte: endTime } }],
             },
             {
-              AND: [
-                { startTime: { gte: startTime } },
-                { endTime: { lte: endTime } },
-              ],
+              AND: [{ startTime: { gte: startTime } }, { endTime: { lte: endTime } }],
             },
           ],
         },
       });
 
       if (overlappingEvent) {
-        throw new ConflictException(
-          `Event overlaps with existing event: ${overlappingEvent.name}`,
-        );
+        throw new ConflictException(`Event overlaps with existing event: ${overlappingEvent.name}`);
       }
     }
 
@@ -248,12 +219,8 @@ export class EventsService {
         scheduledDate: updateEventDto.scheduledDate
           ? new Date(updateEventDto.scheduledDate)
           : undefined,
-        startTime: updateEventDto.startTime
-          ? new Date(updateEventDto.startTime)
-          : undefined,
-        endTime: updateEventDto.endTime
-          ? new Date(updateEventDto.endTime)
-          : undefined,
+        startTime: updateEventDto.startTime ? new Date(updateEventDto.startTime) : undefined,
+        endTime: updateEventDto.endTime ? new Date(updateEventDto.endTime) : undefined,
         timezone: updateEventDto.timezone,
         recurrence: updateEventDto.recurrence,
         recurrenceEnd: updateEventDto.recurrenceEnd
@@ -272,9 +239,7 @@ export class EventsService {
     const event = await this.findOne(id);
 
     if (event.status !== 'UPCOMING') {
-      throw new BadRequestException(
-        `Cannot activate event with status: ${event.status}`,
-      );
+      throw new BadRequestException(`Cannot activate event with status: ${event.status}`);
     }
 
     // Check if there's already an active event for this venue
@@ -286,9 +251,7 @@ export class EventsService {
     });
 
     if (activeEvent) {
-      throw new ConflictException(
-        `Venue already has an active event: ${activeEvent.name}`,
-      );
+      throw new ConflictException(`Venue already has an active event: ${activeEvent.name}`);
     }
 
     const updatedEvent = await this.prisma.event.update({
@@ -306,9 +269,7 @@ export class EventsService {
     const event = await this.findOne(id);
 
     if (event.status !== 'ACTIVE') {
-      throw new BadRequestException(
-        `Cannot end event with status: ${event.status}`,
-      );
+      throw new BadRequestException(`Cannot end event with status: ${event.status}`);
     }
 
     const updatedEvent = await this.prisma.event.update({
@@ -348,9 +309,7 @@ export class EventsService {
 
     // Cannot delete active events
     if (event.status === 'ACTIVE') {
-      throw new BadRequestException(
-        'Cannot delete an active event. Please end it first.',
-      );
+      throw new BadRequestException('Cannot delete an active event. Please end it first.');
     }
 
     // Check if event has votes
@@ -360,7 +319,7 @@ export class EventsService {
 
     if (votesCount > 0) {
       throw new BadRequestException(
-        'Cannot delete event with existing votes. Please cancel it instead.',
+        'Cannot delete event with existing votes. Please cancel it instead.'
       );
     }
 
@@ -377,7 +336,7 @@ export class EventsService {
       totalVotes?: number;
       totalTracks?: number;
       uniqueVoters?: number;
-    },
+    }
   ) {
     const event = await this.prisma.event.update({
       where: { id },
@@ -387,11 +346,7 @@ export class EventsService {
     return event;
   }
 
-  async updateCurrentTrack(
-    id: string,
-    trackId: string | null,
-    startedAt?: Date,
-  ) {
+  async updateCurrentTrack(id: string, trackId: string | null, startedAt?: Date) {
     const event = await this.prisma.event.update({
       where: { id },
       data: {

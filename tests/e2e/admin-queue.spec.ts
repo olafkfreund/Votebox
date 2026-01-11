@@ -84,9 +84,7 @@ test.describe('Admin Queue Management', () => {
     }
 
     // Verify queue has tracks
-    const queueBefore = await request.get(
-      `http://localhost:4000/api/v1/events/${eventId}/queue`
-    );
+    const queueBefore = await request.get(`http://localhost:4000/api/v1/events/${eventId}/queue`);
     const queueDataBefore = await queueBefore.json();
     expect(queueDataBefore.length).toBeGreaterThan(0);
 
@@ -101,9 +99,7 @@ test.describe('Admin Queue Management', () => {
     expect(clearData.deletedCount).toBeGreaterThan(0);
 
     // Verify queue is empty
-    const queueAfter = await request.get(
-      `http://localhost:4000/api/v1/events/${eventId}/queue`
-    );
+    const queueAfter = await request.get(`http://localhost:4000/api/v1/events/${eventId}/queue`);
     const queueDataAfter = await queueAfter.json();
     expect(queueDataAfter.length).toBe(0);
   });
@@ -159,9 +155,7 @@ test.describe('Admin Queue Management', () => {
     });
 
     // Verify track is in queue
-    const queueBefore = await request.get(
-      `http://localhost:4000/api/v1/events/${eventId}/queue`
-    );
+    const queueBefore = await request.get(`http://localhost:4000/api/v1/events/${eventId}/queue`);
     const queueDataBefore = await queueBefore.json();
     expect(queueDataBefore.some((item: any) => item.trackId === trackId)).toBe(true);
 
@@ -175,9 +169,7 @@ test.describe('Admin Queue Management', () => {
     expect(removeData.message).toContain('removed');
 
     // Verify track is gone
-    const queueAfter = await request.get(
-      `http://localhost:4000/api/v1/events/${eventId}/queue`
-    );
+    const queueAfter = await request.get(`http://localhost:4000/api/v1/events/${eventId}/queue`);
     const queueDataAfter = await queueAfter.json();
     expect(queueDataAfter.some((item: any) => item.trackId === trackId)).toBe(false);
   });

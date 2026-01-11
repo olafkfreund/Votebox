@@ -52,7 +52,7 @@ export const useEventStore = create<EventState>((set, get) => ({
     } catch (error: any) {
       set({
         error: error.response?.data?.message || 'Failed to load event',
-        isLoading: false
+        isLoading: false,
       });
     }
   },
@@ -104,7 +104,7 @@ export const useEventStore = create<EventState>((set, get) => ({
         trackId: trackData.id,
         trackUri: trackData.uri,
         trackName: trackData.name,
-        artistName: trackData.artists.map(a => a.name).join(', '),
+        artistName: trackData.artists.map((a) => a.name).join(', '),
         albumName: trackData.album.name,
         albumArt: trackData.album.images[0]?.url || null,
         duration: Math.floor(trackData.duration_ms / 1000),
@@ -118,7 +118,7 @@ export const useEventStore = create<EventState>((set, get) => ({
       set({
         votedTracks,
         lastVoteTime: Date.now(),
-        isLoading: false
+        isLoading: false,
       });
 
       // Reload queue and remaining votes
@@ -127,7 +127,7 @@ export const useEventStore = create<EventState>((set, get) => ({
     } catch (error: any) {
       set({
         error: error.response?.data?.message || 'Failed to vote',
-        isLoading: false
+        isLoading: false,
       });
     }
   },

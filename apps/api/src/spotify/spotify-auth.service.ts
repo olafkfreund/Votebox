@@ -40,11 +40,12 @@ export class SpotifyAuthService {
 
   constructor(
     private readonly configService: ConfigService,
-    private readonly prisma: PrismaService,
+    private readonly prisma: PrismaService
   ) {
     this.clientId = this.configService.get<string>('SPOTIFY_CLIENT_ID') || '';
     this.clientSecret = this.configService.get<string>('SPOTIFY_CLIENT_SECRET') || '';
-    this.redirectUri = this.configService.get<string>('SPOTIFY_REDIRECT_URI') ||
+    this.redirectUri =
+      this.configService.get<string>('SPOTIFY_REDIRECT_URI') ||
       'http://localhost:4000/api/v1/spotify/callback';
   }
 
@@ -142,17 +143,17 @@ export class SpotifyAuthService {
         }),
         {
           headers: {
-            'Authorization': `Basic ${credentials}`,
+            Authorization: `Basic ${credentials}`,
             'Content-Type': 'application/x-www-form-urlencoded',
           },
-        },
+        }
       );
 
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new BadRequestException(
-          `Failed to exchange code for tokens: ${error.response?.data?.error_description || error.message}`,
+          `Failed to exchange code for tokens: ${error.response?.data?.error_description || error.message}`
         );
       }
       throw error;
@@ -164,20 +165,17 @@ export class SpotifyAuthService {
    */
   private async getSpotifyProfile(accessToken: string): Promise<SpotifyUserProfile> {
     try {
-      const response = await axios.get<SpotifyUserProfile>(
-        'https://api.spotify.com/v1/me',
-        {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-          },
+      const response = await axios.get<SpotifyUserProfile>('https://api.spotify.com/v1/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
-      );
+      });
 
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new UnauthorizedException(
-          `Failed to get Spotify profile: ${error.response?.data?.error?.message || error.message}`,
+          `Failed to get Spotify profile: ${error.response?.data?.error?.message || error.message}`
         );
       }
       throw error;
@@ -216,10 +214,10 @@ export class SpotifyAuthService {
         }),
         {
           headers: {
-            'Authorization': `Basic ${credentials}`,
+            Authorization: `Basic ${credentials}`,
             'Content-Type': 'application/x-www-form-urlencoded',
           },
-        },
+        }
       );
 
       const { access_token, expires_in, refresh_token } = response.data;
@@ -239,7 +237,7 @@ export class SpotifyAuthService {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new UnauthorizedException(
-          `Failed to refresh token: ${error.response?.data?.error_description || error.message}`,
+          `Failed to refresh token: ${error.response?.data?.error_description || error.message}`
         );
       }
       throw error;
@@ -329,9 +327,7 @@ export class SpotifyAuthService {
 
     const connected = !!venue.spotifyAccountId;
     const now = new Date();
-    const needsRefresh = venue.spotifyTokenExpiry
-      ? venue.spotifyTokenExpiry <= now
-      : false;
+    const needsRefresh = venue.spotifyTokenExpiry ? venue.spotifyTokenExpiry <= now : false;
 
     return {
       connected,

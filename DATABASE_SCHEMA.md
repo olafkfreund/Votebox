@@ -3,6 +3,7 @@
 ## 📊 Schema Overview
 
 The Votebox database is designed for:
+
 - Multi-tenant architecture (multiple venues)
 - Event-based music sessions
 - Real-time vote tracking
@@ -16,14 +17,14 @@ The Votebox database is designed for:
 │   Venue     │──────<│    Event    │>──────│    Vote     │
 │             │       │             │       │             │
 └─────────────┘       └─────────────┘       └─────────────┘
-       │                      │                     
-       │                      │                     
-       ▼                      ▼                     
-┌─────────────┐       ┌─────────────┐       
-│Subscription │       │  QueueItem  │       
-│             │       │             │       
-└─────────────┘       └─────────────┘       
-       
+       │                      │
+       │                      │
+       ▼                      ▼
+┌─────────────┐       ┌─────────────┐
+│Subscription │       │  QueueItem  │
+│             │       │             │
+└─────────────┘       └─────────────┘
+
 ┌─────────────┐       ┌─────────────┐
 │    User     │       │   Session   │
 │  (Admin)    │       │  (Guest)    │
@@ -54,13 +55,13 @@ model Venue {
   slug              String   @unique
   email             String   @unique
   hashedPassword    String
-  
+
   // Spotify Integration
   spotifyAccountId  String?  @unique
   spotifyAccessToken String? @db.Text
   spotifyRefreshToken String? @db.Text
   spotifyTokenExpiry DateTime?
-  
+
   // Settings
   settings          Json     @default("{}")
   // Example settings:
@@ -74,18 +75,18 @@ model Venue {
   //     "secondaryColor": "#..."
   //   }
   // }
-  
+
   // Metadata
   isActive          Boolean  @default(true)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   lastLoginAt       DateTime?
-  
+
   // Relations
   events            Event[]
   subscription      Subscription?
   users             User[]
-  
+
   @@index([slug])
   @@index([email])
   @@index([isActive])
@@ -97,17 +98,17 @@ model User {
   email          String   @unique
   hashedPassword String
   role           UserRole @default(STAFF)
-  
+
   firstName      String
   lastName       String
-  
+
   isActive       Boolean  @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   lastLoginAt    DateTime?
-  
+
   venue          Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
-  
+
   @@index([venueId])
   @@index([email])
 }
@@ -125,21 +126,21 @@ enum UserRole {
 model Event {
   id              String      @id @default(cuid())
   venueId         String
-  
+
   // Basic Info
   name            String
   description     String?     @db.Text
-  
+
   // Scheduling
   scheduledDate   DateTime    @db.Date
   startTime       DateTime
   endTime         DateTime
   timezone        String      @default("UTC")
-  
+
   // Recurrence
   recurrence      Recurrence  @default(NONE)
   recurrenceEnd   DateTime?   @db.Date
-  
+
   // Playlist Configuration
   playlistSource  PlaylistSource
   playlistConfig  Json
@@ -163,7 +164,7 @@ model Event {
   //   "type": "custom",
   //   "trackIds": ["spotify:track:..."]
   // }
-  
+
   // Voting Rules
   votingRules     Json        @default("{}")
   // Example:
@@ -174,32 +175,32 @@ model Event {
   //   "maxVoteWeight": 10,
   //   "queueAlgorithm": "weighted"
   // }
-  
+
   // State
   status          EventStatus @default(UPCOMING)
   activatedAt     DateTime?
   endedAt         DateTime?
-  
+
   // Spotify Playback
   spotifyDeviceId String?
   currentTrackId  String?
   currentTrackStartedAt DateTime?
-  
+
   // Stats
   totalVotes      Int         @default(0)
   totalTracks     Int         @default(0)
   uniqueVoters    Int         @default(0)
-  
+
   // Metadata
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
-  
+
   // Relations
   venue           Venue       @relation(fields: [venueId], references: [id], onDelete: Cascade)
   votes           Vote[]
   queue           QueueItem[]
   playHistory     PlayHistory[]
-  
+
   @@index([venueId, status])
   @@index([venueId, scheduledDate])
   @@index([status, startTime])
@@ -234,23 +235,23 @@ model Vote {
   id             String   @id @default(cuid())
   eventId        String
   sessionId      String   // Guest session identifier
-  
+
   // Track Info
   trackId        String   // Spotify track ID
   trackName      String
   artistName     String
   albumArt       String?
   duration       Int      // in seconds
-  
+
   // Vote Metadata
   votedAt        DateTime @default(now())
   weight         Int      @default(1)
   ipAddress      String?
   userAgent      String?
-  
+
   // Relations
   event          Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  
+
   @@index([eventId, trackId])
   @@index([eventId, sessionId])
   @@index([eventId, votedAt])
@@ -260,7 +261,7 @@ model Vote {
 model QueueItem {
   id              String   @id @default(cuid())
   eventId         String
-  
+
   // Track Info
   trackId         String   // Spotify track ID
   trackUri        String   // Full Spotify URI
@@ -269,28 +270,28 @@ model QueueItem {
   albumName       String
   albumArt        String?
   duration        Int      // in seconds
-  
+
   // Queue Position
   position        Int
   score           Float    @default(0)
-  
+
   // Vote Stats
   voteCount       Int      @default(0)
   lastVotedAt     DateTime?
-  
+
   // Metadata
   addedAt         DateTime @default(now())
   addedBy         String   @default("system") // "system" or sessionId
-  
+
   // State
   isPlayed        Boolean  @default(false)
   playedAt        DateTime?
   skipped         Boolean  @default(false)
   skippedReason   String?
-  
+
   // Relations
   event           Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  
+
   @@unique([eventId, trackId])
   @@index([eventId, position])
   @@index([eventId, score])
@@ -300,7 +301,7 @@ model QueueItem {
 model PlayHistory {
   id             String   @id @default(cuid())
   eventId        String
-  
+
   // Track Info
   trackId        String
   trackUri       String
@@ -309,21 +310,21 @@ model PlayHistory {
   albumName      String
   albumArt       String?
   duration       Int
-  
+
   // Playback Info
   startedAt      DateTime
   endedAt        DateTime?
   completed      Boolean  @default(false)
   skipped        Boolean  @default(false)
   skipReason     String?
-  
+
   // Stats
   voteCount      Int      @default(0)
   score          Float    @default(0)
-  
+
   // Relations
   event          Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  
+
   @@index([eventId, startedAt])
   @@index([trackId])
 }
@@ -335,20 +336,20 @@ model PlayHistory {
 model Session {
   id             String   @id @default(cuid())
   sessionId      String   @unique
-  
+
   // Session Info
   fingerprint    String   // Browser fingerprint
   ipAddress      String
   userAgent      String
-  
+
   // Activity
   firstSeen      DateTime @default(now())
   lastSeen       DateTime @default(now())
-  
+
   // Stats
   totalVotes     Int      @default(0)
   eventsVisited  String[] // Array of event IDs
-  
+
   @@index([sessionId])
   @@index([fingerprint])
   @@index([lastSeen])
@@ -361,32 +362,32 @@ model Session {
 model Subscription {
   id               String           @id @default(cuid())
   venueId          String           @unique
-  
+
   // Plan Info
   plan             SubscriptionPlan @default(FREE)
   status           SubscriptionStatus @default(ACTIVE)
-  
+
   // Billing
   stripeCustomerId String?          @unique
   stripeSubscriptionId String?      @unique
-  
+
   // Period
   currentPeriodStart DateTime?
   currentPeriodEnd   DateTime?
-  
+
   // Trial
   trialStart       DateTime?
   trialEnd         DateTime?
-  
+
   // Metadata
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
   cancelledAt      DateTime?
-  
+
   // Relations
   venue            Venue            @relation(fields: [venueId], references: [id], onDelete: Cascade)
   invoices         Invoice[]
-  
+
   @@index([venueId])
   @@index([status])
   @@index([stripeCustomerId])
@@ -410,26 +411,26 @@ enum SubscriptionStatus {
 model Invoice {
   id               String   @id @default(cuid())
   subscriptionId   String
-  
+
   // Stripe Info
   stripeInvoiceId  String   @unique
-  
+
   // Invoice Details
   amount           Int      // in cents
   currency         String   @default("gbp")
   status           String   // paid, open, void, etc.
-  
+
   // Dates
   invoiceDate      DateTime
   dueDate          DateTime?
   paidAt           DateTime?
-  
+
   // Metadata
   createdAt        DateTime @default(now())
-  
+
   // Relations
   subscription     Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
-  
+
   @@index([subscriptionId])
   @@index([stripeInvoiceId])
 }
@@ -442,27 +443,27 @@ model VenueMetrics {
   id               String   @id @default(cuid())
   venueId          String
   date             DateTime @db.Date
-  
+
   // Event Stats
   eventsActive     Int      @default(0)
   eventsTotal      Int      @default(0)
-  
+
   // Vote Stats
   votesTotal       Int      @default(0)
   uniqueVoters     Int      @default(0)
   avgVotesPerEvent Float    @default(0)
-  
+
   // Track Stats
   tracksPlayed     Int      @default(0)
   tracksSkipped    Int      @default(0)
   avgTrackDuration Float    @default(0)
-  
+
   // Engagement
   peakConcurrentVoters Int  @default(0)
   avgSessionDuration   Float @default(0)
-  
+
   createdAt        DateTime @default(now())
-  
+
   @@unique([venueId, date])
   @@index([venueId, date])
 }
@@ -475,12 +476,12 @@ model GenreConfig {
   id               String   @id @default(cuid())
   code             String   @unique // e.g., "doom-metal"
   displayName      String   // e.g., "Doom Metal"
-  
+
   // Spotify Seeds
   seedGenres       String[] // Spotify genre IDs
   seedArtists      String[] // Spotify artist IDs
   fallbackPlaylists String[] // Spotify playlist IDs
-  
+
   // Filters (stored as JSON for flexibility)
   defaultFilters   Json     @default("{}")
   // Example:
@@ -489,12 +490,12 @@ model GenreConfig {
   //   "tempo": [60, 120],
   //   "valence": [0.1, 0.4]
   // }
-  
+
   // Metadata
   isActive         Boolean  @default(true)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  
+
   @@index([code])
   @@index([isActive])
 }
@@ -503,10 +504,10 @@ model SystemConfig {
   id        String   @id @default(cuid())
   key       String   @unique
   value     Json
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@index([key])
 }
 
@@ -516,24 +517,24 @@ model SystemConfig {
 
 model AuditLog {
   id         String   @id @default(cuid())
-  
+
   // Who
   userId     String?
   venueId    String?
   sessionId  String?
-  
+
   // What
   action     String   // "event.created", "track.skipped", etc.
   entity     String   // "event", "track", "vote"
   entityId   String?
-  
+
   // Details
   metadata   Json     @default("{}")
   ipAddress  String?
-  
+
   // When
   createdAt  DateTime @default(now())
-  
+
   @@index([venueId, createdAt])
   @@index([action, createdAt])
   @@index([entity, entityId])
@@ -545,6 +546,7 @@ model AuditLog {
 ### 1. Multi-Tenancy via venueId
 
 Every event, vote, and queue item is scoped to a venue via `venueId`. This enables:
+
 - Data isolation
 - Per-venue billing
 - Scalable architecture
@@ -552,6 +554,7 @@ Every event, vote, and queue item is scoped to a venue via `venueId`. This enabl
 ### 2. JSON Columns for Flexibility
 
 Used for:
+
 - `playlistConfig`: Different event types need different configurations
 - `settings`: Venue-specific preferences
 - `votingRules`: Flexible voting algorithms
@@ -559,6 +562,7 @@ Used for:
 ### 3. Separate QueueItem and Vote Tables
 
 **Why not merge?**
+
 - Votes are immutable history
 - Queue is mutable state (positions change)
 - Different query patterns
@@ -567,6 +571,7 @@ Used for:
 ### 4. Session-based Guest Tracking
 
 No user accounts for guests:
+
 - Friction-free experience
 - Privacy-friendly
 - Session fingerprinting for rate limiting
@@ -574,6 +579,7 @@ No user accounts for guests:
 ### 5. Audit Logging
 
 Track all important actions for:
+
 - Debugging
 - Security
 - Analytics
@@ -582,33 +588,34 @@ Track all important actions for:
 ## 📊 Common Queries
 
 ### Get Active Event for Venue
+
 ```typescript
 const activeEvent = await prisma.event.findFirst({
   where: {
     venueId: venueId,
-    status: 'ACTIVE'
+    status: 'ACTIVE',
   },
   include: {
-    venue: true
-  }
+    venue: true,
+  },
 });
 ```
 
 ### Get Queue for Event
+
 ```typescript
 const queue = await prisma.queueItem.findMany({
   where: {
     eventId: eventId,
-    isPlayed: false
+    isPlayed: false,
   },
-  orderBy: [
-    { position: 'asc' }
-  ],
-  take: 10
+  orderBy: [{ position: 'asc' }],
+  take: 10,
 });
 ```
 
 ### Record Vote and Update Queue
+
 ```typescript
 await prisma.$transaction(async (tx) => {
   // Record vote
@@ -619,18 +626,18 @@ await prisma.$transaction(async (tx) => {
       trackId,
       trackName,
       artistName,
-      weight: 1
-    }
+      weight: 1,
+    },
   });
-  
+
   // Update or create queue item
   const queueItem = await tx.queueItem.upsert({
     where: {
-      eventId_trackId: { eventId, trackId }
+      eventId_trackId: { eventId, trackId },
     },
     update: {
       voteCount: { increment: 1 },
-      lastVotedAt: new Date()
+      lastVotedAt: new Date(),
     },
     create: {
       eventId,
@@ -641,38 +648,40 @@ await prisma.$transaction(async (tx) => {
       albumName,
       duration,
       voteCount: 1,
-      position: 999 // Will be recalculated
-    }
+      position: 999, // Will be recalculated
+    },
   });
-  
+
   // Recalculate queue positions
   // (separate function)
 });
 ```
 
 ### Get Venue Analytics
+
 ```typescript
 const metrics = await prisma.venueMetrics.findMany({
   where: {
     venueId: venueId,
     date: {
       gte: startDate,
-      lte: endDate
-    }
+      lte: endDate,
+    },
   },
-  orderBy: { date: 'asc' }
+  orderBy: { date: 'asc' },
 });
 ```
 
 ### Check Rate Limit
+
 ```typescript
 const recentVotes = await prisma.vote.count({
   where: {
     sessionId: sessionId,
     votedAt: {
-      gte: oneHourAgo
-    }
-  }
+      gte: oneHourAgo,
+    },
+  },
 });
 
 if (recentVotes >= 3) {
@@ -683,16 +692,19 @@ if (recentVotes >= 3) {
 ## 🚀 Migrations
 
 ### Initial Migration
+
 ```bash
 npx prisma migrate dev --name init
 ```
 
 ### Generating Prisma Client
+
 ```bash
 npx prisma generate
 ```
 
 ### Seeding Database
+
 ```typescript
 // prisma/seed.ts
 import { PrismaClient } from '@prisma/client';
@@ -704,26 +716,26 @@ async function main() {
   // Create demo venue
   const venue = await prisma.venue.create({
     data: {
-      name: 'The Raven\'s Claw',
+      name: "The Raven's Claw",
       slug: 'ravens-claw',
       email: 'owner@ravensclaw.com',
       hashedPassword: await hash('demo123', 10),
       settings: {
         defaultVotesPerHour: 3,
-        allowExplicit: true
-      }
-    }
+        allowExplicit: true,
+      },
+    },
   });
-  
+
   // Create subscription
   await prisma.subscription.create({
     data: {
       venueId: venue.id,
       plan: 'FREE',
-      status: 'ACTIVE'
-    }
+      status: 'ACTIVE',
+    },
   });
-  
+
   // Create genre configs
   await prisma.genreConfig.createMany({
     data: [
@@ -732,18 +744,18 @@ async function main() {
         displayName: 'Doom Metal',
         seedGenres: ['doom-metal', 'stoner-rock'],
         seedArtists: ['4Qwx69EkNfTZAsZy6W9rDX'], // Electric Wizard
-        fallbackPlaylists: ['37i9dQZF1DX5J7FIl4q56G']
+        fallbackPlaylists: ['37i9dQZF1DX5J7FIl4q56G'],
       },
       {
         code: 'black-metal',
         displayName: 'Black Metal',
         seedGenres: ['black-metal', 'norwegian-metal'],
         seedArtists: ['4VAdXJM8NfWCphEy0jNFQU'], // Darkthrone
-        fallbackPlaylists: ['37i9dQZF1DWWOaP4H0w5b0']
-      }
-    ]
+        fallbackPlaylists: ['37i9dQZF1DWWOaP4H0w5b0'],
+      },
+    ],
   });
-  
+
   console.log('Seed completed!');
 }
 
@@ -755,6 +767,7 @@ main()
 ## 🔍 Indexes for Performance
 
 Key indexes defined:
+
 - `venue.slug` - Fast lookup by URL
 - `event.venueId + status` - Get active events
 - `queueItem.eventId + position` - Ordered queue retrieval
@@ -764,12 +777,15 @@ Key indexes defined:
 ## 🛡️ Data Integrity
 
 ### Constraints
+
 - Unique constraints on slugs, emails
 - Foreign key cascades for cleanup
 - NOT NULL on critical fields
 
 ### Transactions
+
 Use Prisma transactions for:
+
 - Vote + Queue update (atomicity)
 - Event activation (multiple updates)
 - Payment + Subscription (consistency)

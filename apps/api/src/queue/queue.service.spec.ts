@@ -1,8 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { QueueService } from './queue.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { WebSocketGatewayService } from '../websocket/websocket.gateway';
@@ -141,7 +138,7 @@ describe('QueueService', () => {
         'event-123',
         addToQueueDto.trackId,
         addToQueueDto.addedBy,
-        '192.168.1.1',
+        '192.168.1.1'
       );
       expect(mockPrismaService.event.findUnique).toHaveBeenCalledWith({
         where: { id: 'event-123' },
@@ -169,7 +166,7 @@ describe('QueueService', () => {
           data: expect.objectContaining({
             voteCount: 2,
           }),
-        }),
+        })
       );
       expect(result.voteCount).toBe(2);
     });
@@ -179,7 +176,7 @@ describe('QueueService', () => {
       mockPrismaService.event.findUnique.mockResolvedValue(null);
 
       await expect(service.addToQueue('event-999', addToQueueDto, '192.168.1.1')).rejects.toThrow(
-        new NotFoundException('Event with ID event-999 not found'),
+        new NotFoundException('Event with ID event-999 not found')
       );
     });
 
@@ -191,16 +188,16 @@ describe('QueueService', () => {
       });
 
       await expect(service.addToQueue('event-123', addToQueueDto, '192.168.1.1')).rejects.toThrow(
-        new BadRequestException('Can only add tracks to active events'),
+        new BadRequestException('Can only add tracks to active events')
       );
     });
 
     it('should throw BadRequestException if session ID not provided', async () => {
       const dtoWithoutSession = { ...addToQueueDto, addedBy: undefined };
 
-      await expect(service.addToQueue('event-123', dtoWithoutSession, '192.168.1.1')).rejects.toThrow(
-        new BadRequestException('Session ID is required'),
-      );
+      await expect(
+        service.addToQueue('event-123', dtoWithoutSession, '192.168.1.1')
+      ).rejects.toThrow(new BadRequestException('Session ID is required'));
     });
 
     it('should throw error from vote tracker if spam detected', async () => {
@@ -209,7 +206,7 @@ describe('QueueService', () => {
       );
 
       await expect(service.addToQueue('event-123', addToQueueDto, '192.168.1.1')).rejects.toThrow(
-        new BadRequestException('Please wait 25 seconds before voting again'),
+        new BadRequestException('Please wait 25 seconds before voting again')
       );
     });
   });
@@ -238,7 +235,7 @@ describe('QueueService', () => {
       mockPrismaService.event.findUnique.mockResolvedValue(null);
 
       await expect(service.getQueue('event-999')).rejects.toThrow(
-        new NotFoundException('Event with ID event-999 not found'),
+        new NotFoundException('Event with ID event-999 not found')
       );
     });
   });
@@ -259,7 +256,7 @@ describe('QueueService', () => {
       mockPrismaService.queueItem.findUnique.mockResolvedValue(null);
 
       await expect(service.findOne('queue-999')).rejects.toThrow(
-        new NotFoundException('Queue item with ID queue-999 not found'),
+        new NotFoundException('Queue item with ID queue-999 not found')
       );
     });
   });
@@ -285,12 +282,8 @@ describe('QueueService', () => {
     it('should throw NotFoundException if track not in queue', async () => {
       mockPrismaService.queueItem.findFirst.mockResolvedValue(null);
 
-      await expect(
-        service.removeFromQueue('event-123', 'track-999'),
-      ).rejects.toThrow(
-        new NotFoundException(
-          'Track track-999 not found in queue for event event-123',
-        ),
+      await expect(service.removeFromQueue('event-123', 'track-999')).rejects.toThrow(
+        new NotFoundException('Track track-999 not found in queue for event event-123')
       );
     });
   });
@@ -321,7 +314,7 @@ describe('QueueService', () => {
       mockPrismaService.queueItem.findFirst.mockResolvedValue(null);
 
       await expect(service.markAsPlayed('event-123', 'track-999')).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
       );
     });
   });
@@ -387,7 +380,7 @@ describe('QueueService', () => {
       });
 
       await expect(service.getNextTrack('event-123')).rejects.toThrow(
-        new BadRequestException('Event is not active'),
+        new BadRequestException('Event is not active')
       );
     });
   });
@@ -412,7 +405,7 @@ describe('QueueService', () => {
       mockPrismaService.event.findUnique.mockResolvedValue(null);
 
       await expect(service.clearQueue('event-999')).rejects.toThrow(
-        new NotFoundException('Event with ID event-999 not found'),
+        new NotFoundException('Event with ID event-999 not found')
       );
     });
   });

@@ -1,19 +1,5 @@
-import {
-  Controller,
-  Post,
-  Get,
-  Param,
-  Body,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiParam,
-  ApiBody,
-} from '@nestjs/swagger';
+import { Controller, Post, Get, Param, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { PlaybackService } from './playback.service';
 
 class InitializePlaybackDto {
@@ -55,10 +41,7 @@ export class PlaybackController {
     status: 404,
     description: 'Event or device not found',
   })
-  async initialize(
-    @Param('eventId') eventId: string,
-    @Body() dto: InitializePlaybackDto,
-  ) {
+  async initialize(@Param('eventId') eventId: string, @Body() dto: InitializePlaybackDto) {
     return this.playbackService.initializePlayback(eventId, dto.deviceId);
   }
 
@@ -176,10 +159,7 @@ export class PlaybackController {
     status: 400,
     description: 'Playback not initialized',
   })
-  async setAutoPlay(
-    @Param('eventId') eventId: string,
-    @Body() dto: SetAutoPlayDto,
-  ) {
+  async setAutoPlay(@Param('eventId') eventId: string, @Body() dto: SetAutoPlayDto) {
     return this.playbackService.setAutoPlay(eventId, dto.enabled);
   }
 

@@ -61,9 +61,7 @@ test.describe('Playback Automation', () => {
     // Cleanup
     if (eventId) {
       try {
-        await request.post(
-          `http://localhost:4000/api/v1/events/${eventId}/playback/stop`
-        );
+        await request.post(`http://localhost:4000/api/v1/events/${eventId}/playback/stop`);
       } catch (e) {
         // Ignore if not initialized
       }
@@ -263,9 +261,7 @@ test.describe('Playback Automation', () => {
     // Note: This test assumes playback is not initialized or will be mocked
 
     // Clear queue first
-    await request.delete(
-      `http://localhost:4000/api/v1/admin/events/${eventId}/queue/clear`
-    );
+    await request.delete(`http://localhost:4000/api/v1/admin/events/${eventId}/queue/clear`);
 
     // Try to play next with empty queue
     // This will fail with "not initialized" since we can't initialize without Spotify
@@ -294,7 +290,6 @@ test.describe('Playback Real-time Integration', () => {
     // 2. WebSocket connection from page
     // 3. Playing a track
     // 4. Listening for nowPlayingUpdate event
-
     // Implementation would look like:
     // await page.goto(`/v/test-venue/event/${eventId}`);
     // const nowPlayingUpdate = page.waitForEvent('nowPlayingUpdate');

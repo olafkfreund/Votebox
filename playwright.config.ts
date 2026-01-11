@@ -21,11 +21,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
 
   /* Reporter to use */
-  reporter: [
-    ['html'],
-    ['list'],
-    ['json', { outputFile: 'test-results/e2e-results.json' }],
-  ],
+  reporter: [['html'], ['list'], ['json', { outputFile: 'test-results/e2e-results.json' }]],
 
   /* Shared settings for all the projects below */
   use: {

@@ -72,12 +72,8 @@ export default function EventVotingPage() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Event Not Found
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            This event doesn't exist or has ended
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Event Not Found</h1>
+          <p className="text-gray-600 dark:text-gray-400">This event doesn't exist or has ended</p>
         </div>
       </div>
     );
@@ -110,9 +106,7 @@ export default function EventVotingPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-                🎵 {event.name}
-              </h1>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">🎵 {event.name}</h1>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 Vote for tracks you want to hear
               </p>
@@ -122,9 +116,7 @@ export default function EventVotingPage() {
                 <div className="text-sm font-semibold text-gray-900 dark:text-white">
                   {remainingVotes}/3 votes
                 </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400">
-                  remaining this hour
-                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">remaining this hour</div>
               </div>
               <ConnectionStatus isConnected={isConnected} />
             </div>

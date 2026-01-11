@@ -50,7 +50,7 @@ function getBrowserFingerprint(): string {
   let hash = 0;
   for (let i = 0; i < components.length; i++) {
     const char = components.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32bit integer
   }
 

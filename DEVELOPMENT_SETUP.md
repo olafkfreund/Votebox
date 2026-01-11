@@ -73,6 +73,7 @@ cp apps/admin/.env.example apps/admin/.env
 Edit `.env` files with your configuration:
 
 #### Root `.env`
+
 ```env
 # PostgreSQL
 POSTGRES_USER=votebox
@@ -86,6 +87,7 @@ REDIS_PORT=6379
 ```
 
 #### `apps/api/.env`
+
 ```env
 # Application
 NODE_ENV=development
@@ -117,6 +119,7 @@ THROTTLE_LIMIT=100
 ```
 
 #### `apps/web/.env`
+
 ```env
 # API
 NEXT_PUBLIC_API_URL=http://localhost:4000
@@ -141,6 +144,7 @@ docker-compose ps
 ```
 
 You should see:
+
 ```
 NAME                STATUS              PORTS
 votebox-postgres    Up                  0.0.0.0:5432->5432/tcp
@@ -178,6 +182,7 @@ npm run dev
 ```
 
 This will start:
+
 - **API**: http://localhost:4000
 - **Web (Guest/Display)**: http://localhost:3000
 - **Admin Dashboard**: http://localhost:3001
@@ -185,11 +190,13 @@ This will start:
 ### 7. Verify Installation
 
 #### Check API Health
+
 ```bash
 curl http://localhost:4000/health
 ```
 
 Expected response:
+
 ```json
 {
   "status": "healthy",
@@ -225,6 +232,7 @@ npm run dev --workspace=apps/admin
 ### Database Operations
 
 #### View Database with Prisma Studio
+
 ```bash
 cd apps/api
 npx prisma studio
@@ -233,6 +241,7 @@ npx prisma studio
 Opens: http://localhost:5555
 
 #### Create a New Migration
+
 ```bash
 cd apps/api
 
@@ -241,12 +250,14 @@ npx prisma migrate dev --name add_new_feature
 ```
 
 #### Reset Database (⚠️ Deletes all data)
+
 ```bash
 cd apps/api
 npx prisma migrate reset
 ```
 
 #### Apply Migrations to Database
+
 ```bash
 cd apps/api
 npx prisma migrate deploy
@@ -303,26 +314,31 @@ docker-compose logs -f redis
 ### Testing
 
 #### Run All Tests
+
 ```bash
 npm run test
 ```
 
 #### Run Tests for Specific App
+
 ```bash
 npm run test --workspace=apps/api
 ```
 
 #### Run Tests in Watch Mode
+
 ```bash
 npm run test:watch
 ```
 
 #### Run E2E Tests
+
 ```bash
 npm run test:e2e
 ```
 
 #### Generate Coverage Report
+
 ```bash
 npm run test:cov
 ```
@@ -332,21 +348,25 @@ Coverage report available at: `coverage/lcov-report/index.html`
 ### Code Quality
 
 #### Lint Code
+
 ```bash
 npm run lint
 ```
 
 #### Fix Linting Issues
+
 ```bash
 npm run lint:fix
 ```
 
 #### Format Code
+
 ```bash
 npm run format
 ```
 
 #### Type Check
+
 ```bash
 npm run type-check
 ```
@@ -354,11 +374,13 @@ npm run type-check
 ### Building
 
 #### Build All Apps
+
 ```bash
 npm run build
 ```
 
 #### Build Specific App
+
 ```bash
 npm run build --workspace=apps/api
 ```
@@ -370,6 +392,7 @@ npm run build --workspace=apps/api
 **Error**: `Can't reach database server`
 
 **Solution**:
+
 ```bash
 # Check if PostgreSQL is running
 docker-compose ps postgres
@@ -386,6 +409,7 @@ docker-compose logs postgres
 **Error**: `ECONNREFUSED 127.0.0.1:6379`
 
 **Solution**:
+
 ```bash
 # Check if Redis is running
 docker-compose ps redis
@@ -402,6 +426,7 @@ redis-cli -h localhost -p 6379 -a votebox_redis_password ping
 **Error**: `Port 4000 is already in use`
 
 **Solution**:
+
 ```bash
 # Find process using port
 lsof -i :4000
@@ -418,6 +443,7 @@ PORT=4001
 **Error**: `@prisma/client did not initialize yet`
 
 **Solution**:
+
 ```bash
 cd apps/api
 npx prisma generate
@@ -428,6 +454,7 @@ npx prisma generate
 **Error**: Various module resolution errors
 
 **Solution**:
+
 ```bash
 # Clean install
 rm -rf node_modules
@@ -443,6 +470,7 @@ npm install
 **Error**: `Rate limit exceeded`
 
 **Solution**:
+
 - Implement caching (already done in code)
 - Wait a few minutes
 - Use multiple Spotify API keys (advanced)
@@ -544,17 +572,20 @@ Create `.vscode/settings.json`:
 ## 📚 Additional Resources
 
 ### Documentation
+
 - [NestJS Documentation](https://docs.nestjs.com/)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Prisma Documentation](https://www.prisma.io/docs)
 - [Socket.io Documentation](https://socket.io/docs)
 
 ### Tutorials
+
 - [Building Real-time Apps with Socket.io](https://socket.io/get-started/chat)
 - [Next.js App Router Tutorial](https://nextjs.org/learn)
 - [Prisma Quickstart](https://www.prisma.io/docs/getting-started/quickstart)
 
 ### Community
+
 - [Votebox GitHub Discussions](https://github.com/yourusername/votebox/discussions)
 - [NestJS Discord](https://discord.gg/nestjs)
 - [Prisma Slack](https://slack.prisma.io/)
@@ -581,6 +612,7 @@ Create `.vscode/settings.json`:
 **Happy Coding!** 🎉
 
 If you encounter any issues not covered here, please:
+
 1. Check existing GitHub Issues
 2. Search documentation
 3. Ask in GitHub Discussions

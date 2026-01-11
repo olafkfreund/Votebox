@@ -7,9 +7,10 @@ You are helping build **Votebox**, a cloud-native SaaS platform that enables pub
 ## 👤 Developer Profile
 
 **Developer**: Olaf Kfreund
+
 - **Role**: Cloud Architect & DevOps Leader
 - **Experience**: 28+ years
-- **Expertise**: 
+- **Expertise**:
   - Infrastructure as Code (Terraform, Crossplane, Bicep)
   - Kubernetes, Docker, containerization
   - CI/CD (GitHub Actions, Azure DevOps, Jenkins)
@@ -19,6 +20,7 @@ You are helping build **Votebox**, a cloud-native SaaS platform that enables pub
 ## 🏗️ Tech Stack
 
 ### Frontend
+
 - **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
@@ -27,6 +29,7 @@ You are helping build **Votebox**, a cloud-native SaaS platform that enables pub
 - **PWA**: next-pwa
 
 ### Backend
+
 - **Framework**: NestJS
 - **Language**: TypeScript
 - **Database**: PostgreSQL with Prisma ORM
@@ -35,6 +38,7 @@ You are helping build **Votebox**, a cloud-native SaaS platform that enables pub
 - **Auth**: JWT with Passport
 
 ### Infrastructure
+
 - **Containers**: Docker & Docker Compose
 - **Orchestration**: Kubernetes (optional, developer is expert)
 - **CI/CD**: GitHub Actions
@@ -42,6 +46,7 @@ You are helping build **Votebox**, a cloud-native SaaS platform that enables pub
 - **IaC**: Terraform (developer's specialty)
 
 ### External APIs
+
 - **Spotify**: Web API + Web Playback SDK
 - **Payments**: Stripe (future)
 
@@ -66,6 +71,7 @@ votebox/
 ## 🎯 Current Phase
 
 **Phase 1: MVP (Weeks 1-4)**
+
 - Foundation & infrastructure setup
 - Core backend services
 - Guest voting interface
@@ -76,6 +82,7 @@ See `PROJECT_PLAN.md` for full timeline.
 ## 💡 Code Generation Guidelines
 
 ### 1. TypeScript Best Practices
+
 ```typescript
 // ✅ DO: Use explicit types
 interface VoteRequest {
@@ -84,7 +91,7 @@ interface VoteRequest {
 }
 
 // ❌ DON'T: Use 'any'
-function processVote(data: any) { }
+function processVote(data: any) {}
 
 // ✅ DO: Use proper error handling
 try {
@@ -98,6 +105,7 @@ try {
 ```
 
 ### 2. NestJS Patterns
+
 ```typescript
 // ✅ DO: Use proper dependency injection
 @Injectable()
@@ -127,6 +135,7 @@ async create(@Body() dto: CreateVoteDto) { }
 ```
 
 ### 3. Next.js App Router Patterns
+
 ```typescript
 // ✅ DO: Use Server Components by default
 export default async function EventPage({ params }) {
@@ -150,6 +159,7 @@ export async function submitVote(formData: FormData) {
 ```
 
 ### 4. Prisma Patterns
+
 ```typescript
 // ✅ DO: Use transactions for related operations
 await prisma.$transaction(async (tx) => {
@@ -176,6 +186,7 @@ const event = await prisma.event.findUnique({
 ```
 
 ### 5. Real-time WebSocket Patterns
+
 ```typescript
 // ✅ DO: Use rooms for scoped broadcasting
 @SubscribeMessage('joinEvent')
@@ -192,6 +203,7 @@ this.server
 ## 🧪 Testing Guidelines
 
 ### Unit Tests
+
 ```typescript
 describe('VoteService', () => {
   let service: VoteService;
@@ -203,9 +215,9 @@ describe('VoteService', () => {
         VoteService,
         {
           provide: PrismaService,
-          useValue: mockPrisma
-        }
-      ]
+          useValue: mockPrisma,
+        },
+      ],
     }).compile();
 
     service = module.get<VoteService>(VoteService);
@@ -216,7 +228,7 @@ describe('VoteService', () => {
     const vote = await service.create({
       eventId: 'event1',
       trackId: 'track1',
-      sessionId: 'session1'
+      sessionId: 'session1',
     });
     expect(vote).toBeDefined();
   });
@@ -224,6 +236,7 @@ describe('VoteService', () => {
 ```
 
 ### E2E Tests
+
 ```typescript
 test('guest can vote for track', async ({ page }) => {
   await page.goto('/v/demo-venue/event/123');
@@ -235,6 +248,7 @@ test('guest can vote for track', async ({ page }) => {
 ## 🔧 Development Workflow
 
 ### Starting Development
+
 ```bash
 # 1. Start infrastructure
 docker-compose up -d
@@ -250,6 +264,7 @@ npm run dev
 ```
 
 ### Running Tests
+
 ```bash
 npm run test          # Unit tests
 npm run test:e2e      # E2E tests
@@ -257,6 +272,7 @@ npm run test:ci       # All tests with coverage
 ```
 
 ### Building
+
 ```bash
 npm run build         # Build all apps
 npm run build:api     # Build API only
@@ -266,6 +282,7 @@ npm run build:web     # Build web only
 ## 🐛 Debugging Tips
 
 ### Database Issues
+
 ```bash
 # Reset database
 npm run db:reset
@@ -278,6 +295,7 @@ npx prisma migrate status
 ```
 
 ### API Issues
+
 ```bash
 # Check logs
 docker-compose logs -f api
@@ -289,6 +307,7 @@ curl -X POST http://localhost:4000/api/v1/events/:id/votes \
 ```
 
 ### WebSocket Issues
+
 ```bash
 # Check Socket.io connection
 # In browser console:
@@ -299,10 +318,11 @@ socket.on('error', (err) => console.error('Error:', err));
 ## 📝 Documentation Standards
 
 ### Code Comments
+
 ```typescript
 /**
  * Calculates queue position based on vote count and recency
- * 
+ *
  * @param votes - Total votes for the track
  * @param lastVotedAt - When the track was last voted for
  * @returns Score used for queue ordering
@@ -313,7 +333,9 @@ function calculateQueueScore(votes: number, lastVotedAt: Date): number {
 ```
 
 ### API Documentation
+
 Use JSDoc for all controllers:
+
 ```typescript
 @ApiTags('votes')
 @ApiOperation({ summary: 'Submit a vote for a track' })
@@ -326,6 +348,7 @@ async create(@Body() dto: CreateVoteDto) { }
 ## 🔐 Security Considerations
 
 ### Always Validate Input
+
 ```typescript
 // ✅ DO: Use DTOs with class-validator
 export class CreateEventDto {
@@ -337,6 +360,7 @@ export class CreateEventDto {
 ```
 
 ### Sanitize User Input
+
 ```typescript
 // ✅ DO: Sanitize before storing
 import { sanitize } from 'class-sanitizer';
@@ -349,6 +373,7 @@ async create(@Body() dto: CreateEventDto) {
 ```
 
 ### Rate Limiting
+
 ```typescript
 // ✅ DO: Implement rate limiting
 @UseGuards(ThrottlerGuard)
@@ -360,6 +385,7 @@ async vote() { }
 ## 🚀 Deployment Considerations
 
 ### Environment Variables
+
 ```env
 # Database
 DATABASE_URL=postgresql://user:pass@localhost:5432/votebox
@@ -381,6 +407,7 @@ PORT=4000
 ```
 
 ### Docker Build
+
 ```dockerfile
 FROM node:20-alpine AS builder
 WORKDIR /app
@@ -397,6 +424,7 @@ CMD ["node", "dist/main"]
 ```
 
 ### Kubernetes (Developer's Expertise)
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -413,21 +441,22 @@ spec:
         app: votebox-api
     spec:
       containers:
-      - name: api
-        image: votebox/api:latest
-        ports:
-        - containerPort: 4000
-        env:
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: votebox-secrets
-              key: database-url
+        - name: api
+          image: votebox/api:latest
+          ports:
+            - containerPort: 4000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: votebox-secrets
+                  key: database-url
 ```
 
 ## 🎨 UI/UX Guidelines
 
 ### Tailwind Classes
+
 ```tsx
 // ✅ DO: Use consistent spacing
 <div className="p-4 sm:p-6 lg:p-8">
@@ -440,28 +469,27 @@ spec:
 ```
 
 ### Loading States
+
 ```tsx
 // ✅ DO: Show loading states
-{isLoading ? (
-  <Spinner />
-) : (
-  <VoteButton />
-)}
+{
+  isLoading ? <Spinner /> : <VoteButton />;
+}
 ```
 
 ### Error States
+
 ```tsx
 // ✅ DO: Show user-friendly errors
-{error && (
-  <Alert type="error">
-    {error.message || 'Something went wrong'}
-  </Alert>
-)}
+{
+  error && <Alert type="error">{error.message || 'Something went wrong'}</Alert>;
+}
 ```
 
 ## 📊 Performance Guidelines
 
 ### Database Queries
+
 ```typescript
 // ✅ DO: Use indexes
 @@index([eventId, status])
@@ -474,6 +502,7 @@ select: { id: true, name: true }
 ```
 
 ### Caching
+
 ```typescript
 // ✅ DO: Cache expensive operations
 const tracks = await redis.get(`tracks:event:${eventId}`);
@@ -484,6 +513,7 @@ if (!tracks) {
 ```
 
 ### WebSocket Optimization
+
 ```typescript
 // ✅ DO: Throttle updates
 _.throttle(() => {
@@ -494,6 +524,7 @@ _.throttle(() => {
 ## 🤝 Collaboration
 
 ### Commit Messages
+
 ```
 feat: add vote cooldown mechanism
 fix: correct queue position calculation
@@ -503,22 +534,27 @@ test: add unit tests for vote service
 ```
 
 ### Pull Request Template
+
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] Unit tests pass
 - [ ] E2E tests pass
 - [ ] Manual testing completed
 
 ## Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Self-review completed
 - [ ] Documentation updated

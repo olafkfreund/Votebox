@@ -30,6 +30,7 @@ docker-compose ps
 ```
 
 **Success Criteria:**
+
 - [ ] PostgreSQL container running and healthy
 - [ ] Redis container running and healthy
 - [ ] No error messages in logs
@@ -44,6 +45,7 @@ docker exec -it votebox-postgres psql -U votebox -d votebox_dev -c "SELECT 1;"
 ```
 
 **Success Criteria:**
+
 - [ ] Can connect to PostgreSQL
 - [ ] Database `votebox_dev` exists
 
@@ -59,6 +61,7 @@ npx prisma migrate dev --name init
 ```
 
 **Success Criteria:**
+
 - [ ] Migration runs without errors
 - [ ] All 11 tables created
 - [ ] Prisma Client generated
@@ -71,6 +74,7 @@ npx prisma studio
 ```
 
 **Success Criteria:**
+
 - [ ] Prisma Studio opens at http://localhost:5555
 - [ ] All 11 models visible (Venue, User, Event, Vote, QueueItem, PlayHistory, Session, Subscription, Invoice, VenueMetrics)
 - [ ] No data yet (empty tables)
@@ -82,6 +86,7 @@ npm run db:seed
 ```
 
 **Success Criteria:**
+
 - [ ] Seed script runs successfully
 - [ ] Demo venue created
 - [ ] Test event created
@@ -99,6 +104,7 @@ npm run build
 ```
 
 **Success Criteria:**
+
 - [ ] TypeScript compiles without errors
 - [ ] `dist/` folder created
 - [ ] No build warnings
@@ -111,6 +117,7 @@ npm run dev
 ```
 
 **Success Criteria:**
+
 - [ ] Server starts on port 4000
 - [ ] No startup errors
 - [ ] Console shows: "🚀 API server running"
@@ -135,6 +142,7 @@ curl http://localhost:4000/api/v1/health/live
 ```
 
 **Success Criteria:**
+
 - [ ] `/health` returns status "ok"
 - [ ] `/health/ready` shows database: true, redis: true
 - [ ] `/health/live` shows uptime and memory stats
@@ -144,6 +152,7 @@ curl http://localhost:4000/api/v1/health/live
 Open http://localhost:4000/api/docs
 
 **Success Criteria:**
+
 - [ ] Swagger UI loads
 - [ ] Health endpoints documented
 - [ ] API title shows "Votebox API"
@@ -160,6 +169,7 @@ npm run build
 ```
 
 **Success Criteria:**
+
 - [ ] Next.js builds successfully
 - [ ] `.next/` folder created
 - [ ] No build errors
@@ -171,6 +181,7 @@ npm run dev
 ```
 
 **Success Criteria:**
+
 - [ ] Server starts on port 3000
 - [ ] No startup errors
 - [ ] Console shows compilation success
@@ -180,6 +191,7 @@ npm run dev
 Open http://localhost:3000
 
 **Success Criteria:**
+
 - [ ] Landing page loads
 - [ ] Shows "🎵 Votebox" heading
 - [ ] "Try Demo" and "Learn More" buttons visible
@@ -198,6 +210,7 @@ npm run build
 ```
 
 **Success Criteria:**
+
 - [ ] Next.js builds successfully
 - [ ] `.next/` folder created
 - [ ] No build errors
@@ -209,6 +222,7 @@ npm run dev
 ```
 
 **Success Criteria:**
+
 - [ ] Server starts on port 3001
 - [ ] No startup errors
 - [ ] Console shows compilation success
@@ -218,6 +232,7 @@ npm run dev
 Open http://localhost:3001
 
 **Success Criteria:**
+
 - [ ] Landing page loads with "🎵 Votebox Admin"
 - [ ] "Sign In" button visible
 - [ ] Feature cards displayed
@@ -225,6 +240,7 @@ Open http://localhost:3001
 Open http://localhost:3001/login
 
 **Success Criteria:**
+
 - [ ] Login page loads
 - [ ] Email and password fields visible
 - [ ] Demo credentials shown
@@ -245,6 +261,7 @@ With all services running:
 5. **Admin**: http://localhost:3001 → loads
 
 **Success Criteria:**
+
 - [ ] All services running simultaneously
 - [ ] No port conflicts
 - [ ] All pages accessible
@@ -256,6 +273,7 @@ With all services running:
 3. Check browser (should auto-reload)
 
 **Success Criteria:**
+
 - [ ] Changes reflect immediately
 - [ ] No manual refresh needed
 - [ ] No errors in console
@@ -272,6 +290,7 @@ npm run lint
 ```
 
 **Success Criteria:**
+
 - [ ] Linter runs across all apps
 - [ ] No linting errors
 - [ ] Warnings are acceptable
@@ -286,6 +305,7 @@ cd apps/admin && npx tsc --noEmit
 ```
 
 **Success Criteria:**
+
 - [ ] All TypeScript compiles without errors
 - [ ] Types are correctly inferred
 
@@ -296,6 +316,7 @@ npm run format:check
 ```
 
 **Success Criteria:**
+
 - [ ] All files formatted correctly
 - [ ] No formatting issues
 
@@ -310,6 +331,7 @@ Push code to GitHub and check:
 https://github.com/olafkfreund/Votebox/actions
 
 **Success Criteria:**
+
 - [ ] CI workflow triggers
 - [ ] Lint step passes
 - [ ] Test step passes
@@ -334,6 +356,7 @@ docker build -f docker/Dockerfile.admin -t votebox-admin:test .
 ```
 
 **Success Criteria:**
+
 - [ ] All images build successfully
 - [ ] No build errors
 - [ ] Images are created
@@ -354,6 +377,7 @@ ab -n 1000 -c 10 http://localhost:4000/api/v1/health
 ```
 
 **Success Criteria:**
+
 - [ ] 1000 requests complete
 - [ ] 0% failed requests
 - [ ] Mean response time < 500ms
@@ -363,17 +387,20 @@ ab -n 1000 -c 10 http://localhost:4000/api/v1/health
 ## Week 1 Completion Checklist
 
 ### Infrastructure (3/3)
+
 - [x] Docker services running
 - [x] Database connected
 - [x] Redis connected
 
 ### Backend (4/4)
+
 - [x] API builds successfully
 - [x] API starts without errors
 - [x] Health endpoints working
 - [x] Swagger documentation accessible
 
 ### Frontend (6/6)
+
 - [x] Web app builds
 - [x] Web app loads
 - [x] Admin app builds
@@ -382,16 +409,19 @@ ab -n 1000 -c 10 http://localhost:4000/api/v1/health
 - [x] No console errors
 
 ### Database (3/3)
+
 - [x] Migrations run
 - [x] Schema created
 - [x] Seed data loaded
 
 ### Code Quality (3/3)
+
 - [x] Linting passes
 - [x] Types valid
 - [x] Formatting correct
 
 ### CI/CD (1/1)
+
 - [x] GitHub Actions passing
 
 ---
@@ -402,7 +432,9 @@ ab -n 1000 -c 10 http://localhost:4000/api/v1/health
 **Week 1 Status**: Foundation Complete
 
 ### Next Steps
+
 Once all tests pass:
+
 1. ✅ Week 1 is complete
 2. ➡️ Ready for Week 2 development
 3. 📋 Begin implementing backend services

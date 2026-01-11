@@ -99,9 +99,7 @@ export function TrackBrowser({
       {!isLoading && !error && tracks.length === 0 && !searchQuery.trim() && (
         <div className="text-center py-12">
           <div className="text-4xl mb-2">🎵</div>
-          <p className="text-gray-500 dark:text-gray-400">
-            Search for tracks to vote
-          </p>
+          <p className="text-gray-500 dark:text-gray-400">Search for tracks to vote</p>
           <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">
             Type in the search box above to get started
           </p>

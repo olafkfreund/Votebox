@@ -38,7 +38,7 @@ describe('VoteTrackerService', () => {
 
     it('should allow first vote for a session', async () => {
       await expect(
-        service.checkAndRecordVote(eventId, trackId, sessionId, ipAddress),
+        service.checkAndRecordVote(eventId, trackId, sessionId, ipAddress)
       ).resolves.not.toThrow();
     });
 
@@ -48,11 +48,11 @@ describe('VoteTrackerService', () => {
 
       // Immediate second vote should fail
       await expect(
-        service.checkAndRecordVote(eventId, 'track-999', sessionId, ipAddress),
+        service.checkAndRecordVote(eventId, 'track-999', sessionId, ipAddress)
       ).rejects.toThrow(BadRequestException);
 
       await expect(
-        service.checkAndRecordVote(eventId, 'track-999', sessionId, ipAddress),
+        service.checkAndRecordVote(eventId, 'track-999', sessionId, ipAddress)
       ).rejects.toThrow(/Please wait \d+ seconds before voting again/);
     });
 
@@ -70,12 +70,7 @@ describe('VoteTrackerService', () => {
       const differentTracks = ['track-1', 'track-2', 'track-3', 'track-4'];
 
       // Vote 1
-      await service.checkAndRecordVote(
-        eventId,
-        differentTracks[0],
-        sessionId,
-        ipAddress,
-      );
+      await service.checkAndRecordVote(eventId, differentTracks[0], sessionId, ipAddress);
 
       // Wait 31 seconds (mock or real wait would be needed)
       // For unit test, we'll just verify the count
@@ -92,11 +87,11 @@ describe('VoteTrackerService', () => {
 
       // Try to vote for same track again
       await expect(
-        service.checkAndRecordVote(eventId, trackId, sessionId, ipAddress),
+        service.checkAndRecordVote(eventId, trackId, sessionId, ipAddress)
       ).rejects.toThrow(BadRequestException);
 
       await expect(
-        service.checkAndRecordVote(eventId, trackId, sessionId, ipAddress),
+        service.checkAndRecordVote(eventId, trackId, sessionId, ipAddress)
       ).rejects.toThrow(/You already voted for this track/);
     });
 
@@ -122,11 +117,11 @@ describe('VoteTrackerService', () => {
 
       // Session 3: Should fail due to IP limit (6 votes already)
       await expect(
-        service.checkAndRecordVote(eventId, 'track-7', session3, ipAddress),
+        service.checkAndRecordVote(eventId, 'track-7', session3, ipAddress)
       ).rejects.toThrow(BadRequestException);
 
       await expect(
-        service.checkAndRecordVote(eventId, 'track-7', session3, ipAddress),
+        service.checkAndRecordVote(eventId, 'track-7', session3, ipAddress)
       ).rejects.toThrow(/Too many votes from this network/);
     });
 
@@ -138,7 +133,7 @@ describe('VoteTrackerService', () => {
 
       // Different IP should be independent
       await expect(
-        service.checkAndRecordVote(eventId, 'track-999', sessionId, ip2),
+        service.checkAndRecordVote(eventId, 'track-999', sessionId, ip2)
       ).resolves.not.toThrow();
     });
   });
@@ -158,20 +153,10 @@ describe('VoteTrackerService', () => {
       const eventId = 'event-stats';
 
       // Vote from 2 different sessions, same IP
-      await service.checkAndRecordVote(
-        eventId,
-        'track-1',
-        'session-1',
-        '192.168.1.1',
-      );
+      await service.checkAndRecordVote(eventId, 'track-1', 'session-1', '192.168.1.1');
       service.clearSessionVotes(eventId, 'session-1');
 
-      await service.checkAndRecordVote(
-        eventId,
-        'track-2',
-        'session-2',
-        '192.168.1.1',
-      );
+      await service.checkAndRecordVote(eventId, 'track-2', 'session-2', '192.168.1.1');
 
       const stats = await service.getVoteStats(eventId);
 
@@ -183,28 +168,13 @@ describe('VoteTrackerService', () => {
     it('should track unique IPs correctly', async () => {
       const eventId = 'event-ips';
 
-      await service.checkAndRecordVote(
-        eventId,
-        'track-1',
-        'session-1',
-        '192.168.1.1',
-      );
+      await service.checkAndRecordVote(eventId, 'track-1', 'session-1', '192.168.1.1');
       service.clearSessionVotes(eventId, 'session-1');
 
-      await service.checkAndRecordVote(
-        eventId,
-        'track-2',
-        'session-1',
-        '192.168.1.2',
-      );
+      await service.checkAndRecordVote(eventId, 'track-2', 'session-1', '192.168.1.2');
       service.clearSessionVotes(eventId, 'session-1');
 
-      await service.checkAndRecordVote(
-        eventId,
-        'track-3',
-        'session-1',
-        '192.168.1.3',
-      );
+      await service.checkAndRecordVote(eventId, 'track-3', 'session-1', '192.168.1.3');
 
       const stats = await service.getVoteStats(eventId);
 
@@ -226,34 +196,19 @@ describe('VoteTrackerService', () => {
       expect(service.getRemainingVotes(eventId, sessionId)).toBe(3);
 
       // After 1 vote
-      await service.checkAndRecordVote(
-        eventId,
-        'track-1',
-        sessionId,
-        '192.168.1.1',
-      );
+      await service.checkAndRecordVote(eventId, 'track-1', sessionId, '192.168.1.1');
       expect(service.getRemainingVotes(eventId, sessionId)).toBe(2);
 
       service.clearSessionVotes(eventId, sessionId);
 
       // After 2 votes
-      await service.checkAndRecordVote(
-        eventId,
-        'track-2',
-        sessionId,
-        '192.168.1.1',
-      );
+      await service.checkAndRecordVote(eventId, 'track-2', sessionId, '192.168.1.1');
       expect(service.getRemainingVotes(eventId, sessionId)).toBe(1);
 
       service.clearSessionVotes(eventId, sessionId);
 
       // After 3 votes
-      await service.checkAndRecordVote(
-        eventId,
-        'track-3',
-        sessionId,
-        '192.168.1.1',
-      );
+      await service.checkAndRecordVote(eventId, 'track-3', sessionId, '192.168.1.1');
       expect(service.getRemainingVotes(eventId, sessionId)).toBe(0);
     });
   });
@@ -263,12 +218,7 @@ describe('VoteTrackerService', () => {
       const eventId = 'event-123';
       const sessionId = 'session-123';
 
-      await service.checkAndRecordVote(
-        eventId,
-        'track-1',
-        sessionId,
-        '192.168.1.1',
-      );
+      await service.checkAndRecordVote(eventId, 'track-1', sessionId, '192.168.1.1');
 
       expect(service.getRemainingVotes(eventId, sessionId)).toBe(2);
 
@@ -280,18 +230,8 @@ describe('VoteTrackerService', () => {
     it('should not affect other sessions', async () => {
       const eventId = 'event-123';
 
-      await service.checkAndRecordVote(
-        eventId,
-        'track-1',
-        'session-1',
-        '192.168.1.1',
-      );
-      await service.checkAndRecordVote(
-        eventId,
-        'track-2',
-        'session-2',
-        '192.168.1.1',
-      );
+      await service.checkAndRecordVote(eventId, 'track-1', 'session-1', '192.168.1.1');
+      await service.checkAndRecordVote(eventId, 'track-2', 'session-2', '192.168.1.1');
 
       service.clearSessionVotes(eventId, 'session-1');
 

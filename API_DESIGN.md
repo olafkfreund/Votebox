@@ -10,6 +10,7 @@
 ## 🔐 Authentication
 
 ### Public Endpoints (No Auth Required)
+
 - GET `/health` - Health check
 - POST `/auth/venue/login` - Venue login
 - POST `/auth/venue/register` - Venue registration
@@ -17,11 +18,13 @@
 - GET `/queue/:eventId` - Queue for display screens
 
 ### Protected Endpoints
+
 - Require `Authorization: Bearer <token>` header
 - Token expires after 24 hours
 - Refresh token valid for 30 days
 
 ### Venue Authentication Flow
+
 ```typescript
 // 1. Login
 POST /auth/venue/login
@@ -54,6 +57,7 @@ Response:
 ### Venues
 
 #### Create Venue (Registration)
+
 ```http
 POST /auth/venue/register
 Content-Type: application/json
@@ -79,6 +83,7 @@ Response: 201 Created
 ```
 
 #### Get Venue Details
+
 ```http
 GET /venues/:venueId
 Authorization: Bearer eyJ...
@@ -98,6 +103,7 @@ Response: 200 OK
 ```
 
 #### Update Venue
+
 ```http
 PATCH /venues/:venueId
 Authorization: Bearer eyJ...
@@ -118,6 +124,7 @@ Response: 200 OK
 ### Spotify Integration
 
 #### Connect Spotify Account
+
 ```http
 GET /venues/:venueId/spotify/auth
 Authorization: Bearer eyJ...
@@ -127,6 +134,7 @@ Location: https://accounts.spotify.com/authorize?client_id=...
 ```
 
 #### Handle Spotify Callback
+
 ```http
 GET /venues/:venueId/spotify/callback?code=AQD...
 Authorization: Bearer eyJ...
@@ -139,6 +147,7 @@ Response: 200 OK
 ```
 
 #### Get Spotify Devices
+
 ```http
 GET /venues/:venueId/spotify/devices
 Authorization: Bearer eyJ...
@@ -159,6 +168,7 @@ Response: 200 OK
 ### Events
 
 #### List Events
+
 ```http
 GET /venues/:venueId/events?status=ACTIVE&limit=10&offset=0
 Authorization: Bearer eyJ...
@@ -185,6 +195,7 @@ Response: 200 OK
 ```
 
 #### Create Event
+
 ```http
 POST /venues/:venueId/events
 Authorization: Bearer eyJ...
@@ -223,6 +234,7 @@ Response: 201 Created
 ```
 
 #### Update Event
+
 ```http
 PATCH /venues/:venueId/events/:eventId
 Authorization: Bearer eyJ...
@@ -239,6 +251,7 @@ Response: 200 OK
 ```
 
 #### Activate Event
+
 ```http
 POST /venues/:venueId/events/:eventId/activate
 Authorization: Bearer eyJ...
@@ -253,6 +266,7 @@ Response: 200 OK
 ```
 
 #### End Event
+
 ```http
 POST /venues/:venueId/events/:eventId/end
 Authorization: Bearer eyJ...
@@ -266,6 +280,7 @@ Response: 200 OK
 ```
 
 #### Get Event Details
+
 ```http
 GET /events/:eventId
 # No auth required for public access
@@ -296,6 +311,7 @@ Response: 200 OK
 ### Tracks & Search
 
 #### Search Tracks for Event
+
 ```http
 GET /events/:eventId/tracks/search?q=darkthrone&limit=20
 # No auth required
@@ -319,6 +335,7 @@ Response: 200 OK
 ```
 
 #### Browse Event Tracks
+
 ```http
 GET /events/:eventId/tracks?limit=50&offset=0&sort=popular
 # No auth required
@@ -335,6 +352,7 @@ Response: 200 OK
 ### Voting
 
 #### Submit Vote
+
 ```http
 POST /events/:eventId/votes
 Content-Type: application/json
@@ -362,6 +380,7 @@ Error Response: 429 Too Many Requests
 ```
 
 #### Get Vote Status
+
 ```http
 GET /events/:eventId/votes/status?sessionId=...
 # No auth required
@@ -383,6 +402,7 @@ Response: 200 OK
 ### Queue
 
 #### Get Queue
+
 ```http
 GET /events/:eventId/queue?limit=10
 # No auth required
@@ -412,6 +432,7 @@ Response: 200 OK
 ```
 
 #### Skip Track (Admin)
+
 ```http
 POST /events/:eventId/queue/skip
 Authorization: Bearer eyJ...
@@ -434,6 +455,7 @@ Response: 200 OK
 ### Analytics
 
 #### Get Event Analytics
+
 ```http
 GET /venues/:venueId/events/:eventId/analytics
 Authorization: Bearer eyJ...
@@ -463,6 +485,7 @@ Response: 200 OK
 ```
 
 #### Get Venue Analytics
+
 ```http
 GET /venues/:venueId/analytics?startDate=2026-01-01&endDate=2026-01-31
 Authorization: Bearer eyJ...
@@ -488,6 +511,7 @@ Response: 200 OK
 ### Genre Configuration
 
 #### List Genres
+
 ```http
 GET /genres
 # No auth required
@@ -512,35 +536,39 @@ Response: 200 OK
 ## 🔌 WebSocket API
 
 ### Connection
+
 ```typescript
 // Client connects
 const socket = io('wss://api.votebox.io', {
   query: {
-    eventId: 'clx...'
-  }
+    eventId: 'clx...',
+  },
 });
 ```
 
 ### Events (Client → Server)
 
 #### Join Event Room
+
 ```typescript
 socket.emit('joinEvent', {
   eventId: 'clx...',
-  sessionId: 'session123'
+  sessionId: 'session123',
 });
 ```
 
 #### Leave Event Room
+
 ```typescript
 socket.emit('leaveEvent', {
-  eventId: 'clx...'
+  eventId: 'clx...',
 });
 ```
 
 ### Events (Server → Client)
 
 #### Vote Update
+
 ```typescript
 socket.on('voteUpdate', (data) => {
   // {
@@ -553,6 +581,7 @@ socket.on('voteUpdate', (data) => {
 ```
 
 #### Queue Update
+
 ```typescript
 socket.on('queueUpdate', (data) => {
   // {
@@ -568,6 +597,7 @@ socket.on('queueUpdate', (data) => {
 ```
 
 #### Now Playing Update
+
 ```typescript
 socket.on('nowPlayingUpdate', (data) => {
   // {
@@ -582,6 +612,7 @@ socket.on('nowPlayingUpdate', (data) => {
 ```
 
 #### Track Skipped
+
 ```typescript
 socket.on('trackSkipped', (data) => {
   // {
@@ -595,6 +626,7 @@ socket.on('trackSkipped', (data) => {
 ```
 
 #### Event Status Change
+
 ```typescript
 socket.on('eventStatusChange', (data) => {
   // {
@@ -606,6 +638,7 @@ socket.on('eventStatusChange', (data) => {
 ```
 
 #### Connection Count
+
 ```typescript
 socket.on('connectionCount', (data) => {
   // {
@@ -618,6 +651,7 @@ socket.on('connectionCount', (data) => {
 ## 🚨 Error Responses
 
 ### Standard Error Format
+
 ```json
 {
   "error": "ERROR_CODE",
@@ -630,38 +664,39 @@ socket.on('connectionCount', (data) => {
 
 ### Common Error Codes
 
-| Status | Error Code | Description |
-|--------|-----------|-------------|
-| 400 | `VALIDATION_ERROR` | Invalid request data |
-| 401 | `UNAUTHORIZED` | Missing or invalid token |
-| 403 | `FORBIDDEN` | Insufficient permissions |
-| 404 | `NOT_FOUND` | Resource not found |
-| 409 | `CONFLICT` | Resource conflict (e.g., duplicate slug) |
-| 429 | `RATE_LIMIT_EXCEEDED` | Too many requests |
-| 500 | `INTERNAL_ERROR` | Server error |
+| Status | Error Code            | Description                              |
+| ------ | --------------------- | ---------------------------------------- |
+| 400    | `VALIDATION_ERROR`    | Invalid request data                     |
+| 401    | `UNAUTHORIZED`        | Missing or invalid token                 |
+| 403    | `FORBIDDEN`           | Insufficient permissions                 |
+| 404    | `NOT_FOUND`           | Resource not found                       |
+| 409    | `CONFLICT`            | Resource conflict (e.g., duplicate slug) |
+| 429    | `RATE_LIMIT_EXCEEDED` | Too many requests                        |
+| 500    | `INTERNAL_ERROR`      | Server error                             |
 
 ### Voting-Specific Errors
 
-| Error Code | Description |
-|-----------|-------------|
-| `VOTE_COOLDOWN` | Must wait before voting again |
-| `EVENT_NOT_ACTIVE` | Event is not currently active |
-| `TRACK_NOT_AVAILABLE` | Track not in event playlist |
-| `MAX_VOTES_REACHED` | Hourly vote limit reached |
-| `TRACK_RECENTLY_PLAYED` | Track on replay cooldown |
+| Error Code              | Description                   |
+| ----------------------- | ----------------------------- |
+| `VOTE_COOLDOWN`         | Must wait before voting again |
+| `EVENT_NOT_ACTIVE`      | Event is not currently active |
+| `TRACK_NOT_AVAILABLE`   | Track not in event playlist   |
+| `MAX_VOTES_REACHED`     | Hourly vote limit reached     |
+| `TRACK_RECENTLY_PLAYED` | Track on replay cooldown      |
 
 ## 📊 Rate Limiting
 
 ### Limits by Endpoint Type
 
-| Endpoint Type | Rate Limit | Window |
-|--------------|-----------|--------|
-| Public reads | 100 req/min | Per IP |
-| Voting | 3 votes/hour | Per session |
-| Admin writes | 30 req/min | Per token |
-| Search | 20 req/min | Per IP |
+| Endpoint Type | Rate Limit   | Window      |
+| ------------- | ------------ | ----------- |
+| Public reads  | 100 req/min  | Per IP      |
+| Voting        | 3 votes/hour | Per session |
+| Admin writes  | 30 req/min   | Per token   |
+| Search        | 20 req/min   | Per IP      |
 
 ### Rate Limit Headers
+
 ```http
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 73
@@ -671,6 +706,7 @@ X-RateLimit-Reset: 1610000000
 ## 🔒 Security
 
 ### CORS Configuration
+
 ```typescript
 {
   origin: [
@@ -683,6 +719,7 @@ X-RateLimit-Reset: 1610000000
 ```
 
 ### API Key (Future Feature)
+
 ```http
 X-API-Key: vb_live_...
 ```
@@ -692,11 +729,13 @@ For third-party integrations and white-label deployments.
 ## 📝 Pagination
 
 ### Query Parameters
+
 ```
 ?limit=20&offset=0
 ```
 
 ### Response Format
+
 ```json
 {
   "data": [ ... ],
@@ -712,11 +751,13 @@ For third-party integrations and white-label deployments.
 ## 🔍 Filtering & Sorting
 
 ### Events
+
 ```
 GET /venues/:venueId/events?status=ACTIVE&sort=startTime&order=desc
 ```
 
 ### Analytics
+
 ```
 GET /venues/:venueId/analytics?startDate=2026-01-01&endDate=2026-01-31&groupBy=day
 ```
@@ -726,12 +767,14 @@ GET /venues/:venueId/analytics?startDate=2026-01-01&endDate=2026-01-31&groupBy=d
 Current version: `v1`
 
 Future versions accessible via:
+
 - URL: `/v2/...`
 - Header: `Accept: application/vnd.votebox.v2+json`
 
 ## 🧪 Testing Endpoints
 
 ### Health Check
+
 ```http
 GET /health
 
@@ -745,6 +788,7 @@ Response: 200 OK
 ```
 
 ### Database Health
+
 ```http
 GET /health/database
 

@@ -50,7 +50,10 @@ export default function LoginPage() {
                 type="checkbox"
                 className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-600"
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900 dark:text-gray-300">
+              <label
+                htmlFor="remember-me"
+                className="ml-2 block text-sm text-gray-900 dark:text-gray-300"
+              >
                 Remember me
               </label>
             </div>
@@ -85,7 +88,9 @@ export default function LoginPage() {
               <div className="w-full border-t border-gray-300 dark:border-gray-700" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-gray-50 dark:bg-gray-900 px-2 text-gray-500">Demo Credentials</span>
+              <span className="bg-gray-50 dark:bg-gray-900 px-2 text-gray-500">
+                Demo Credentials
+              </span>
             </div>
           </div>
           <div className="mt-4 text-center text-xs text-gray-600 dark:text-gray-400 space-y-1">

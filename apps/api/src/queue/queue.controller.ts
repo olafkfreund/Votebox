@@ -10,13 +10,7 @@ import {
   HttpStatus,
   Req,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiParam,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { Request } from 'express';
 import { QueueService } from './queue.service';
 import { AddToQueueDto } from './dto/add-to-queue.dto';
@@ -52,8 +46,7 @@ export class QueueController {
   @Post()
   @ApiOperation({
     summary: 'Add track to queue',
-    description:
-      'Add a track to the event queue or increment vote count if already exists',
+    description: 'Add a track to the event queue or increment vote count if already exists',
   })
   @ApiParam({
     name: 'eventId',
@@ -75,7 +68,7 @@ export class QueueController {
   addToQueue(
     @Param('eventId') eventId: string,
     @Body() addToQueueDto: AddToQueueDto,
-    @Req() request: Request,
+    @Req() request: Request
   ) {
     // Extract IP address (handle proxy headers)
     const ipAddress =
@@ -108,10 +101,7 @@ export class QueueController {
     status: 404,
     description: 'Track not found in queue',
   })
-  removeFromQueue(
-    @Param('eventId') eventId: string,
-    @Param('trackId') trackId: string,
-  ) {
+  removeFromQueue(@Param('eventId') eventId: string, @Param('trackId') trackId: string) {
     return this.queueService.removeFromQueue(eventId, trackId);
   }
 
@@ -160,10 +150,7 @@ export class QueueController {
     status: 404,
     description: 'Track not found in queue',
   })
-  markAsPlayed(
-    @Param('eventId') eventId: string,
-    @Param('trackId') trackId: string,
-  ) {
+  markAsPlayed(@Param('eventId') eventId: string, @Param('trackId') trackId: string) {
     return this.queueService.markAsPlayed(eventId, trackId);
   }
 
@@ -198,7 +185,7 @@ export class QueueController {
   skipTrack(
     @Param('eventId') eventId: string,
     @Param('trackId') trackId: string,
-    @Query('reason') reason?: string,
+    @Query('reason') reason?: string
   ) {
     return this.queueService.skipTrack(eventId, trackId, reason);
   }
@@ -277,10 +264,7 @@ export class QueueController {
     status: 200,
     description: 'Remaining votes count',
   })
-  getRemainingVotes(
-    @Param('eventId') eventId: string,
-    @Param('sessionId') sessionId: string,
-  ) {
+  getRemainingVotes(@Param('eventId') eventId: string, @Param('sessionId') sessionId: string) {
     return this.queueService.getRemainingVotes(eventId, sessionId);
   }
 }

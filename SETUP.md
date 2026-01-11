@@ -3,6 +3,7 @@
 ## Quick Start
 
 ### Prerequisites
+
 - Node.js 20+
 - Docker & Docker Compose
 - Git
@@ -10,6 +11,7 @@
 ### Installation
 
 1. **Clone and install dependencies**
+
 ```bash
 git clone https://github.com/olafkfreund/Votebox.git
 cd Votebox
@@ -17,17 +19,20 @@ npm install
 ```
 
 2. **Set up environment variables**
+
 ```bash
 cp .env.example .env
 # Edit .env with your configuration
 ```
 
 3. **Start infrastructure**
+
 ```bash
 docker-compose up -d postgres redis
 ```
 
 4. **Run database migrations**
+
 ```bash
 cd packages/database
 npx prisma migrate dev --name init
@@ -35,17 +40,20 @@ npx prisma generate
 ```
 
 5. **Seed the database (optional)**
+
 ```bash
 npm run db:seed
 ```
 
 6. **Start development servers**
+
 ```bash
 # From project root
 npm run dev
 ```
 
 This will start:
+
 - API: http://localhost:4000
 - Web: http://localhost:3000
 - API Docs: http://localhost:4000/api/docs
@@ -53,11 +61,13 @@ This will start:
 ## Development Workflow
 
 ### Run all services with Docker
+
 ```bash
 docker-compose up
 ```
 
 ### Run services individually
+
 ```bash
 # Terminal 1 - API
 cd apps/api
@@ -69,6 +79,7 @@ npm run dev
 ```
 
 ### Database operations
+
 ```bash
 # Create a new migration
 npm run db:migrate
@@ -81,6 +92,7 @@ npm run db:seed
 ```
 
 ### Testing
+
 ```bash
 # Run all tests
 npm run test
@@ -93,6 +105,7 @@ npm run test:ci
 ```
 
 ### Linting and Formatting
+
 ```bash
 # Lint
 npm run lint
@@ -125,7 +138,9 @@ votebox/
 ## Troubleshooting
 
 ### Port conflicts
+
 If ports 3000, 4000, 5432, or 6379 are in use:
+
 ```bash
 # Check what's using the ports
 lsof -i :3000
@@ -137,6 +152,7 @@ lsof -i :6379
 ```
 
 ### Database connection issues
+
 ```bash
 # Reset database
 docker-compose down -v
@@ -145,6 +161,7 @@ npm run db:migrate
 ```
 
 ### Node modules issues
+
 ```bash
 # Clean install
 npm run clean

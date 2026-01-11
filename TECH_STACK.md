@@ -19,17 +19,20 @@ Votebox uses a modern, cloud-native stack optimized for real-time performance, s
 **Decision**: Use Turborepo for monorepo management
 
 **Rationale**:
+
 - Share code between frontend and backend
 - Consistent tooling and configurations
 - Faster builds with intelligent caching
 - Better developer experience
 
 **Alternatives Considered**:
+
 - Nx: More complex, overkill for initial scope
 - Separate repos: Code duplication, harder to maintain types
 - Lerna: Less active development
 
 **Implementation**:
+
 ```json
 {
   "private": true,
@@ -47,6 +50,7 @@ Votebox uses a modern, cloud-native stack optimized for real-time performance, s
 **Decision**: Use Next.js 14 (App Router) for all frontend applications
 
 **Rationale**:
+
 - SSR/SSG for better SEO and performance
 - Built-in API routes (for admin dashboard)
 - Excellent PWA support
@@ -54,22 +58,25 @@ Votebox uses a modern, cloud-native stack optimized for real-time performance, s
 - Great DX with Fast Refresh
 
 **Configuration**:
+
 ```javascript
 // next.config.js
 module.exports = {
   reactStrictMode: true,
   swcMinify: true,
   experimental: {
-    serverActions: true
+    serverActions: true,
   },
   // PWA configuration
   pwa: {
     dest: 'public',
     register: true,
     skipWaiting: true,
-    runtimeCaching: [/* ... */]
-  }
-}
+    runtimeCaching: [
+      /* ... */
+    ],
+  },
+};
 ```
 
 ### ADR-003: NestJS for Backend
@@ -77,6 +84,7 @@ module.exports = {
 **Decision**: Use NestJS as the backend framework
 
 **Rationale**:
+
 - Built-in TypeScript support
 - Excellent architecture (modules, dependency injection)
 - WebSocket support with Socket.io integration
@@ -85,11 +93,13 @@ module.exports = {
 - Your familiarity with enterprise patterns
 
 **Alternatives Considered**:
+
 - Express: Too low-level, less structure
 - Fastify: Faster but less ecosystem
 - tRPC: Couples frontend/backend too tightly
 
 **Project Structure**:
+
 ```
 apps/api/
 ├── src/
@@ -115,6 +125,7 @@ apps/api/
 **Decision**: Use PostgreSQL as primary database with Prisma ORM
 
 **Rationale**:
+
 - Relational data model fits use case
 - ACID compliance for vote integrity
 - Excellent JSON support for flexible configs
@@ -123,6 +134,7 @@ apps/api/
 - Your PostgreSQL expertise
 
 **Schema Example**:
+
 ```prisma
 model Venue {
   id               String   @id @default(cuid())
@@ -132,7 +144,7 @@ model Venue {
   settings         Json     @default("{}")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  
+
   events           Event[]
   subscriptions    Subscription[]
 }
@@ -146,11 +158,11 @@ model Event {
   endTime         DateTime
   status          EventStatus @default(UPCOMING)
   playlistConfig  Json
-  
+
   venue           Venue    @relation(fields: [venueId], references: [id])
   votes           Vote[]
   queue           QueueItem[]
-  
+
   @@index([venueId, status])
   @@index([scheduledDate])
 }
@@ -161,6 +173,7 @@ model Event {
 **Decision**: Use Redis for caching, sessions, and queue management
 
 **Rationale**:
+
 - Sub-millisecond latency
 - Perfect for real-time queue state
 - Session management
@@ -168,6 +181,7 @@ model Event {
 - Pub/sub for distributed systems (future)
 
 **Use Cases**:
+
 ```typescript
 // Track cache (reduce Spotify API calls)
 await redis.setex(
@@ -187,11 +201,7 @@ if (count > 3) {
 }
 
 // Queue state
-await redis.zadd(
-  `queue:event:${eventId}`,
-  score,
-  trackId
-);
+await redis.zadd(`queue:event:${eventId}`, score, trackId);
 ```
 
 ### ADR-006: Socket.io for Real-time
@@ -199,6 +209,7 @@ await redis.zadd(
 **Decision**: Use Socket.io for WebSocket communication
 
 **Rationale**:
+
 - Automatic fallback to polling
 - Built-in reconnection logic
 - Room-based broadcasting
@@ -206,22 +217,18 @@ await redis.zadd(
 - Battle-tested in production
 
 **Implementation**:
+
 ```typescript
 @WebSocketGateway({ cors: true })
 export class EventsGateway {
   @SubscribeMessage('joinEvent')
-  handleJoinEvent(
-    @MessageBody() data: { eventId: string },
-    @ConnectedSocket() client: Socket
-  ) {
+  handleJoinEvent(@MessageBody() data: { eventId: string }, @ConnectedSocket() client: Socket) {
     client.join(`event:${data.eventId}`);
   }
-  
+
   // Broadcast vote update to all clients in event
   broadcastVoteUpdate(eventId: string, update: VoteUpdate) {
-    this.server
-      .to(`event:${eventId}`)
-      .emit('voteUpdate', update);
+    this.server.to(`event:${eventId}`).emit('voteUpdate', update);
   }
 }
 ```
@@ -231,6 +238,7 @@ export class EventsGateway {
 **Decision**: Use Spotify Web API + Web Playback SDK
 
 **Rationale**:
+
 - Industry-standard music platform
 - Comprehensive API
 - Web Playback SDK for browser-based playback
@@ -238,6 +246,7 @@ export class EventsGateway {
 - Venue owners likely already have Spotify
 
 **Integration Strategy**:
+
 ```typescript
 class SpotifyService {
   // OAuth 2.0 flow for venue authentication
@@ -245,26 +254,27 @@ class SpotifyService {
     const tokens = await this.spotifyAuth.getTokens(code);
     // Store refresh token for venue
   }
-  
+
   // Search by genre
   async searchByGenre(genres: string[], limit: number) {
     return this.spotify.getRecommendations({
       seed_genres: genres,
-      limit
+      limit,
     });
   }
-  
+
   // Control playback
   async playTrack(trackUri: string, deviceId: string) {
     return this.spotify.play({
       uris: [trackUri],
-      device_id: deviceId
+      device_id: deviceId,
     });
   }
 }
 ```
 
 **Rate Limiting**:
+
 - 180 requests per minute per user
 - Implement exponential backoff
 - Cache aggressively
@@ -274,11 +284,13 @@ class SpotifyService {
 ### Frontend Stack
 
 #### Next.js 14.x
+
 ```bash
 npm install next@latest react@latest react-dom@latest
 ```
 
 **Features Used**:
+
 - App Router (server components)
 - Server Actions (form mutations)
 - Route Handlers (API routes)
@@ -286,11 +298,13 @@ npm install next@latest react@latest react-dom@latest
 - Image optimization
 
 #### Tailwind CSS 3.x
+
 ```bash
 npm install -D tailwindcss postcss autoprefixer
 ```
 
 **Configuration**:
+
 ```javascript
 // tailwind.config.js
 module.exports = {
@@ -315,33 +329,39 @@ module.exports = {
 ```
 
 #### PWA Support
+
 ```bash
 npm install next-pwa
 ```
 
 **Features**:
+
 - Install prompt
 - Offline support
 - Push notifications (future)
 - Add to homescreen
 
 #### UI Components
+
 ```bash
 npm install @radix-ui/react-dialog @radix-ui/react-dropdown-menu
 npm install class-variance-authority clsx tailwind-merge
 ```
 
 **Component Library**:
+
 - Radix UI (headless components)
 - Custom styled with Tailwind
 - Accessible by default
 
 #### State Management
+
 ```bash
 npm install zustand
 ```
 
 **Why Zustand**:
+
 - Simple API
 - No boilerplate
 - TypeScript-first
@@ -354,16 +374,18 @@ export const useEventStore = create<EventStore>((set) => ({
   queue: [],
   nowPlaying: null,
   setCurrentEvent: (event) => set({ currentEvent: event }),
-  updateQueue: (queue) => set({ queue })
+  updateQueue: (queue) => set({ queue }),
 }));
 ```
 
 #### Form Handling
+
 ```bash
 npm install react-hook-form zod @hookform/resolvers
 ```
 
 **Why React Hook Form + Zod**:
+
 - Performance (uncontrolled components)
 - Type-safe validation
 - Great DX
@@ -374,18 +396,19 @@ const schema = z.object({
   startTime: z.date(),
   playlistConfig: z.object({
     type: z.enum(['genre', 'playlist', 'custom']),
-    genres: z.array(z.string()).optional()
-  })
+    genres: z.array(z.string()).optional(),
+  }),
 });
 
 const form = useForm<z.infer<typeof schema>>({
-  resolver: zodResolver(schema)
+  resolver: zodResolver(schema),
 });
 ```
 
 ### Backend Stack
 
 #### NestJS 10.x
+
 ```bash
 npm install @nestjs/core @nestjs/common @nestjs/platform-express
 npm install @nestjs/websockets @nestjs/platform-socket.io
@@ -393,51 +416,58 @@ npm install @nestjs/config @nestjs/jwt @nestjs/passport
 ```
 
 **Key Modules**:
+
 - Core framework
 - WebSocket support
 - Configuration management
 - Authentication
 
 #### Database & ORM
+
 ```bash
 npm install @prisma/client
 npm install -D prisma
 ```
 
 **Prisma Features**:
+
 - Type-safe queries
 - Migration system
 - Seeding support
 - Studio (GUI)
 
 #### Authentication
+
 ```bash
 npm install passport passport-jwt bcrypt
 npm install -D @types/passport-jwt @types/bcrypt
 ```
 
 **Strategy**:
+
 - JWT tokens for API auth
 - HTTP-only cookies for web
 - Refresh token rotation
 
 #### Validation
+
 ```bash
 npm install class-validator class-transformer
 ```
 
 **DTOs**:
+
 ```typescript
 export class CreateEventDto {
   @IsString()
   @MinLength(3)
   @MaxLength(100)
   name: string;
-  
+
   @IsDate()
   @Type(() => Date)
   startTime: Date;
-  
+
   @ValidateNested()
   @Type(() => PlaylistConfigDto)
   playlistConfig: PlaylistConfigDto;
@@ -445,25 +475,27 @@ export class CreateEventDto {
 ```
 
 #### HTTP Client
+
 ```bash
 npm install axios
 ```
 
 **Spotify API Wrapper**:
+
 ```typescript
 @Injectable()
 export class SpotifyHttpService {
   private axios: AxiosInstance;
-  
+
   constructor() {
     this.axios = axios.create({
       baseURL: 'https://api.spotify.com/v1',
-      timeout: 5000
+      timeout: 5000,
     });
-    
+
     // Request interceptor for auth
     this.axios.interceptors.request.use(/*...*/);
-    
+
     // Response interceptor for retry
     this.axios.interceptors.response.use(/*...*/);
   }
@@ -473,6 +505,7 @@ export class SpotifyHttpService {
 ### Infrastructure
 
 #### Containerization
+
 ```bash
 # Development
 docker-compose up -d
@@ -483,6 +516,7 @@ docker build -t votebox-web:latest .
 ```
 
 **docker-compose.yml**:
+
 ```yaml
 version: '3.8'
 
@@ -496,16 +530,16 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
-  
+      - '5432:5432'
+
   redis:
     image: redis:7-alpine
     command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
     ports:
-      - "6379:6379"
-  
+      - '6379:6379'
+
   api:
     build:
       context: .
@@ -517,8 +551,8 @@ services:
       - postgres
       - redis
     ports:
-      - "4000:4000"
-  
+      - '4000:4000'
+
   web:
     build:
       context: .
@@ -526,7 +560,7 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:4000
     ports:
-      - "3000:3000"
+      - '3000:3000'
 
 volumes:
   postgres_data:
@@ -534,6 +568,7 @@ volumes:
 ```
 
 #### CI/CD - GitHub Actions
+
 ```yaml
 # .github/workflows/ci.yml
 name: CI
@@ -547,7 +582,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:16
@@ -556,29 +591,30 @@ jobs:
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - run: npm ci
-      
+
       - run: npm run lint
-      
+
       - run: npm run test:ci
-      
+
       - run: npm run build
-      
+
       - uses: codecov/codecov-action@v3
 ```
 
 #### Infrastructure as Code (Optional)
 
 **Terraform for Cloud Resources**:
+
 ```hcl
 # terraform/main.tf
 provider "aws" {
@@ -591,11 +627,11 @@ resource "aws_db_instance" "votebox" {
   engine_version    = "16"
   instance_class    = "db.t4g.micro"
   allocated_storage = 20
-  
+
   db_name  = "votebox"
   username = var.db_username
   password = var.db_password
-  
+
   skip_final_snapshot = false
   final_snapshot_identifier = "votebox-final-snapshot"
 }
@@ -613,6 +649,7 @@ resource "aws_elasticache_cluster" "votebox" {
 ### Monitoring & Observability
 
 #### Logging
+
 ```bash
 npm install winston
 ```
@@ -624,22 +661,25 @@ const logger = winston.createLogger({
   format: winston.format.json(),
   transports: [
     new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' })
-  ]
+    new winston.transports.File({ filename: 'combined.log' }),
+  ],
 });
 ```
 
 #### Metrics (Future)
+
 - Prometheus for metrics collection
 - Grafana for visualization
 - Custom dashboards for business metrics
 
 #### Error Tracking
+
 ```bash
 npm install @sentry/nextjs @sentry/node
 ```
 
 **Sentry Integration**:
+
 - Frontend errors with replay
 - Backend errors with context
 - Performance monitoring
@@ -647,12 +687,14 @@ npm install @sentry/nextjs @sentry/node
 ### Testing Stack
 
 #### Unit Testing
+
 ```bash
 npm install -D jest @types/jest ts-jest
 npm install -D @testing-library/react @testing-library/jest-dom
 ```
 
 **Configuration**:
+
 ```javascript
 // jest.config.js
 module.exports = {
@@ -663,18 +705,20 @@ module.exports = {
       branches: 80,
       functions: 80,
       lines: 80,
-      statements: 80
-    }
-  }
+      statements: 80,
+    },
+  },
 };
 ```
 
 #### E2E Testing
+
 ```bash
 npm install -D @playwright/test
 ```
 
 **Test Example**:
+
 ```typescript
 test('guest can vote for a track', async ({ page }) => {
   await page.goto('/v/demo-venue/event/123');
@@ -685,14 +729,14 @@ test('guest can vote for a track', async ({ page }) => {
 
 ## 📊 Performance Targets
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Time to First Byte (TTFB) | <200ms | Lighthouse |
-| First Contentful Paint (FCP) | <1.5s | Lighthouse |
-| API Response Time (p95) | <500ms | Prometheus |
-| WebSocket Latency | <100ms | Custom metrics |
-| Database Query Time (p95) | <50ms | Prisma logging |
-| Vote Processing Time | <200ms | Application logs |
+| Metric                       | Target | Measurement      |
+| ---------------------------- | ------ | ---------------- |
+| Time to First Byte (TTFB)    | <200ms | Lighthouse       |
+| First Contentful Paint (FCP) | <1.5s  | Lighthouse       |
+| API Response Time (p95)      | <500ms | Prometheus       |
+| WebSocket Latency            | <100ms | Custom metrics   |
+| Database Query Time (p95)    | <50ms  | Prisma logging   |
+| Vote Processing Time         | <200ms | Application logs |
 
 ## 🔧 Development Tools
 
@@ -713,6 +757,7 @@ npm install -D @commitlint/cli @commitlint/config-conventional
 ## 🚀 Deployment Strategy
 
 ### Option 1: Single VPS (Recommended for MVP)
+
 - **Provider**: Hetzner/DigitalOcean
 - **Spec**: 4GB RAM, 2 vCPU, 80GB SSD
 - **Cost**: £20-30/month
@@ -720,8 +765,9 @@ npm install -D @commitlint/cli @commitlint/config-conventional
 - **SSL**: Let's Encrypt via Certbot
 
 ### Option 2: Cloud Platform (Future Scale)
+
 - **Provider**: AWS/Azure/GCP
-- **Services**: 
+- **Services**:
   - Managed Kubernetes (EKS/AKS/GKE)
   - Managed Postgres (RDS/Azure DB)
   - Managed Redis (ElastiCache/Azure Cache)
@@ -729,6 +775,7 @@ npm install -D @commitlint/cli @commitlint/config-conventional
 - **Benefits**: Auto-scaling, managed services
 
 ### Option 3: Serverless (Alternative)
+
 - **Frontend**: Vercel/Netlify
 - **Backend**: AWS Lambda + API Gateway
 - **Database**: Aurora Serverless

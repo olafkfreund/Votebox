@@ -9,14 +9,10 @@ export function QueueList({ queue }: QueueListProps) {
   if (queue.length === 0) {
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-        <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3">
-          Up Next
-        </h2>
+        <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-3">Up Next</h2>
         <div className="text-center py-8">
           <div className="text-4xl mb-2">📝</div>
-          <p className="text-gray-500 dark:text-gray-400 text-sm">
-            No tracks in queue
-          </p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm">No tracks in queue</p>
           <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">
             Vote for tracks to add them here
           </p>
@@ -28,9 +24,7 @@ export function QueueList({ queue }: QueueListProps) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400">
-          Up Next
-        </h2>
+        <h2 className="text-sm font-semibold text-gray-600 dark:text-gray-400">Up Next</h2>
         <span className="text-xs text-gray-500 dark:text-gray-400">
           {queue.length} track{queue.length !== 1 ? 's' : ''}
         </span>
@@ -66,7 +60,7 @@ export function QueueList({ queue }: QueueListProps) {
                 {item.trackData.name}
               </h4>
               <p className="text-xs text-gray-600 dark:text-gray-400 truncate">
-                {item.trackData.artists.map(a => a.name).join(', ')}
+                {item.trackData.artists.map((a) => a.name).join(', ')}
               </p>
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-xs text-gray-500 dark:text-gray-500">

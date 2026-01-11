@@ -64,7 +64,7 @@ export class SpotifyApiService {
     return axios.create({
       baseURL: this.baseUrl,
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
     });
@@ -77,7 +77,7 @@ export class SpotifyApiService {
     venueId: string,
     query: string,
     limit = 20,
-    offset = 0,
+    offset = 0
   ): Promise<{ tracks: SpotifyTrack[]; total: number }> {
     try {
       const client = await this.getClient(venueId);
@@ -98,7 +98,7 @@ export class SpotifyApiService {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new BadRequestException(
-          `Spotify API error: ${error.response?.data?.error?.message || error.message}`,
+          `Spotify API error: ${error.response?.data?.error?.message || error.message}`
         );
       }
       throw error;
@@ -108,11 +108,7 @@ export class SpotifyApiService {
   /**
    * Search tracks by genre
    */
-  async searchTracksByGenre(
-    venueId: string,
-    genre: string,
-    limit = 50,
-  ): Promise<SpotifyTrack[]> {
+  async searchTracksByGenre(venueId: string, genre: string, limit = 50): Promise<SpotifyTrack[]> {
     const result = await this.searchTracks(venueId, `genre:${genre}`, limit);
     return result.tracks;
   }
@@ -130,7 +126,7 @@ export class SpotifyApiService {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new BadRequestException(
-          `Spotify API error: ${error.response?.data?.error?.message || error.message}`,
+          `Spotify API error: ${error.response?.data?.error?.message || error.message}`
         );
       }
       throw error;
@@ -154,7 +150,7 @@ export class SpotifyApiService {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new BadRequestException(
-          `Spotify API error: ${error.response?.data?.error?.message || error.message}`,
+          `Spotify API error: ${error.response?.data?.error?.message || error.message}`
         );
       }
       throw error;
@@ -167,7 +163,7 @@ export class SpotifyApiService {
   async getUserPlaylists(
     venueId: string,
     limit = 20,
-    offset = 0,
+    offset = 0
   ): Promise<{ playlists: SpotifyPlaylist[]; total: number }> {
     try {
       const client = await this.getClient(venueId);
@@ -186,7 +182,7 @@ export class SpotifyApiService {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new BadRequestException(
-          `Spotify API error: ${error.response?.data?.error?.message || error.message}`,
+          `Spotify API error: ${error.response?.data?.error?.message || error.message}`
         );
       }
       throw error;
@@ -206,7 +202,7 @@ export class SpotifyApiService {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new BadRequestException(
-          `Spotify API error: ${error.response?.data?.error?.message || error.message}`,
+          `Spotify API error: ${error.response?.data?.error?.message || error.message}`
         );
       }
       throw error;
@@ -220,7 +216,7 @@ export class SpotifyApiService {
     venueId: string,
     playlistId: string,
     limit = 100,
-    offset = 0,
+    offset = 0
   ): Promise<{ tracks: SpotifyTrack[]; total: number }> {
     try {
       const client = await this.getClient(venueId);
@@ -229,7 +225,7 @@ export class SpotifyApiService {
         `/playlists/${playlistId}/tracks`,
         {
           params: { limit, offset },
-        },
+        }
       );
 
       return {
@@ -239,7 +235,7 @@ export class SpotifyApiService {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new BadRequestException(
-          `Spotify API error: ${error.response?.data?.error?.message || error.message}`,
+          `Spotify API error: ${error.response?.data?.error?.message || error.message}`
         );
       }
       throw error;
@@ -254,14 +250,14 @@ export class SpotifyApiService {
       const client = await this.getClient(venueId);
 
       const response = await client.get<{ genres: string[] }>(
-        '/recommendations/available-genre-seeds',
+        '/recommendations/available-genre-seeds'
       );
 
       return response.data.genres;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new BadRequestException(
-          `Spotify API error: ${error.response?.data?.error?.message || error.message}`,
+          `Spotify API error: ${error.response?.data?.error?.message || error.message}`
         );
       }
       throw error;
@@ -278,7 +274,7 @@ export class SpotifyApiService {
       seedArtists?: string[];
       seedTracks?: string[];
       limit?: number;
-    },
+    }
   ): Promise<SpotifyTrack[]> {
     try {
       const client = await this.getClient(venueId);
@@ -297,16 +293,15 @@ export class SpotifyApiService {
         queryParams.seed_tracks = params.seedTracks.join(',');
       }
 
-      const response = await client.get<{ tracks: SpotifyTrack[] }>(
-        '/recommendations',
-        { params: queryParams },
-      );
+      const response = await client.get<{ tracks: SpotifyTrack[] }>('/recommendations', {
+        params: queryParams,
+      });
 
       return response.data.tracks;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new BadRequestException(
-          `Spotify API error: ${error.response?.data?.error?.message || error.message}`,
+          `Spotify API error: ${error.response?.data?.error?.message || error.message}`
         );
       }
       throw error;
@@ -320,9 +315,7 @@ export class SpotifyApiService {
     try {
       const client = await this.getClient(venueId);
 
-      const response = await client.get<{ item: SpotifyTrack }>(
-        '/me/player/currently-playing',
-      );
+      const response = await client.get<{ item: SpotifyTrack }>('/me/player/currently-playing');
 
       return response.data?.item || null;
     } catch (error) {
@@ -332,7 +325,7 @@ export class SpotifyApiService {
           return null;
         }
         throw new BadRequestException(
-          `Spotify API error: ${error.response?.data?.error?.message || error.message}`,
+          `Spotify API error: ${error.response?.data?.error?.message || error.message}`
         );
       }
       throw error;
@@ -353,12 +346,12 @@ export class SpotifyApiService {
         {
           uris: [trackUri],
         },
-        { params },
+        { params }
       );
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new BadRequestException(
-          `Spotify API error: ${error.response?.data?.error?.message || error.message}`,
+          `Spotify API error: ${error.response?.data?.error?.message || error.message}`
         );
       }
       throw error;
@@ -378,7 +371,7 @@ export class SpotifyApiService {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new BadRequestException(
-          `Spotify API error: ${error.response?.data?.error?.message || error.message}`,
+          `Spotify API error: ${error.response?.data?.error?.message || error.message}`
         );
       }
       throw error;
@@ -398,7 +391,7 @@ export class SpotifyApiService {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new BadRequestException(
-          `Spotify API error: ${error.response?.data?.error?.message || error.message}`,
+          `Spotify API error: ${error.response?.data?.error?.message || error.message}`
         );
       }
       throw error;

@@ -134,12 +134,14 @@ Essential configuration examples:
 ### For Developers
 
 **First time setup:**
+
 1. [GETTING_STARTED.md](./GETTING_STARTED.md)
 2. [DEVELOPMENT_SETUP.md](./DEVELOPMENT_SETUP.md)
 3. [docs/NIXOS.md](./docs/NIXOS.md) (if using NixOS)
 4. [CLAUDE.md](./CLAUDE.md)
 
 **Building features:**
+
 1. [ARCHITECTURE.md](./ARCHITECTURE.md) - Understand the system
 2. [API_DESIGN.md](./API_DESIGN.md) - API patterns
 3. [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md) - Data model
@@ -148,38 +150,45 @@ Essential configuration examples:
 ### For DevOps Engineers
 
 **Infrastructure:**
+
 1. [TECH_STACK.md](./TECH_STACK.md) - Technology overview
 2. [ARCHITECTURE.md](./ARCHITECTURE.md) - System design
 3. [docker-compose.yml](./docker-compose.yml) - Container setup
 4. [.env.example](./.env.example) - Configuration
 
 **Deployment:**
+
 - See "Deployment Strategy" in [TECH_STACK.md](./TECH_STACK.md)
 - See "CI/CD Pipeline" in [ARCHITECTURE.md](./ARCHITECTURE.md)
 
 ### For Project Managers
 
 **Planning:**
+
 1. [PROJECT_PLAN.md](./PROJECT_PLAN.md) - Timeline and milestones
 2. [README.md](./README.md) - Project overview
 
 **Understanding features:**
+
 1. [GETTING_STARTED.md](./GETTING_STARTED.md) - User flows
 2. [ARCHITECTURE.md](./ARCHITECTURE.md) - Technical capabilities
 
 ### For Stakeholders
 
 **Business overview:**
+
 1. [README.md](./README.md) - Vision and features
 2. [PROJECT_PLAN.md](./PROJECT_PLAN.md) - Go-to-market strategy
 
 **Technical capabilities:**
+
 1. [TECH_STACK.md](./TECH_STACK.md) - Technology choices
 2. [ARCHITECTURE.md](./ARCHITECTURE.md) - Scalability
 
 ## 🎯 Common Workflows
 
 ### Starting Development
+
 ```bash
 1. Read GETTING_STARTED.md
 2. Follow DEVELOPMENT_SETUP.md
@@ -188,6 +197,7 @@ Essential configuration examples:
 ```
 
 ### Adding a New Feature
+
 ```bash
 1. Design: Check ARCHITECTURE.md for patterns
 2. Database: Update schema in DATABASE_SCHEMA.md
@@ -197,6 +207,7 @@ Essential configuration examples:
 ```
 
 ### Deploying to Production
+
 ```bash
 1. Infrastructure: Set up per TECH_STACK.md
 2. Configuration: Use .env.example as template
@@ -207,28 +218,29 @@ Essential configuration examples:
 
 ## 📊 Documentation Stats
 
-| Document | Purpose | Audience | Length |
-|----------|---------|----------|--------|
-| README.md | Project overview | Everyone | Medium |
-| GETTING_STARTED.md | Quick start | New developers | Short |
-| DEVELOPMENT_SETUP.md | Development environment | Developers | Long |
-| docs/NIXOS.md | NixOS dev environment | NixOS developers | Medium |
-| PROJECT_PLAN.md | Timeline & roadmap | PM, stakeholders | Long |
-| ARCHITECTURE.md | System design | Developers, DevOps | Long |
-| TECH_STACK.md | Technology choices | Developers, DevOps | Long |
-| DATABASE_SCHEMA.md | Data model | Developers | Medium |
-| API_DESIGN.md | API specifications | Developers | Long |
-| docs/API.md | Complete API reference | Developers | Long |
-| docs/TESTING.md | Testing guide | Developers | Long |
-| CLAUDE.md | AI assistant context | Developers (AI) | Medium |
-| .claude/skill.md | Code patterns | Developers (AI) | Long |
-| flake.nix | Nix configuration | NixOS developers | Short |
+| Document             | Purpose                 | Audience           | Length |
+| -------------------- | ----------------------- | ------------------ | ------ |
+| README.md            | Project overview        | Everyone           | Medium |
+| GETTING_STARTED.md   | Quick start             | New developers     | Short  |
+| DEVELOPMENT_SETUP.md | Development environment | Developers         | Long   |
+| docs/NIXOS.md        | NixOS dev environment   | NixOS developers   | Medium |
+| PROJECT_PLAN.md      | Timeline & roadmap      | PM, stakeholders   | Long   |
+| ARCHITECTURE.md      | System design           | Developers, DevOps | Long   |
+| TECH_STACK.md        | Technology choices      | Developers, DevOps | Long   |
+| DATABASE_SCHEMA.md   | Data model              | Developers         | Medium |
+| API_DESIGN.md        | API specifications      | Developers         | Long   |
+| docs/API.md          | Complete API reference  | Developers         | Long   |
+| docs/TESTING.md      | Testing guide           | Developers         | Long   |
+| CLAUDE.md            | AI assistant context    | Developers (AI)    | Medium |
+| .claude/skill.md     | Code patterns           | Developers (AI)    | Long   |
+| flake.nix            | Nix configuration       | NixOS developers   | Short  |
 
 ## 🔄 Keeping Documentation Updated
 
 ### When to Update Documentation
 
 **Always update when:**
+
 - Adding new features
 - Changing architecture
 - Modifying database schema
@@ -237,6 +249,7 @@ Essential configuration examples:
 - Updating dependencies
 
 **Update these files:**
+
 - Feature change → README.md, PROJECT_PLAN.md
 - Architecture change → ARCHITECTURE.md
 - Tech change → TECH_STACK.md
@@ -247,6 +260,7 @@ Essential configuration examples:
 ### Documentation Review Checklist
 
 Before merging code changes, ensure:
+
 - [ ] README.md reflects new features
 - [ ] ARCHITECTURE.md shows new components
 - [ ] DATABASE_SCHEMA.md has schema changes
@@ -267,17 +281,20 @@ Before merging code changes, ensure:
 ## 🤝 Contributing to Documentation
 
 ### Reporting Issues
+
 - Unclear instructions? Open an issue
 - Missing information? Create a PR
 - Found errors? Submit corrections
 
 ### Improving Documentation
+
 1. Fork the repository
 2. Make your changes
 3. Test the instructions
 4. Submit a pull request
 
 ### Documentation Style Guide
+
 - Use clear, concise language
 - Include code examples
 - Add diagrams for complex concepts
@@ -296,22 +313,26 @@ If documentation doesn't answer your question:
 ## 🎓 Learning Path
 
 ### Beginner
+
 Week 1: GETTING_STARTED.md, DEVELOPMENT_SETUP.md  
 Week 2: ARCHITECTURE.md (overview), API_DESIGN.md (basics)  
 Week 3: Start building simple features  
 Week 4: Explore TECH_STACK.md, DATABASE_SCHEMA.md
 
 ### Intermediate
+
 Month 1: Master all documentation  
 Month 2: Contribute significant features  
 Month 3: Improve architecture, optimize performance
 
 ### Advanced
+
 Month 4+: Lead major initiatives, architect new systems, mentor others
 
 ## 📈 Documentation Roadmap
 
 ### Planned Additions
+
 - [ ] Deployment guide for production
 - [ ] Performance optimization guide
 - [ ] Security best practices

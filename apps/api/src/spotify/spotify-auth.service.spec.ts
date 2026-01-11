@@ -1,10 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
-import {
-  BadRequestException,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { SpotifyAuthService } from './spotify-auth.service';
 import { PrismaService } from '../prisma/prisma.service';
 import axios from 'axios';
@@ -137,7 +133,7 @@ describe('SpotifyAuthService', () => {
             spotifyAccessToken: mockTokenResponse.access_token,
             spotifyRefreshToken: mockTokenResponse.refresh_token,
           }),
-        }),
+        })
       );
     });
 
@@ -145,7 +141,7 @@ describe('SpotifyAuthService', () => {
       const invalidState = Buffer.from('invalid').toString('base64');
 
       await expect(service.handleCallback('code', invalidState)).rejects.toThrow(
-        BadRequestException,
+        BadRequestException
       );
     });
 
@@ -153,9 +149,7 @@ describe('SpotifyAuthService', () => {
       const state = Buffer.from('state123:venue-999').toString('base64');
       mockPrismaService.venue.findUnique.mockResolvedValue(null);
 
-      await expect(service.handleCallback('code', state)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.handleCallback('code', state)).rejects.toThrow(NotFoundException);
     });
 
     it('should handle token exchange failure', async () => {
@@ -172,7 +166,7 @@ describe('SpotifyAuthService', () => {
       });
 
       await expect(service.handleCallback('invalid_code', state)).rejects.toThrow(
-        BadRequestException,
+        BadRequestException
       );
     });
   });
@@ -207,16 +201,14 @@ describe('SpotifyAuthService', () => {
           data: expect.objectContaining({
             spotifyAccessToken: mockTokenResponse.access_token,
           }),
-        }),
+        })
       );
     });
 
     it('should throw NotFoundException if venue not found', async () => {
       mockPrismaService.venue.findUnique.mockResolvedValue(null);
 
-      await expect(service.refreshAccessToken('venue-999')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.refreshAccessToken('venue-999')).rejects.toThrow(NotFoundException);
     });
 
     it('should throw BadRequestException if no refresh token', async () => {
@@ -225,9 +217,7 @@ describe('SpotifyAuthService', () => {
         spotifyRefreshToken: null,
       });
 
-      await expect(service.refreshAccessToken('venue-123')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.refreshAccessToken('venue-123')).rejects.toThrow(BadRequestException);
     });
 
     it('should handle refresh token failure', async () => {
@@ -245,9 +235,7 @@ describe('SpotifyAuthService', () => {
         },
       });
 
-      await expect(service.refreshAccessToken('venue-123')).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(service.refreshAccessToken('venue-123')).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -305,9 +293,7 @@ describe('SpotifyAuthService', () => {
         spotifyRefreshToken: null,
       });
 
-      await expect(service.getValidAccessToken('venue-123')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.getValidAccessToken('venue-123')).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -340,17 +326,13 @@ describe('SpotifyAuthService', () => {
         spotifyAccountId: null,
       });
 
-      await expect(service.disconnect('venue-123')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.disconnect('venue-123')).rejects.toThrow(BadRequestException);
     });
 
     it('should throw NotFoundException if venue not found', async () => {
       mockPrismaService.venue.findUnique.mockResolvedValue(null);
 
-      await expect(service.disconnect('venue-999')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.disconnect('venue-999')).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -398,9 +380,7 @@ describe('SpotifyAuthService', () => {
     it('should throw NotFoundException if venue not found', async () => {
       mockPrismaService.venue.findUnique.mockResolvedValue(null);
 
-      await expect(service.getStatus('venue-999')).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(service.getStatus('venue-999')).rejects.toThrow(NotFoundException);
     });
   });
 });

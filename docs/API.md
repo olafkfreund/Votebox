@@ -26,6 +26,7 @@ Complete API reference for the Votebox backend service.
 **Status**: Not yet implemented (planned for Week 5-8)
 
 Future authentication will use:
+
 - JWT tokens
 - Venue owner verification
 - Role-based access control
@@ -41,6 +42,7 @@ Future authentication will use:
 **Description**: Register a new venue (pub/club)
 
 **Request Body**:
+
 ```json
 {
   "name": "The Metal Tavern",
@@ -56,6 +58,7 @@ Future authentication will use:
 ```
 
 **Response**: `201 Created`
+
 ```json
 {
   "id": "ven_abc123",
@@ -75,6 +78,7 @@ Future authentication will use:
 ```
 
 **Validation**:
+
 - `name`: Required, 1-100 characters
 - `slug`: Required, unique, URL-safe (lowercase, hyphens only)
 - `email`: Required, valid email format
@@ -89,9 +93,11 @@ Future authentication will use:
 **Description**: Retrieve venue details by URL-friendly slug
 
 **Parameters**:
+
 - `slug` (path): Venue slug (e.g., "metal-tavern")
 
 **Response**: `200 OK`
+
 ```json
 {
   "id": "ven_abc123",
@@ -104,6 +110,7 @@ Future authentication will use:
 ```
 
 **Errors**:
+
 - `404 Not Found`: Venue not found
 
 ---
@@ -115,6 +122,7 @@ Future authentication will use:
 **Description**: List all registered venues
 
 **Response**: `200 OK`
+
 ```json
 [
   {
@@ -141,6 +149,7 @@ Future authentication will use:
 **Description**: Update venue details
 
 **Request Body** (all fields optional):
+
 ```json
 {
   "name": "The New Metal Tavern",
@@ -160,6 +169,7 @@ Future authentication will use:
 **Description**: Delete a venue and all associated events
 
 **Response**: `200 OK`
+
 ```json
 {
   "message": "Venue deleted successfully"
@@ -179,6 +189,7 @@ Future authentication will use:
 **Description**: Create a new music event for a venue
 
 **Request Body**:
+
 ```json
 {
   "name": "Doom Rock Night",
@@ -193,6 +204,7 @@ Future authentication will use:
 ```
 
 **Response**: `201 Created`
+
 ```json
 {
   "id": "evt_123",
@@ -212,6 +224,7 @@ Future authentication will use:
 ```
 
 **Validation**:
+
 - `name`: Required, 3-100 characters
 - `scheduledStart`: Required, ISO 8601 datetime
 - `scheduledEnd`: Optional, must be after scheduledStart
@@ -225,6 +238,7 @@ Future authentication will use:
 **Description**: Retrieve event details
 
 **Response**: `200 OK`
+
 ```json
 {
   "id": "evt_123",
@@ -251,10 +265,12 @@ Future authentication will use:
 **Description**: List all events for a specific venue
 
 **Query Parameters**:
+
 - `status` (optional): Filter by status (`UPCOMING`, `ACTIVE`, `ENDED`)
 - `limit` (optional): Limit results (default: 50)
 
 **Response**: `200 OK`
+
 ```json
 [
   {
@@ -281,6 +297,7 @@ Future authentication will use:
 **Description**: Start an event (changes status to ACTIVE)
 
 **Response**: `200 OK`
+
 ```json
 {
   "id": "evt_123",
@@ -290,6 +307,7 @@ Future authentication will use:
 ```
 
 **Errors**:
+
 - `400 Bad Request`: Event already active or ended
 - `404 Not Found`: Event not found
 
@@ -302,6 +320,7 @@ Future authentication will use:
 **Description**: End an event (changes status to ENDED)
 
 **Response**: `200 OK`
+
 ```json
 {
   "id": "evt_123",
@@ -320,6 +339,7 @@ Future authentication will use:
 **Description**: Delete an event and all associated queue items
 
 **Response**: `200 OK`
+
 ```json
 {
   "message": "Event deleted successfully"
@@ -337,6 +357,7 @@ Future authentication will use:
 **Description**: Add a track to the queue or increment votes for existing track
 
 **Request Body**:
+
 ```json
 {
   "trackId": "3BSpsSH5jqIH0WdnoXMfYc",
@@ -351,6 +372,7 @@ Future authentication will use:
 ```
 
 **Response**: `201 Created` (new track) or `200 OK` (vote incremented)
+
 ```json
 {
   "id": "queue_789",
@@ -371,7 +393,9 @@ Future authentication will use:
 ```
 
 **Rate Limiting** (4 layers):
+
 1. **30-second cooldown**: `429 Too Many Requests`
+
    ```json
    {
      "statusCode": 429,
@@ -380,6 +404,7 @@ Future authentication will use:
    ```
 
 2. **3 votes per hour per session**: `429 Too Many Requests`
+
    ```json
    {
      "statusCode": 429,
@@ -388,6 +413,7 @@ Future authentication will use:
    ```
 
 3. **2-hour same-song cooldown**: `400 Bad Request`
+
    ```json
    {
      "statusCode": 400,
@@ -404,6 +430,7 @@ Future authentication will use:
    ```
 
 **Validation**:
+
 - `trackId`: Required, Spotify track ID
 - `addedBy`: Required, session ID
 - Event must be ACTIVE
@@ -417,6 +444,7 @@ Future authentication will use:
 **Description**: Get current queue ordered by score
 
 **Response**: `200 OK`
+
 ```json
 [
   {
@@ -442,6 +470,7 @@ Future authentication will use:
 ```
 
 **Ordering**:
+
 1. Score (descending)
 2. Added at (ascending) - tie-breaker
 
@@ -454,6 +483,7 @@ Future authentication will use:
 **Description**: Get queue statistics
 
 **Response**: `200 OK`
+
 ```json
 {
   "totalTracks": 47,
@@ -472,6 +502,7 @@ Future authentication will use:
 **Description**: Get remaining votes for a session in current hour
 
 **Response**: `200 OK`
+
 ```json
 {
   "remaining": 2,
@@ -489,6 +520,7 @@ Future authentication will use:
 **Description**: Get the next track to be played (highest score)
 
 **Response**: `200 OK`
+
 ```json
 {
   "id": "queue_789",
@@ -515,6 +547,7 @@ Future authentication will use:
 **Description**: Emergency clear - remove all unplayed tracks
 
 **Response**: `200 OK`
+
 ```json
 {
   "message": "Queue cleared successfully",
@@ -531,11 +564,13 @@ Future authentication will use:
 **Description**: Skip a track without playing it
 
 **Query Parameters**:
+
 - `reason` (optional): Reason for skipping
 
 **Example**: `POST /admin/events/evt_123/queue/track_456/force-skip?reason=inappropriate`
 
 **Response**: `200 OK`
+
 ```json
 {
   "id": "queue_789",
@@ -556,6 +591,7 @@ Future authentication will use:
 **Description**: Remove a track from the queue
 
 **Response**: `200 OK`
+
 ```json
 {
   "message": "Track removed from queue successfully",
@@ -572,6 +608,7 @@ Future authentication will use:
 **Description**: Manually recalculate all queue scores
 
 **Response**: `200 OK`
+
 ```json
 {
   "message": "Scores recalculated successfully",
@@ -592,6 +629,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 **Description**: Initialize automated playback on a Spotify device
 
 **Request Body**:
+
 ```json
 {
   "deviceId": "spotify-device-id"
@@ -599,6 +637,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 ```
 
 **Response**: `200 OK`
+
 ```json
 {
   "message": "Playback initialized successfully",
@@ -607,10 +646,12 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 ```
 
 **Errors**:
+
 - `400 Bad Request`: Event not active or invalid device
 - `404 Not Found`: Event or device not found
 
 **Notes**:
+
 - Must be called before using other playback endpoints
 - Device must be an active Spotify device (computer, phone, speaker, etc.)
 - Use Spotify's Web API `/me/player/devices` to get available devices
@@ -624,6 +665,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 **Description**: Play the next highest-scoring track from the queue
 
 **Response**: `200 OK`
+
 ```json
 {
   "message": "Track started playing",
@@ -641,6 +683,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 ```
 
 **Empty Queue Response**: `200 OK`
+
 ```json
 {
   "message": "Queue is empty",
@@ -649,10 +692,12 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 ```
 
 **Errors**:
+
 - `400 Bad Request`: Playback not initialized or Spotify error
 - `404 Not Found`: Event not found
 
 **Behavior**:
+
 - Automatically marks track as played in queue
 - Broadcasts `nowPlayingUpdate` via WebSocket
 - Schedules automatic transition when track ends (if auto-play enabled)
@@ -666,6 +711,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 **Description**: Pause the currently playing track
 
 **Response**: `200 OK`
+
 ```json
 {
   "message": "Playback paused"
@@ -673,6 +719,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 ```
 
 **Errors**:
+
 - `400 Bad Request`: Playback already paused or not initialized
 - `404 Not Found`: Event not found
 
@@ -685,6 +732,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 **Description**: Resume the current track or play next if no current track
 
 **Response**: `200 OK`
+
 ```json
 {
   "message": "Playback resumed"
@@ -692,10 +740,12 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 ```
 
 **Errors**:
+
 - `400 Bad Request`: Playback already active or not initialized
 - `404 Not Found`: Event not found
 
 **Behavior**:
+
 - Resumes current track if paused
 - Plays next track if no current track
 - Re-schedules automatic transition
@@ -711,10 +761,12 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 **Response**: `200 OK` (same as play-next response)
 
 **Errors**:
+
 - `400 Bad Request`: Playback not initialized
 - `404 Not Found`: Event not found
 
 **Behavior**:
+
 - Clears any pending automatic transitions
 - Immediately plays highest-scoring track from queue
 
@@ -727,6 +779,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 **Description**: Control automatic track transitions
 
 **Request Body**:
+
 ```json
 {
   "enabled": true
@@ -734,6 +787,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 ```
 
 **Response**: `200 OK`
+
 ```json
 {
   "message": "Auto-play enabled",
@@ -742,9 +796,11 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 ```
 
 **Errors**:
+
 - `400 Bad Request`: Playback not initialized
 
 **Behavior**:
+
 - When enabled: Automatically plays next track when current track ends
 - When disabled: Playback stops after current track finishes
 - Default: Enabled on initialization
@@ -758,6 +814,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 **Description**: Get current playback state and progress
 
 **Response**: `200 OK` (Initialized)
+
 ```json
 {
   "eventId": "evt_123",
@@ -779,6 +836,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 ```
 
 **Response**: `200 OK` (Not Initialized)
+
 ```json
 {
   "eventId": "evt_123",
@@ -790,6 +848,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 ```
 
 **Notes**:
+
 - `elapsed`: Milliseconds since track started
 - `remaining`: Milliseconds until track ends
 - No authentication required (read-only)
@@ -803,6 +862,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 **Description**: Stop playback and cleanup state
 
 **Response**: `200 OK`
+
 ```json
 {
   "message": "Playback stopped"
@@ -810,9 +870,11 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 ```
 
 **Errors**:
+
 - `404 Not Found`: Playback not initialized
 
 **Behavior**:
+
 - Pauses Spotify playback
 - Clears playback state for event
 - Broadcasts `nowPlayingUpdate` with null
@@ -831,6 +893,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 **Event**: `joinEvent`
 
 **Payload**:
+
 ```json
 {
   "eventId": "evt_123"
@@ -838,6 +901,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 ```
 
 **Response**:
+
 ```json
 {
   "success": true
@@ -851,6 +915,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 **Event**: `leaveEvent`
 
 **Payload**:
+
 ```json
 {
   "eventId": "evt_123"
@@ -866,6 +931,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 **Event**: `queueUpdate`
 
 **Triggered by**:
+
 - New vote/track added
 - Track removed
 - Track skipped
@@ -873,6 +939,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 - Admin actions
 
 **Payload**:
+
 ```json
 {
   "eventId": "evt_123",
@@ -898,6 +965,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 **Triggered by**: Track starts playing
 
 **Payload**:
+
 ```json
 {
   "eventId": "evt_123",
@@ -921,6 +989,7 @@ Automated playback endpoints for controlling Spotify playback on venue devices.
 **Triggered by**: Event started/ended
 
 **Payload**:
+
 ```json
 {
   "eventId": "evt_123",
@@ -966,10 +1035,7 @@ All errors follow this format:
 ```json
 {
   "statusCode": 400,
-  "message": [
-    "name must be longer than or equal to 3 characters",
-    "name should not be empty"
-  ],
+  "message": ["name must be longer than or equal to 3 characters", "name should not be empty"],
   "error": "Bad Request"
 }
 ```
@@ -979,9 +1045,11 @@ All errors follow this format:
 ## Rate Limits
 
 ### Global Rate Limits
+
 - **Not yet implemented**: Future versions will have API-wide rate limiting
 
 ### Vote-Specific Rate Limits
+
 See [Add Track to Queue](#add-track-to-queue-vote) for detailed vote rate limiting rules.
 
 ---
@@ -991,6 +1059,7 @@ See [Add Track to Queue](#add-track-to-queue-vote) for detailed vote rate limiti
 **Status**: Not yet implemented
 
 Future endpoints will support:
+
 - `limit`: Number of results per page
 - `offset`: Starting position
 - Response headers with total count
@@ -1002,6 +1071,7 @@ Future endpoints will support:
 **Status**: Not yet implemented (planned for post-MVP)
 
 Future webhook events:
+
 - Event started/ended
 - Track played/skipped
 - Vote milestones reached
@@ -1022,6 +1092,7 @@ Breaking changes will increment the major version (v2, v3, etc.)
 **Status**: Not yet available
 
 Future plans:
+
 - TypeScript/JavaScript SDK
 - Python SDK
 - API client generators (OpenAPI/Swagger)
@@ -1039,5 +1110,6 @@ Future plans:
 ## Support
 
 For API issues or questions:
+
 - GitHub Issues: https://github.com/olafkfreund/Votebox/issues
 - Documentation: https://github.com/olafkfreund/Votebox/tree/main/docs

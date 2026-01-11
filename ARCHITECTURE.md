@@ -550,16 +550,16 @@ Query Distribution:
 
 ## 📈 Performance Targets
 
-| Metric | Target | Measurement Method |
-|--------|--------|-------------------|
-| API Response Time (p95) | < 500ms | Prometheus |
-| Vote Processing Time | < 200ms | Application logs |
-| WebSocket Latency | < 100ms | Custom metrics |
-| Database Query Time (p95) | < 50ms | Prisma logging |
-| Page Load Time | < 2s | Lighthouse |
-| Time to Interactive | < 3s | Lighthouse |
-| Concurrent Voters per Event | 500+ | Load testing |
-| System Uptime | 99.5% | StatusPage |
+| Metric                      | Target  | Measurement Method |
+| --------------------------- | ------- | ------------------ |
+| API Response Time (p95)     | < 500ms | Prometheus         |
+| Vote Processing Time        | < 200ms | Application logs   |
+| WebSocket Latency           | < 100ms | Custom metrics     |
+| Database Query Time (p95)   | < 50ms  | Prisma logging     |
+| Page Load Time              | < 2s    | Lighthouse         |
+| Time to Interactive         | < 3s    | Lighthouse         |
+| Concurrent Voters per Event | 500+    | Load testing       |
+| System Uptime               | 99.5%   | StatusPage         |
 
 ## 🛡️ Disaster Recovery
 

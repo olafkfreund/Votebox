@@ -24,7 +24,7 @@ export class PlaybackService {
     private readonly prisma: PrismaService,
     private readonly spotifyApi: SpotifyApiService,
     private readonly queueService: QueueService,
-    private readonly websocket: WebSocketGatewayService,
+    private readonly websocket: WebSocketGatewayService
   ) {}
 
   /**
@@ -32,7 +32,7 @@ export class PlaybackService {
    */
   async initializePlayback(
     eventId: string,
-    deviceId: string,
+    deviceId: string
   ): Promise<{ message: string; deviceId: string }> {
     const event = await this.prisma.event.findUnique({
       where: { id: eventId },
@@ -109,11 +109,7 @@ export class PlaybackService {
 
     // Play the track on Spotify
     try {
-      await this.spotifyApi.playTrack(
-        event.venueId,
-        nextTrack.trackUri,
-        state.deviceId,
-      );
+      await this.spotifyApi.playTrack(event.venueId, nextTrack.trackUri, state.deviceId);
 
       // Mark track as playing in database
       await this.queueService.markAsPlayed(eventId, nextTrack.trackId);
@@ -140,7 +136,7 @@ export class PlaybackService {
       });
 
       this.logger.log(
-        `Now playing: ${nextTrack.trackName} by ${nextTrack.artistName} (Event: ${eventId})`,
+        `Now playing: ${nextTrack.trackName} by ${nextTrack.artistName} (Event: ${eventId})`
       );
 
       return {
@@ -201,11 +197,7 @@ export class PlaybackService {
     });
 
     if (queueItem) {
-      await this.spotifyApi.playTrack(
-        event.venueId,
-        queueItem.trackUri,
-        state.deviceId,
-      );
+      await this.spotifyApi.playTrack(event.venueId, queueItem.trackUri, state.deviceId);
 
       state.isPlaying = true;
 
@@ -249,7 +241,7 @@ export class PlaybackService {
    */
   async setAutoPlay(
     eventId: string,
-    enabled: boolean,
+    enabled: boolean
   ): Promise<{ message: string; autoPlayEnabled: boolean }> {
     const state = this.getPlaybackState(eventId);
 
@@ -296,14 +288,10 @@ export class PlaybackService {
       });
     }
 
-    const elapsed = state.startedAt
-      ? Date.now() - state.startedAt.getTime()
-      : null;
+    const elapsed = state.startedAt ? Date.now() - state.startedAt.getTime() : null;
 
     const remaining =
-      state.trackDuration && elapsed
-        ? Math.max(0, state.trackDuration - elapsed)
-        : null;
+      state.trackDuration && elapsed ? Math.max(0, state.trackDuration - elapsed) : null;
 
     return {
       eventId,
@@ -371,19 +359,14 @@ export class PlaybackService {
     }
 
     // Calculate remaining time
-    const elapsed = state.startedAt
-      ? Date.now() - state.startedAt.getTime()
-      : 0;
+    const elapsed = state.startedAt ? Date.now() - state.startedAt.getTime() : 0;
 
     const remaining = state.trackDuration - elapsed;
 
     if (remaining <= 0) {
       // Track should have already finished, play next immediately
       this.playNext(state.eventId).catch((error) => {
-        this.logger.error(
-          `Failed to auto-play next track: ${error.message}`,
-          error.stack,
-        );
+        this.logger.error(`Failed to auto-play next track: ${error.message}`, error.stack);
       });
       return;
     }
@@ -395,15 +378,12 @@ export class PlaybackService {
       this.logger.log(`Auto-playing next track for event ${state.eventId}`);
 
       this.playNext(state.eventId).catch((error) => {
-        this.logger.error(
-          `Failed to auto-play next track: ${error.message}`,
-          error.stack,
-        );
+        this.logger.error(`Failed to auto-play next track: ${error.message}`, error.stack);
       });
     }, delay);
 
     this.logger.debug(
-      `Next track scheduled in ${Math.round(delay / 1000)}s for event ${state.eventId}`,
+      `Next track scheduled in ${Math.round(delay / 1000)}s for event ${state.eventId}`
     );
   }
 
@@ -425,7 +405,7 @@ export class PlaybackService {
 
     if (!state) {
       throw new BadRequestException(
-        `Playback not initialized for event ${eventId}. Call /playback/initialize first.`,
+        `Playback not initialized for event ${eventId}. Call /playback/initialize first.`
       );
     }
 

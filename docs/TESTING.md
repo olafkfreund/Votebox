@@ -21,17 +21,20 @@ Comprehensive testing documentation for the Votebox project.
 Votebox follows a multi-layer testing approach:
 
 ### 1. Unit Tests
+
 - **Scope**: Individual services, controllers, utilities
 - **Framework**: Jest
 - **Coverage Target**: 80%+
 - **Location**: `*.spec.ts` files alongside source code
 
 ### 2. Integration Tests
+
 - **Scope**: API endpoints, database interactions
 - **Framework**: Jest + Supertest
 - **Coverage**: Critical user flows
 
 ### 3. End-to-End Tests
+
 - **Scope**: Complete user journeys
 - **Framework**: Playwright
 - **Coverage**: Happy paths + critical error cases
@@ -44,21 +47,25 @@ Votebox follows a multi-layer testing approach:
 ### Primary Stack
 
 **Jest** (v29+)
+
 - Test runner
 - Assertion library
 - Mocking framework
 - Coverage reporting
 
 **@nestjs/testing**
+
 - NestJS test utilities
 - Dependency injection for tests
 - Mock providers
 
 **Supertest** (integration tests)
+
 - HTTP assertions
 - API endpoint testing
 
 **Playwright**
+
 - Browser automation
 - Real user interaction testing
 - Multi-browser support (Chromium, Firefox, WebKit)
@@ -70,36 +77,43 @@ Votebox follows a multi-layer testing approach:
 ## Running Tests
 
 ### All Tests
+
 ```bash
 npm test
 ```
 
 ### Watch Mode (development)
+
 ```bash
 npm run test:watch
 ```
 
 ### Coverage Report
+
 ```bash
 npm run test:cov
 ```
 
 ### CI Mode (with coverage)
+
 ```bash
 npm run test:ci
 ```
 
 ### Specific File
+
 ```bash
 npm test queue.service.spec.ts
 ```
 
 ### Specific Test Suite
+
 ```bash
 npm test -- --testNamePattern="VoteTrackerService"
 ```
 
 ### E2E Tests
+
 ```bash
 # Run all E2E tests (headless)
 npm run test:e2e
@@ -115,6 +129,7 @@ npm run test:e2e:report
 ```
 
 ### Specific E2E Test File
+
 ```bash
 npx playwright test tests/e2e/guest-voting.spec.ts
 ```
@@ -128,6 +143,7 @@ npx playwright test tests/e2e/guest-voting.spec.ts
 **Location**: `apps/api/src/[module]/[service].spec.ts`
 
 **Template**:
+
 ```typescript
 import { Test, TestingModule } from '@nestjs/testing';
 import { ServiceName } from './service-name.service';
@@ -175,9 +191,7 @@ describe('ServiceName', () => {
 
     it('should throw error when invalid input', async () => {
       // Arrange & Act & Assert
-      await expect(service.methodName(invalidInput)).rejects.toThrow(
-        ExpectedException
-      );
+      await expect(service.methodName(invalidInput)).rejects.toThrow(ExpectedException);
     });
   });
 });
@@ -273,7 +287,7 @@ describe('VoteTrackerService', () => {
   describe('checkAndRecordVote', () => {
     it('should allow first vote for a session', async () => {
       await expect(
-        service.checkAndRecordVote(eventId, trackId, sessionId, ipAddress),
+        service.checkAndRecordVote(eventId, trackId, sessionId, ipAddress)
       ).resolves.not.toThrow();
     });
 
@@ -281,7 +295,7 @@ describe('VoteTrackerService', () => {
       await service.checkAndRecordVote(eventId, trackId, sessionId, ipAddress);
 
       await expect(
-        service.checkAndRecordVote(eventId, 'track-999', sessionId, ipAddress),
+        service.checkAndRecordVote(eventId, 'track-999', sessionId, ipAddress)
       ).rejects.toThrow(/Please wait \d+ seconds before voting again/);
     });
 
@@ -307,6 +321,7 @@ describe('VoteTrackerService', () => {
 ### Current Coverage (Week 4)
 
 **Backend (apps/api)**:
+
 - **Queue Management**: ~85% coverage
   - `queue.service.spec.ts`: 21 tests
   - `vote-tracker.service.spec.ts`: 13 tests
@@ -324,6 +339,7 @@ describe('VoteTrackerService', () => {
 - **Spotify Integration**: Not yet tested (mocked in integration tests)
 
 **Frontend (apps/web)**:
+
 - **Status**: Not yet implemented
 - **Planned**: React Testing Library + Playwright
 
@@ -331,13 +347,13 @@ describe('VoteTrackerService', () => {
 
 ### Coverage Goals
 
-| Component | Target | Current |
-|-----------|--------|---------|
-| Services | 90% | 80% |
-| Controllers | 80% | 0% |
-| DTOs/Validators | 100% | 0% |
-| Utilities | 90% | 0% |
-| Frontend Components | 80% | 0% |
+| Component           | Target | Current |
+| ------------------- | ------ | ------- |
+| Services            | 90%    | 80%     |
+| Controllers         | 80%    | 0%      |
+| DTOs/Validators     | 100%   | 0%      |
+| Utilities           | 90%    | 0%      |
+| Frontend Components | 80%    | 0%      |
 
 ---
 
@@ -421,6 +437,7 @@ jobs:
 ### Test Environment
 
 **Environment Variables** (`.env.test`):
+
 ```env
 DATABASE_URL=postgresql://votebox_test:test_password@localhost:5432/votebox_test?schema=public
 REDIS_URL=redis://localhost:6379
@@ -436,6 +453,7 @@ NODE_ENV=test
 Use descriptive test names that explain the scenario:
 
 ✅ **Good**:
+
 ```typescript
 it('should throw BadRequestException when session ID is missing', async () => {
   // ...
@@ -443,6 +461,7 @@ it('should throw BadRequestException when session ID is missing', async () => {
 ```
 
 ❌ **Bad**:
+
 ```typescript
 it('should work', async () => {
   // ...
@@ -558,6 +577,7 @@ const event = createMockEvent({ status: 'ENDED' });
 Each test should be independent and runnable in isolation:
 
 ❌ **Bad**:
+
 ```typescript
 let sharedState;
 
@@ -571,6 +591,7 @@ it('test 2', () => {
 ```
 
 ✅ **Good**:
+
 ```typescript
 it('test 1', () => {
   const state = doSomething();
@@ -617,12 +638,14 @@ Before submitting code, ensure:
 ## Future Testing Plans
 
 ### Week 5-8: Integration Tests
+
 - Controller integration tests
 - Database integration tests
 - Spotify API integration tests
 - WebSocket integration tests
 
 ### Week 4: E2E Tests - **COMPLETE**
+
 - ✅ Complete user voting flow
 - ✅ Admin queue management
 - ✅ Playback automation
@@ -632,6 +655,7 @@ Before submitting code, ensure:
 - ✅ WebSocket reconnection
 
 ### Post-MVP: Performance Tests
+
 - Load testing with Artillery
 - Stress testing queue operations
 - WebSocket connection limits
@@ -646,6 +670,7 @@ Before submitting code, ensure:
 E2E tests validate complete user journeys through the application, testing both frontend and backend integration.
 
 **Test Files**:
+
 - `tests/e2e/guest-voting.spec.ts` - Guest voting experience
 - `tests/e2e/admin-queue.spec.ts` - Admin queue management
 - `tests/e2e/playback.spec.ts` - Playback automation
@@ -661,7 +686,9 @@ test.describe('Feature Name', () => {
   test.beforeAll(async ({ request }) => {
     // Setup: Create test data via API
     const response = await request.post('http://localhost:4000/api/v1/venues', {
-      data: { /* venue data */ },
+      data: {
+        /* venue data */
+      },
     });
     // ...
   });
@@ -688,6 +715,7 @@ test.describe('Feature Name', () => {
 **File**: `tests/e2e/guest-voting.spec.ts` (12 test cases)
 
 Test scenarios:
+
 1. ✅ Load event voting page successfully
 2. ✅ Show connection status (WebSocket)
 3. ✅ Display empty queue initially
@@ -706,6 +734,7 @@ Test scenarios:
 **File**: `tests/e2e/admin-queue.spec.ts` (8 test cases)
 
 Test scenarios:
+
 1. ✅ Clear entire queue (emergency)
 2. ✅ Force skip a track with reason
 3. ✅ Remove track from queue
@@ -720,6 +749,7 @@ Test scenarios:
 **File**: `tests/e2e/playback.spec.ts` (11 test cases)
 
 Test scenarios:
+
 1. ✅ Get uninitialized playback status
 2. ✅ Fail to play without initialization
 3. ✅ Return 404 for non-existent device
@@ -737,6 +767,7 @@ Test scenarios:
 ### Running E2E Tests Locally
 
 **Prerequisites**:
+
 ```bash
 # Ensure services are running
 docker-compose up -d postgres redis
@@ -746,6 +777,7 @@ npm run db:migrate
 ```
 
 **Run Tests**:
+
 ```bash
 # All E2E tests (headless)
 npm run test:e2e
@@ -762,6 +794,7 @@ npx playwright test tests/e2e/guest-voting.spec.ts --headed --debug
 **File**: `playwright.config.ts`
 
 Key settings:
+
 - **Test Directory**: `./tests/e2e`
 - **Base URL**: `http://localhost:3000`
 - **Browsers**: Chromium, Mobile Chrome
@@ -770,6 +803,7 @@ Key settings:
 - **Reporters**: HTML, list, JSON
 
 **Automatic Server Startup**:
+
 ```typescript
 webServer: [
   {
@@ -790,6 +824,7 @@ webServer: [
 **1. API-First Setup**
 
 Use `request` fixture to create test data:
+
 ```typescript
 test.beforeAll(async ({ request }) => {
   const venueResponse = await request.post('/api/v1/venues', {
@@ -802,6 +837,7 @@ test.beforeAll(async ({ request }) => {
 **2. Data Test IDs**
 
 Use `data-testid` attributes for stable selectors:
+
 ```typescript
 await page.click('[data-testid="vote-button"]');
 await expect(page.locator('[data-testid="queue-list"]')).toBeVisible();
@@ -810,6 +846,7 @@ await expect(page.locator('[data-testid="queue-list"]')).toBeVisible();
 **3. Auto-Waiting**
 
 Playwright automatically waits for elements:
+
 ```typescript
 // No need for manual waits
 await page.click('button'); // Waits for button to be ready
@@ -819,7 +856,7 @@ await expect(page.getByText('Success')).toBeVisible(); // Auto-retries
 **4. Network Mocking** (when needed)
 
 ```typescript
-await page.route('**/api/spotify/search', route => {
+await page.route('**/api/spotify/search', (route) => {
   route.fulfill({
     status: 200,
     body: JSON.stringify({ tracks: mockTracks }),
@@ -832,6 +869,7 @@ await page.route('**/api/spotify/search', route => {
 **Workflow**: `.github/workflows/e2e.yml`
 
 Pipeline steps:
+
 1. Start PostgreSQL and Redis services
 2. Install dependencies
 3. Install Playwright browsers
@@ -842,6 +880,7 @@ Pipeline steps:
 8. Upload test results/reports
 
 **Artifacts**:
+
 - Test results (on failure)
 - HTML report (always)
 - Screenshots/videos (on failure)
@@ -869,6 +908,7 @@ Pipeline steps:
 ### Issue: "Prisma client not generated"
 
 **Solution**:
+
 ```bash
 npx prisma generate --schema=packages/database/prisma/schema.prisma
 ```
@@ -878,6 +918,7 @@ npx prisma generate --schema=packages/database/prisma/schema.prisma
 ### Issue: "Database connection failed in tests"
 
 **Solution**: Ensure PostgreSQL is running and test database exists:
+
 ```bash
 docker-compose up -d postgres
 ```
@@ -887,6 +928,7 @@ docker-compose up -d postgres
 ### Issue: "Tests timing out"
 
 **Solution**: Increase Jest timeout in problematic tests:
+
 ```typescript
 it('slow operation', async () => {
   // test code

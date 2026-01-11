@@ -54,9 +54,7 @@ export default function DisplayScreenPage() {
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center text-white">
           <h1 className="text-3xl font-bold mb-2">No Event Selected</h1>
-          <p className="text-gray-400">
-            Please select an event from the venue dashboard
-          </p>
+          <p className="text-gray-400">Please select an event from the venue dashboard</p>
         </div>
       </div>
     );
@@ -79,23 +77,15 @@ export default function DisplayScreenPage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold mb-1">🎵 {event.name}</h1>
-            <p className="text-xl text-gray-300">
-              Vote from your phone • Scan QR code below
-            </p>
+            <p className="text-xl text-gray-300">Vote from your phone • Scan QR code below</p>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-mono">
-              {currentTime.toLocaleTimeString()}
-            </div>
+            <div className="text-2xl font-mono">{currentTime.toLocaleTimeString()}</div>
             <div className="flex items-center gap-2 justify-end mt-1">
               <div
-                className={`h-3 w-3 rounded-full ${
-                  isConnected ? 'bg-green-500' : 'bg-red-500'
-                }`}
+                className={`h-3 w-3 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}
               />
-              <span className="text-sm text-gray-300">
-                {isConnected ? 'Live' : 'Disconnected'}
-              </span>
+              <span className="text-sm text-gray-300">{isConnected ? 'Live' : 'Disconnected'}</span>
             </div>
           </div>
         </div>
@@ -125,11 +115,9 @@ export default function DisplayScreenPage() {
                 <div>
                   <h3 className="text-3xl font-bold mb-2">{nowPlaying.name}</h3>
                   <p className="text-xl text-gray-300">
-                    {nowPlaying.artists.map(a => a.name).join(', ')}
+                    {nowPlaying.artists.map((a) => a.name).join(', ')}
                   </p>
-                  <p className="text-lg text-gray-400 mt-1">
-                    {nowPlaying.album.name}
-                  </p>
+                  <p className="text-lg text-gray-400 mt-1">{nowPlaying.album.name}</p>
                   <p className="text-sm text-gray-500 mt-2">
                     {formatDuration(nowPlaying.duration_ms)}
                   </p>
@@ -175,11 +163,9 @@ export default function DisplayScreenPage() {
 
                     {/* Track Info */}
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-xl font-semibold truncate">
-                        {item.trackData.name}
-                      </h4>
+                      <h4 className="text-xl font-semibold truncate">{item.trackData.name}</h4>
                       <p className="text-lg text-gray-300 truncate">
-                        {item.trackData.artists.map(a => a.name).join(', ')}
+                        {item.trackData.artists.map((a) => a.name).join(', ')}
                       </p>
                     </div>
 
@@ -197,9 +183,7 @@ export default function DisplayScreenPage() {
               <div className="text-center py-16">
                 <div className="text-6xl mb-4">📝</div>
                 <p className="text-2xl text-gray-300">No tracks in queue</p>
-                <p className="text-lg text-gray-400 mt-2">
-                  Guests can vote from their phones
-                </p>
+                <p className="text-lg text-gray-400 mt-2">Guests can vote from their phones</p>
               </div>
             )}
           </div>
@@ -208,9 +192,7 @@ export default function DisplayScreenPage() {
         {/* QR Code Section */}
         <div className="max-w-7xl mx-auto mt-8 bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
           <div className="text-center">
-            <h2 className="text-2xl font-semibold mb-4">
-              Scan to Vote
-            </h2>
+            <h2 className="text-2xl font-semibold mb-4">Scan to Vote</h2>
             <div className="inline-block p-4 bg-white rounded-xl">
               {/* QR Code placeholder - will be generated dynamically */}
               <div className="w-48 h-48 bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
@@ -219,9 +201,7 @@ export default function DisplayScreenPage() {
                 {venueSlug}/event/{eventId}
               </div>
             </div>
-            <p className="text-xl text-gray-300 mt-4">
-              Open your camera and scan to start voting
-            </p>
+            <p className="text-xl text-gray-300 mt-4">Open your camera and scan to start voting</p>
           </div>
         </div>
       </main>

@@ -9,6 +9,7 @@ Votebox is a platform that lets pub and club guests vote on music from their pho
 ## ⚡ Quick Start (5 Minutes)
 
 ### Prerequisites
+
 - Node.js 20+
 - Docker Desktop
 - Spotify account
@@ -79,18 +80,23 @@ votebox/
 ## 🎓 Key Concepts
 
 ### Events
+
 Events are themed music sessions (e.g., "Doom Rock Night"). Each event has:
+
 - Start/end time
 - Playlist configuration (genre/playlist/custom)
 - Voting rules (votes per hour, cooldowns)
 
 ### Voting
+
 Guests can vote on tracks within an event's playlist. The queue is reordered based on:
+
 - Vote count (most votes = higher priority)
 - Recency (recent votes get bonus)
 - Diversity (different artists get small boost)
 
 ### Queue
+
 The queue shows upcoming tracks sorted by score. Tracks automatically play when current song ends via Spotify Web Playback SDK.
 
 ## 🔧 Common Tasks
@@ -173,6 +179,7 @@ Modify event creation or update voting rules:
 ### On Same Network
 
 1. Find your local IP:
+
 ```bash
 # macOS/Linux
 ifconfig | grep "inet " | grep -v 127.0.0.1
@@ -182,6 +189,7 @@ ipconfig
 ```
 
 2. Update `.env.local` in `apps/web`:
+
 ```env
 NEXT_PUBLIC_API_URL=http://YOUR_IP:4000
 ```
@@ -204,6 +212,7 @@ ngrok http 3000
 ## 🐛 Troubleshooting
 
 ### Database Connection Failed
+
 ```bash
 # Check if PostgreSQL is running
 docker-compose ps
@@ -213,6 +222,7 @@ docker-compose restart postgres
 ```
 
 ### API Won't Start
+
 ```bash
 # Check if port 4000 is available
 lsof -i :4000
@@ -222,6 +232,7 @@ PORT=4001
 ```
 
 ### Spotify Integration Not Working
+
 1. Verify credentials in `apps/api/.env`
 2. Check redirect URI matches in Spotify Dashboard
 3. Ensure Spotify Premium account is active

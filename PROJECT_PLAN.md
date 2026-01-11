@@ -20,7 +20,9 @@
 **Objective**: Build a minimal working product for single-venue testing
 
 #### Week 1: Project Setup & Infrastructure
+
 **Deliverables**:
+
 - ✅ Repository setup with monorepo structure
 - ✅ Docker Compose development environment
 - ✅ CI/CD pipeline (GitHub Actions)
@@ -29,6 +31,7 @@
 - ✅ Basic authentication setup
 
 **Tasks**:
+
 ```bash
 # Day 1-2: Project scaffolding
 - Initialize monorepo (Turborepo/Nx)
@@ -51,30 +54,33 @@
 ```
 
 #### Week 2: Core Backend Services
+
 **Deliverables**:
+
 - ✅ Venue management API
 - ✅ Event CRUD operations
 - ✅ Spotify integration service
 - ✅ Basic queue management
 
 **Tasks**:
+
 ```typescript
 // Services to implement
 1. VenueService
    - Create/read/update venues
    - Spotify account linking
-   
+
 2. EventService
    - Create events with playlist config
    - Activate/deactivate events
    - Load tracks from Spotify
-   
+
 3. SpotifyService
    - OAuth flow
    - Search tracks/playlists
    - Get recommendations by genre
    - Playback control
-   
+
 4. QueueService
    - Add tracks to queue
    - Sort by votes
@@ -82,7 +88,9 @@
 ```
 
 #### Week 3: Guest Voting Interface
+
 **Deliverables**:
+
 - ✅ Guest PWA (mobile-first)
 - ✅ QR code landing page
 - ✅ Track browsing and search
@@ -90,6 +98,7 @@
 - ✅ Real-time updates (Socket.io)
 
 **Pages**:
+
 ```
 /                          # Landing page
 /v/:venueId/event/:eventId # Active event voting page
@@ -97,6 +106,7 @@
 ```
 
 **Components**:
+
 - NowPlaying card
 - UpcomingQueue list
 - TrackBrowser with search
@@ -104,7 +114,9 @@
 - ConnectionStatus indicator
 
 #### Week 4: Queue Algorithm & Testing
+
 **Deliverables**:
+
 - ✅ Weighted voting algorithm
 - ✅ Anti-spam measures
 - ✅ Playback automation
@@ -112,6 +124,7 @@
 - ✅ End-to-end testing
 
 **Algorithm Features**:
+
 ```javascript
 // Queue scoring system
 score = (
@@ -134,13 +147,16 @@ score = (
 **Objective**: Add professional features and prepare for multi-venue deployment
 
 #### Week 5: Admin Dashboard
+
 **Deliverables**:
+
 - ✅ Venue admin authentication
 - ✅ Event management UI
 - ✅ Real-time monitoring dashboard
 - ✅ Manual queue controls
 
 **Dashboard Pages**:
+
 ```
 /admin/login               # Venue login
 /admin/dashboard           # Overview
@@ -153,6 +169,7 @@ score = (
 ```
 
 **Key Features**:
+
 - Event scheduler with recurring events
 - Genre/playlist selection interface
 - Live queue monitoring
@@ -160,13 +177,16 @@ score = (
 - Vote activity monitoring
 
 #### Week 6: Display Screen & Branding
+
 **Deliverables**:
+
 - ✅ TV-optimized display interface
 - ✅ Customizable themes
 - ✅ Venue branding options
 - ✅ Animations and transitions
 
 **Display Features**:
+
 - Full-screen now playing with album art
 - Animated queue carousel
 - Vote activity visualization
@@ -174,13 +194,16 @@ score = (
 - QR code for easy access
 
 #### Week 7: Advanced Features
+
 **Deliverables**:
+
 - ✅ Genre-based track loading
 - ✅ Track caching system
 - ✅ Advanced filtering
 - ✅ Content moderation tools
 
 **Implementations**:
+
 ```typescript
 // Genre Configuration System
 interface GenreConfig {
@@ -208,7 +231,9 @@ interface GenreConfig {
 ```
 
 #### Week 8: Testing & Bug Fixes
+
 **Deliverables**:
+
 - ✅ Comprehensive test suite
 - ✅ Performance testing
 - ✅ Security audit
@@ -216,6 +241,7 @@ interface GenreConfig {
 - ✅ Documentation
 
 **Testing Strategy**:
+
 - Unit tests: 80% coverage
 - Integration tests: All API endpoints
 - E2E tests: Critical user flows
@@ -227,26 +253,32 @@ interface GenreConfig {
 **Objective**: Deploy to production and onboard first customers
 
 #### Week 9: Multi-Tenant Architecture
+
 **Deliverables**:
+
 - ✅ Multi-venue support
 - ✅ Tenant isolation
 - ✅ Subscription management
 - ✅ Usage tracking
 
 **Changes**:
+
 - Tenant-aware database queries
 - Venue-specific customization
 - Resource quotas per tier
 - Billing integration prep
 
 #### Week 10: Analytics & Insights
+
 **Deliverables**:
+
 - ✅ Track analytics
 - ✅ Venue insights dashboard
 - ✅ Export capabilities
 - ✅ Popular tracks/artists reports
 
 **Metrics to Track**:
+
 - Total votes per event
 - Most popular tracks/genres
 - Peak voting times
@@ -255,13 +287,16 @@ interface GenreConfig {
 - Geographic distribution
 
 #### Week 11: Payment & Subscriptions
+
 **Deliverables**:
+
 - ✅ Stripe integration
 - ✅ Subscription tiers
 - ✅ Trial period management
 - ✅ Invoicing
 
 **Pricing Tiers**:
+
 ```yaml
 Free Tier:
   - 1 venue
@@ -269,21 +304,21 @@ Free Tier:
   - 50 votes/event
   - Basic support
   - Votebox branding
-  
+
 Starter: £29/month
   - 1 venue
   - Unlimited events
   - 500 votes/event
   - Email support
   - Custom branding
-  
+
 Pro: £79/month
   - 1 venue
   - Unlimited everything
   - Priority support
   - Advanced analytics
   - White label option
-  
+
 Enterprise: Custom
   - Multiple venues
   - Dedicated support
@@ -292,7 +327,9 @@ Enterprise: Custom
 ```
 
 #### Week 12: Launch Preparation
+
 **Deliverables**:
+
 - ✅ Production infrastructure
 - ✅ Monitoring and alerting
 - ✅ Backup and disaster recovery
@@ -301,6 +338,7 @@ Enterprise: Custom
 - ✅ Onboarding flow
 
 **Infrastructure**:
+
 ```yaml
 Production Stack:
   - Cloud: AWS/Azure/GCP
@@ -316,12 +354,14 @@ Production Stack:
 ### Phase 4: Post-Launch (Weeks 13+)
 
 #### Month 4: User Feedback & Iteration
+
 - Onboard 5-10 pilot venues
 - Gather feedback
 - Fix critical issues
 - Feature refinements
 
 #### Month 5-6: Scale & Growth Features
+
 - Mobile apps (React Native)
 - Advanced gamification
 - Rewards system
@@ -331,6 +371,7 @@ Production Stack:
 ## 🏗️ Technical Architecture
 
 ### Monorepo Structure
+
 ```
 votebox/
 ├── apps/
@@ -371,12 +412,14 @@ Guest votes → WebSocket → Backend → Queue Recalculation
 ## 📊 Project Metrics & KPIs
 
 ### Development Metrics
+
 - Code coverage: >80%
 - Build time: <5 minutes
 - Test suite runtime: <2 minutes
 - Deployment time: <10 minutes
 
 ### Product Metrics (Post-Launch)
+
 - Venues onboarded: 10 (Month 1), 50 (Month 6)
 - Monthly active users: 1,000 (Month 3)
 - Average votes per event: 200+
@@ -384,6 +427,7 @@ Guest votes → WebSocket → Backend → Queue Recalculation
 - System uptime: 99.5%+
 
 ### Business Metrics
+
 - Monthly Recurring Revenue: £1,000 (Month 3)
 - Customer Acquisition Cost: <£100
 - Lifetime Value: >£500
@@ -391,14 +435,14 @@ Guest votes → WebSocket → Backend → Queue Recalculation
 
 ## ⚠️ Risks & Mitigation
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|------------|
-| Spotify API rate limits | High | Medium | Implement aggressive caching, use multiple API keys |
-| Venue internet reliability | High | High | Offline mode, retry logic, clear error messaging |
-| Vote manipulation | Medium | Medium | Rate limiting, fingerprinting, cooldowns |
-| Licensing issues | High | Low | Use Spotify's proper channels, verify venue compliance |
-| Competition | Medium | Medium | Focus on unique features, excellent UX |
-| Slow adoption | High | Medium | Pilot program, free tier, excellent onboarding |
+| Risk                       | Impact | Probability | Mitigation                                             |
+| -------------------------- | ------ | ----------- | ------------------------------------------------------ |
+| Spotify API rate limits    | High   | Medium      | Implement aggressive caching, use multiple API keys    |
+| Venue internet reliability | High   | High        | Offline mode, retry logic, clear error messaging       |
+| Vote manipulation          | Medium | Medium      | Rate limiting, fingerprinting, cooldowns               |
+| Licensing issues           | High   | Low         | Use Spotify's proper channels, verify venue compliance |
+| Competition                | Medium | Medium      | Focus on unique features, excellent UX                 |
+| Slow adoption              | High   | Medium      | Pilot program, free tier, excellent onboarding         |
 
 ## 🔐 Security Considerations
 
@@ -412,6 +456,7 @@ Guest votes → WebSocket → Backend → Queue Recalculation
 ## 📈 Success Criteria
 
 ### MVP Success (Week 4)
+
 - [ ] Single venue can run a themed event
 - [ ] Guests can vote from phones
 - [ ] Queue updates automatically
@@ -419,6 +464,7 @@ Guest votes → WebSocket → Backend → Queue Recalculation
 - [ ] Admin can control event
 
 ### Launch Success (Week 12)
+
 - [ ] 5 venues actively using platform
 - [ ] Zero critical bugs in production
 - [ ] 99% uptime
@@ -426,6 +472,7 @@ Guest votes → WebSocket → Backend → Queue Recalculation
 - [ ] Payment processing works
 
 ### 6-Month Success
+
 - [ ] 50+ active venue customers
 - [ ] £3,000+ MRR
 - [ ] <5% churn rate
@@ -435,6 +482,7 @@ Guest votes → WebSocket → Backend → Queue Recalculation
 ## 💰 Budget Breakdown
 
 ### Development Phase (3 months)
+
 - Infrastructure: £300
 - Spotify Premium: £30
 - Testing tools: £100
@@ -442,6 +490,7 @@ Guest votes → WebSocket → Backend → Queue Recalculation
 - **Total: £480**
 
 ### Launch & First Year
+
 - Cloud hosting: £200/month = £2,400
 - Monitoring & tools: £50/month = £600
 - Payment processing: 2.9% + £0.20 per transaction
@@ -452,12 +501,14 @@ Guest votes → WebSocket → Backend → Queue Recalculation
 ## 📞 Communication Plan
 
 ### Stakeholders
+
 - Development team (you)
 - Early adopter venues
 - Beta testers
 - Potential investors (future)
 
 ### Updates
+
 - Weekly: Internal progress review
 - Bi-weekly: Pilot venue check-ins
 - Monthly: Public blog post/newsletter
@@ -466,6 +517,7 @@ Guest votes → WebSocket → Backend → Queue Recalculation
 ## 🎓 Learning & Development
 
 ### Skills to Develop
+
 - Advanced NestJS patterns
 - Real-time WebSocket architectures
 - Spotify API deep dive
@@ -474,6 +526,7 @@ Guest votes → WebSocket → Backend → Queue Recalculation
 - SaaS metrics and analytics
 
 ### Resources
+
 - NestJS documentation
 - Spotify for Developers
 - Real-time web patterns
@@ -483,16 +536,19 @@ Guest votes → WebSocket → Backend → Queue Recalculation
 ## 🚀 Go-to-Market Strategy
 
 ### Phase 1: Pilot (Month 1-2)
+
 - Approach 3-5 friendly venues
 - Offer free usage for feedback
 - Iterate based on real-world use
 
 ### Phase 2: Limited Launch (Month 3-4)
+
 - 20 venue limit
 - Referral program
 - Case studies and testimonials
 
 ### Phase 3: Public Launch (Month 5+)
+
 - Open signups
 - Content marketing
 - Paid advertising

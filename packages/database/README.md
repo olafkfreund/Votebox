@@ -5,22 +5,27 @@ This package contains the Prisma schema, migrations, and database utilities for 
 ## Setup
 
 ### 1. Install Dependencies
+
 ```bash
 npm install
 ```
 
 ### 2. Set Environment Variables
+
 Create a `.env` file in the project root:
+
 ```env
 DATABASE_URL="postgresql://votebox:votebox_dev_password@localhost:5432/votebox_dev"
 ```
 
 ### 3. Start PostgreSQL
+
 ```bash
 docker-compose up -d postgres
 ```
 
 ### 4. Run Migrations
+
 ```bash
 # From project root
 cd packages/database
@@ -33,16 +38,19 @@ npm run db:migrate
 ```
 
 ### 5. Generate Prisma Client
+
 ```bash
 npx prisma generate
 ```
 
 ### 6. Seed Database (Optional)
+
 ```bash
 npm run db:seed
 ```
 
 This creates:
+
 - Demo venue: `demo-venue`
   - Email: demo@votebox.com
   - Password: DemoVenue123!
@@ -51,6 +59,7 @@ This creates:
 ## Database Schema
 
 The database includes the following models:
+
 - **Venue**: Venue information and Spotify integration
 - **User**: Venue staff and admins
 - **Event**: Music voting events
@@ -92,6 +101,7 @@ npx prisma validate
 ## Migrations
 
 Migrations are stored in `prisma/migrations/`. Each migration is a folder containing:
+
 - `migration.sql` - The SQL migration file
 - Timestamp and name in folder name
 
@@ -115,6 +125,7 @@ Migrations are stored in `prisma/migrations/`. Each migration is a folder contai
 ## Troubleshooting
 
 ### Connection Issues
+
 ```bash
 # Test connection
 npx prisma db pull
@@ -124,6 +135,7 @@ docker-compose ps postgres
 ```
 
 ### Migration Conflicts
+
 ```bash
 # Reset and re-migrate (development only!)
 npx prisma migrate reset
@@ -131,6 +143,7 @@ npx prisma migrate dev
 ```
 
 ### Out of Sync
+
 ```bash
 # Generate client from current schema
 npx prisma generate

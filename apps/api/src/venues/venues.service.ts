@@ -21,10 +21,7 @@ export class VenuesService {
     // Check if email or slug already exists
     const existingVenue = await this.prisma.venue.findFirst({
       where: {
-        OR: [
-          { email: venueData.email },
-          { slug: venueData.slug },
-        ],
+        OR: [{ email: venueData.email }, { slug: venueData.slug }],
       },
     });
 
@@ -236,7 +233,7 @@ export class VenuesService {
     // Verify current password
     const isPasswordValid = await bcrypt.compare(
       updatePasswordDto.currentPassword,
-      venue.hashedPassword,
+      venue.hashedPassword
     );
 
     if (!isPasswordValid) {
@@ -314,7 +311,7 @@ export class VenuesService {
 
     if (activeEventsCount > 0) {
       throw new BadRequestException(
-        'Cannot delete venue with active events. Please end all active events first.',
+        'Cannot delete venue with active events. Please end all active events first.'
       );
     }
 

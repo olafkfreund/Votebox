@@ -1,19 +1,5 @@
-import {
-  Controller,
-  Post,
-  Delete,
-  Param,
-  Query,
-  HttpCode,
-  HttpStatus,
-} from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiParam,
-  ApiQuery,
-} from '@nestjs/swagger';
+import { Controller, Post, Delete, Param, Query, HttpCode, HttpStatus } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { QueueService } from './queue.service';
 
 @ApiTags('Admin - Queue Management')
@@ -73,13 +59,9 @@ export class AdminQueueController {
   forceSkip(
     @Param('eventId') eventId: string,
     @Param('trackId') trackId: string,
-    @Query('reason') reason?: string,
+    @Query('reason') reason?: string
   ) {
-    return this.queueService.skipTrack(
-      eventId,
-      trackId,
-      reason || 'Skipped by admin',
-    );
+    return this.queueService.skipTrack(eventId, trackId, reason || 'Skipped by admin');
   }
 
   @Delete(':trackId')
@@ -104,10 +86,7 @@ export class AdminQueueController {
     status: 404,
     description: 'Track not found in queue',
   })
-  removeTrack(
-    @Param('eventId') eventId: string,
-    @Param('trackId') trackId: string,
-  ) {
+  removeTrack(@Param('eventId') eventId: string, @Param('trackId') trackId: string) {
     return this.queueService.removeFromQueue(eventId, trackId);
   }
 
@@ -115,8 +94,7 @@ export class AdminQueueController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Recalculate all queue scores',
-    description:
-      'Manually trigger score recalculation for all tracks (admin only)',
+    description: 'Manually trigger score recalculation for all tracks (admin only)',
   })
   @ApiParam({
     name: 'eventId',

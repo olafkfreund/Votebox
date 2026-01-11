@@ -38,17 +38,20 @@ votebox/
 ## Core Concepts
 
 ### Event-Based Architecture
+
 - **Venues** create **Events** (themed music sessions)
 - **Events** have playlist configurations (genre, Spotify playlist, or custom)
 - **Guests** vote on tracks without requiring accounts
 - **Queue** is dynamically reordered based on votes
 
 ### Real-time Updates
+
 - WebSocket connections for live queue updates
 - Vote updates broadcast to all connected clients
 - Now playing status synced across all devices
 
 ### Multi-Tenancy
+
 - Each venue is a separate tenant
 - Data isolation via `venueId` in all queries
 - Subscription-based access control
@@ -59,11 +62,7 @@ votebox/
 
 ```typescript
 // ✅ Use explicit types for function parameters and return values
-async function createVote(
-  eventId: string,
-  trackId: string,
-  sessionId: string
-): Promise<Vote> {
+async function createVote(eventId: string, trackId: string, sessionId: string): Promise<Vote> {
   // Implementation
 }
 
@@ -181,7 +180,7 @@ export default async function EventPage({ params }: { params: { id: string } }) 
 'use client';
 export function VoteButton({ trackId }: { trackId: string }) {
   const [isVoting, setIsVoting] = useState(false);
-  
+
   const handleVote = async () => {
     setIsVoting(true);
     await submitVote(trackId);
@@ -221,19 +220,14 @@ export function middleware(request: NextRequest) {
 @WebSocketGateway({ cors: true })
 export class EventsGateway {
   @SubscribeMessage('joinEvent')
-  handleJoinEvent(
-    @MessageBody() data: { eventId: string },
-    @ConnectedSocket() client: Socket
-  ) {
+  handleJoinEvent(@MessageBody() data: { eventId: string }, @ConnectedSocket() client: Socket) {
     client.join(`event:${data.eventId}`);
     client.emit('joined', { eventId: data.eventId });
   }
 
   // ✅ Broadcast to specific room
   broadcastVoteUpdate(eventId: string, update: VoteUpdate) {
-    this.server
-      .to(`event:${eventId}`)
-      .emit('voteUpdate', update);
+    this.server.to(`event:${eventId}`).emit('voteUpdate', update);
   }
 
   // ✅ Handle disconnections
@@ -250,14 +244,14 @@ export class EventsGateway {
 // ✅ Calculate queue score with multiple factors
 function calculateQueueScore(item: QueueItem): number {
   const baseScore = item.voteCount;
-  
+
   // Recency bonus (votes in last 5 minutes)
   const timeSinceLastVote = Date.now() - item.lastVotedAt.getTime();
   const recencyBonus = timeSinceLastVote < 300000 ? 2 : 0;
-  
+
   // Diversity bonus (different artist than current track)
   const diversityBonus = item.artistName !== currentTrack.artistName ? 1 : 0;
-  
+
   return baseScore + recencyBonus + diversityBonus;
 }
 
@@ -265,7 +259,7 @@ function calculateQueueScore(item: QueueItem): number {
 async function reorderQueue(eventId: string) {
   const items = await prisma.queueItem.findMany({
     where: { eventId, isPlayed: false },
-    orderBy: { score: 'desc' }
+    orderBy: { score: 'desc' },
   });
 
   // Update positions in transaction
@@ -273,7 +267,7 @@ async function reorderQueue(eventId: string) {
     items.map((item, index) =>
       prisma.queueItem.update({
         where: { id: item.id },
-        data: { position: index + 1 }
+        data: { position: index + 1 },
       })
     )
   );
@@ -286,7 +280,7 @@ async function reorderQueue(eventId: string) {
 // ✅ Handle OAuth flow
 async authenticateVenue(code: string, venueId: string) {
   const tokens = await this.spotifyAuth.getTokens(code);
-  
+
   await this.prisma.venue.update({
     where: { id: venueId },
     data: {
@@ -356,7 +350,7 @@ async searchTracks(query: string, limit: number) {
 // ✅ Cache track lists for events
 async getEventTracks(eventId: string): Promise<Track[]> {
   const cacheKey = `tracks:event:${eventId}`;
-  
+
   // Try cache first
   const cached = await this.redis.get(cacheKey);
   if (cached) {
@@ -365,17 +359,17 @@ async getEventTracks(eventId: string): Promise<Track[]> {
 
   // Load from Spotify
   const tracks = await this.loadTracksFromSpotify(eventId);
-  
+
   // Cache for 1 hour
   await this.redis.setex(cacheKey, 3600, JSON.stringify(tracks));
-  
+
   return tracks;
 }
 
 // ✅ Cache Spotify API responses
 async getRecommendations(seedGenres: string[]): Promise<Track[]> {
   const cacheKey = `spotify:recommendations:${seedGenres.join(',')}`;
-  
+
   const cached = await this.redis.get(cacheKey);
   if (cached) return JSON.parse(cached);
 
@@ -386,7 +380,7 @@ async getRecommendations(seedGenres: string[]): Promise<Track[]> {
 
   // Cache for 24 hours
   await this.redis.setex(cacheKey, 86400, JSON.stringify(recommendations));
-  
+
   return recommendations;
 }
 ```
@@ -397,14 +391,14 @@ async getRecommendations(seedGenres: string[]): Promise<Track[]> {
 // ✅ Implement vote rate limiting
 async checkVoteRateLimit(sessionId: string): Promise<void> {
   const key = `votes:ratelimit:${sessionId}`;
-  
+
   const count = await this.redis.incr(key);
-  
+
   if (count === 1) {
     // First vote in window, set expiry (1 hour)
     await this.redis.expire(key, 3600);
   }
-  
+
   if (count > 3) {
     const ttl = await this.redis.ttl(key);
     throw new VoteRateLimitError(`Try again in ${ttl} seconds`);
@@ -425,7 +419,10 @@ async findAll() {
 ```typescript
 // ✅ Create custom error classes
 export class VoteRateLimitError extends Error {
-  constructor(message: string, public retryAfter: number) {
+  constructor(
+    message: string,
+    public retryAfter: number
+  ) {
     super(message);
     this.name = 'VoteRateLimitError';
   }
@@ -441,7 +438,7 @@ export class VoteRateLimitFilter implements ExceptionFilter {
     response.status(429).json({
       error: 'RATE_LIMIT_EXCEEDED',
       message: exception.message,
-      retryAfter: exception.retryAfter
+      retryAfter: exception.retryAfter,
     });
   }
 }
@@ -461,8 +458,8 @@ describe('VoteService', () => {
       providers: [
         VoteService,
         { provide: PrismaService, useValue: mockPrismaService },
-        { provide: RedisService, useValue: mockRedisService }
-      ]
+        { provide: RedisService, useValue: mockRedisService },
+      ],
     }).compile();
 
     service = module.get(VoteService);
@@ -474,7 +471,7 @@ describe('VoteService', () => {
     const vote = await service.create({
       eventId: 'event1',
       trackId: 'track1',
-      sessionId: 'session1'
+      sessionId: 'session1',
     });
 
     expect(vote).toBeDefined();
@@ -488,7 +485,7 @@ describe('VoteService', () => {
       service.create({
         eventId: 'event1',
         trackId: 'track1',
-        sessionId: 'session1'
+        sessionId: 'session1',
       })
     ).rejects.toThrow(VoteRateLimitError);
   });

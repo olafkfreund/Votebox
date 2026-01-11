@@ -1,9 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  NotFoundException,
-  BadRequestException,
-  ConflictException,
-} from '@nestjs/common';
+import { NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -115,7 +111,7 @@ describe('EventsService', () => {
       mockPrismaService.venue.findUnique.mockResolvedValue(null);
 
       await expect(service.create(createEventDto)).rejects.toThrow(
-        new NotFoundException(`Venue with ID ${createEventDto.venueId} not found`),
+        new NotFoundException(`Venue with ID ${createEventDto.venueId} not found`)
       );
     });
 
@@ -128,7 +124,7 @@ describe('EventsService', () => {
       mockPrismaService.venue.findUnique.mockResolvedValue(mockVenue);
 
       await expect(service.create(invalidDto)).rejects.toThrow(
-        new BadRequestException('End time must be after start time'),
+        new BadRequestException('End time must be after start time')
       );
     });
 
@@ -136,9 +132,7 @@ describe('EventsService', () => {
       mockPrismaService.venue.findUnique.mockResolvedValue(mockVenue);
       mockPrismaService.event.findFirst.mockResolvedValue(mockEvent);
 
-      await expect(service.create(createEventDto)).rejects.toThrow(
-        ConflictException,
-      );
+      await expect(service.create(createEventDto)).rejects.toThrow(ConflictException);
     });
   });
 
@@ -166,7 +160,7 @@ describe('EventsService', () => {
       expect(mockPrismaService.event.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { venueId: 'venue-123' },
-        }),
+        })
       );
       expect(result).toEqual(mockEvents);
     });
@@ -180,7 +174,7 @@ describe('EventsService', () => {
       expect(mockPrismaService.event.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { status: 'ACTIVE' },
-        }),
+        })
       );
       expect(result).toEqual(mockEvents);
     });
@@ -203,7 +197,7 @@ describe('EventsService', () => {
       mockPrismaService.event.findUnique.mockResolvedValue(null);
 
       await expect(service.findOne('non-existent')).rejects.toThrow(
-        new NotFoundException('Event with ID non-existent not found'),
+        new NotFoundException('Event with ID non-existent not found')
       );
     });
   });
@@ -225,7 +219,7 @@ describe('EventsService', () => {
       mockPrismaService.venue.findUnique.mockResolvedValue(null);
 
       await expect(service.findByVenue('non-existent')).rejects.toThrow(
-        new NotFoundException('Venue with ID non-existent not found'),
+        new NotFoundException('Venue with ID non-existent not found')
       );
     });
   });
@@ -259,7 +253,7 @@ describe('EventsService', () => {
       });
 
       await expect(service.update('event-123', updateDto)).rejects.toThrow(
-        new BadRequestException('Cannot update an ended event'),
+        new BadRequestException('Cannot update an ended event')
       );
     });
 
@@ -272,7 +266,7 @@ describe('EventsService', () => {
       };
 
       await expect(service.update('event-123', invalidTimeDto)).rejects.toThrow(
-        new BadRequestException('End time must be after start time'),
+        new BadRequestException('End time must be after start time')
       );
     });
   });
@@ -306,7 +300,7 @@ describe('EventsService', () => {
       });
 
       await expect(service.activate('event-123')).rejects.toThrow(
-        new BadRequestException('Cannot activate event with status: ACTIVE'),
+        new BadRequestException('Cannot activate event with status: ACTIVE')
       );
     });
 
@@ -318,9 +312,7 @@ describe('EventsService', () => {
         status: 'ACTIVE',
       });
 
-      await expect(service.activate('event-123')).rejects.toThrow(
-        ConflictException,
-      );
+      await expect(service.activate('event-123')).rejects.toThrow(ConflictException);
     });
   });
 
@@ -352,7 +344,7 @@ describe('EventsService', () => {
       mockPrismaService.event.findUnique.mockResolvedValue(mockEvent);
 
       await expect(service.end('event-123')).rejects.toThrow(
-        new BadRequestException('Cannot end event with status: UPCOMING'),
+        new BadRequestException('Cannot end event with status: UPCOMING')
       );
     });
   });
@@ -381,7 +373,7 @@ describe('EventsService', () => {
       });
 
       await expect(service.cancel('event-123')).rejects.toThrow(
-        new BadRequestException('Cannot cancel an ended event'),
+        new BadRequestException('Cannot cancel an ended event')
       );
     });
 
@@ -392,7 +384,7 @@ describe('EventsService', () => {
       });
 
       await expect(service.cancel('event-123')).rejects.toThrow(
-        new BadRequestException('Event is already cancelled'),
+        new BadRequestException('Event is already cancelled')
       );
     });
   });
@@ -421,9 +413,7 @@ describe('EventsService', () => {
       });
 
       await expect(service.remove('event-123')).rejects.toThrow(
-        new BadRequestException(
-          'Cannot delete an active event. Please end it first.',
-        ),
+        new BadRequestException('Cannot delete an active event. Please end it first.')
       );
     });
 
@@ -433,8 +423,8 @@ describe('EventsService', () => {
 
       await expect(service.remove('event-123')).rejects.toThrow(
         new BadRequestException(
-          'Cannot delete event with existing votes. Please cancel it instead.',
-        ),
+          'Cannot delete event with existing votes. Please cancel it instead.'
+        )
       );
     });
   });

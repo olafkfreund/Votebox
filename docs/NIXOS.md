@@ -16,6 +16,7 @@ Ensure Nix flakes are enabled in your NixOS configuration:
 ```
 
 Then rebuild your system:
+
 ```bash
 sudo nixos-rebuild switch
 ```
@@ -32,11 +33,13 @@ Add to your NixOS configuration:
 ```
 
 Or install in your user profile:
+
 ```bash
 nix profile install nixpkgs#direnv
 ```
 
 Then add to your shell configuration (`~/.bashrc` or `~/.zshrc`):
+
 ```bash
 eval "$(direnv hook bash)"  # or zsh, fish, etc.
 ```
@@ -46,16 +49,19 @@ eval "$(direnv hook bash)"  # or zsh, fish, etc.
 ### Method 1: Using direnv (Recommended)
 
 1. Clone and enter the project directory:
+
 ```bash
 cd /path/to/Votebox
 ```
 
 2. Allow direnv to load the environment:
+
 ```bash
 direnv allow
 ```
 
 The development environment will automatically load! You'll see:
+
 ```
 🎵 Votebox Development Environment
 ==================================
@@ -87,20 +93,24 @@ nix-shell
 The Nix development environment provides:
 
 ### Core Dependencies
+
 - **Node.js 20** - JavaScript runtime
 - **npm** - Package manager
 - **pnpm** - Alternative package manager
 
 ### Playwright (E2E Testing)
+
 - **playwright-driver.browsers** - Chromium, Firefox, WebKit
 - Automatically configured to use Nix-installed browsers
 - No manual browser download required
 
 ### Database Tools
+
 - **PostgreSQL 16** - Database server and client tools
 - **Redis** - Cache server and client tools
 
 ### Development Tools
+
 - **Docker & Docker Compose** - Container management
 - **Git** - Version control
 - **jq** - JSON processor
@@ -172,6 +182,7 @@ npm run dev
 ```
 
 This starts:
+
 - Web App: http://localhost:3000
 - API Server: http://localhost:4000
 - API Docs: http://localhost:4000/api/docs
@@ -183,6 +194,7 @@ This starts:
 If you encounter browser installation errors:
 
 1. **Verify environment variables:**
+
 ```bash
 echo $PLAYWRIGHT_BROWSERS_PATH
 # Should output: /nix/store/...-playwright-browsers
@@ -192,6 +204,7 @@ echo $PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD
 ```
 
 2. **Re-enter the shell:**
+
 ```bash
 # If using direnv
 direnv reload
@@ -202,6 +215,7 @@ nix develop
 ```
 
 3. **Check browser availability:**
+
 ```bash
 ls -la $PLAYWRIGHT_BROWSERS_PATH
 # Should show chromium-*, firefox-*, webkit-* directories
@@ -212,11 +226,13 @@ ls -la $PLAYWRIGHT_BROWSERS_PATH
 If Prisma commands fail:
 
 1. **Regenerate Prisma Client:**
+
 ```bash
 npx prisma generate --schema=packages/database/prisma/schema.prisma
 ```
 
 2. **Verify Prisma binaries:**
+
 ```bash
 echo $PRISMA_QUERY_ENGINE_BINARY
 # Should output: /nix/store/...-prisma-engines-.../bin/query-engine
@@ -227,6 +243,7 @@ echo $PRISMA_QUERY_ENGINE_BINARY
 If you encounter Docker permission errors:
 
 1. **Add your user to the docker group (NixOS):**
+
 ```nix
 # /etc/nixos/configuration.nix
 {
@@ -235,6 +252,7 @@ If you encounter Docker permission errors:
 ```
 
 2. **Rebuild and re-login:**
+
 ```bash
 sudo nixos-rebuild switch
 # Log out and log back in
@@ -290,6 +308,7 @@ You can run PostgreSQL and Redis as NixOS system services instead of Docker:
 ```
 
 Then update your `.env`:
+
 ```env
 DATABASE_URL="postgresql://votebox@localhost:5432/votebox_dev?schema=public"
 REDIS_URL="redis://localhost:6379"
@@ -302,6 +321,7 @@ The project uses GitHub Actions for CI/CD, which runs on Ubuntu (not NixOS).
 ### E2E Tests in CI
 
 The `.github/workflows/e2e.yml` workflow:
+
 - ✅ Runs on Ubuntu with standard Playwright installation
 - ✅ Uses PostgreSQL and Redis service containers
 - ✅ Automatically installs Chromium browsers

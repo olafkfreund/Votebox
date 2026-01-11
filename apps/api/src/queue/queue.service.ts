@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AddToQueueDto } from './dto/add-to-queue.dto';
 import { WebSocketGatewayService } from '../websocket/websocket.gateway';
@@ -13,7 +9,7 @@ export class QueueService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly websocket: WebSocketGatewayService,
-    private readonly voteTracker: VoteTrackerService,
+    private readonly voteTracker: VoteTrackerService
   ) {}
 
   /**
@@ -33,7 +29,7 @@ export class QueueService {
     trackId: string,
     artistName: string,
     voteCount: number,
-    lastVotedAt: Date | null,
+    lastVotedAt: Date | null
   ): Promise<number> {
     const baseScore = voteCount * 10;
     const now = new Date();
@@ -124,12 +120,7 @@ export class QueueService {
     }
 
     // Check anti-spam measures
-    await this.voteTracker.checkAndRecordVote(
-      eventId,
-      dto.trackId,
-      dto.addedBy,
-      ipAddress,
-    );
+    await this.voteTracker.checkAndRecordVote(eventId, dto.trackId, dto.addedBy, ipAddress);
 
     // Verify event exists and is active
     const event = await this.prisma.event.findUnique({
@@ -162,7 +153,7 @@ export class QueueService {
         dto.trackId,
         dto.artistName,
         newVoteCount,
-        now,
+        now
       );
 
       const updatedItem = await this.prisma.queueItem.update({
@@ -186,13 +177,7 @@ export class QueueService {
 
     // Add new track to queue
     const now = new Date();
-    const score = await this.calculateScore(
-      eventId,
-      dto.trackId,
-      dto.artistName,
-      1,
-      now,
-    );
+    const score = await this.calculateScore(eventId, dto.trackId, dto.artistName, 1, now);
 
     const queueItem = await this.prisma.queueItem.create({
       data: {
@@ -242,10 +227,7 @@ export class QueueService {
         eventId,
         isPlayed: false,
       },
-      orderBy: [
-        { score: 'desc' },
-        { addedAt: 'asc' },
-      ],
+      orderBy: [{ score: 'desc' }, { addedAt: 'asc' }],
     });
 
     return queueItems;
@@ -279,9 +261,7 @@ export class QueueService {
     });
 
     if (!queueItem) {
-      throw new NotFoundException(
-        `Track ${trackId} not found in queue for event ${eventId}`,
-      );
+      throw new NotFoundException(`Track ${trackId} not found in queue for event ${eventId}`);
     }
 
     await this.prisma.queueItem.delete({
@@ -314,9 +294,7 @@ export class QueueService {
     });
 
     if (!queueItem) {
-      throw new NotFoundException(
-        `Track ${trackId} not found in queue for event ${eventId}`,
-      );
+      throw new NotFoundException(`Track ${trackId} not found in queue for event ${eventId}`);
     }
 
     const updatedItem = await this.prisma.queueItem.update({
@@ -350,9 +328,7 @@ export class QueueService {
     });
 
     if (!queueItem) {
-      throw new NotFoundException(
-        `Track ${trackId} not found in queue for event ${eventId}`,
-      );
+      throw new NotFoundException(`Track ${trackId} not found in queue for event ${eventId}`);
     }
 
     const updatedItem = await this.prisma.queueItem.update({
@@ -396,10 +372,7 @@ export class QueueService {
         eventId,
         isPlayed: false,
       },
-      orderBy: [
-        { score: 'desc' },
-        { addedAt: 'asc' },
-      ],
+      orderBy: [{ score: 'desc' }, { addedAt: 'asc' }],
     });
 
     if (!nextTrack) {
@@ -419,10 +392,7 @@ export class QueueService {
         eventId,
         isPlayed: false,
       },
-      orderBy: [
-        { score: 'desc' },
-        { addedAt: 'asc' },
-      ],
+      orderBy: [{ score: 'desc' }, { addedAt: 'asc' }],
     });
 
     // Update positions
@@ -430,7 +400,7 @@ export class QueueService {
       this.prisma.queueItem.update({
         where: { id: item.id },
         data: { position: index + 1 },
-      }),
+      })
     );
 
     await this.prisma.$transaction(updates);
@@ -453,7 +423,7 @@ export class QueueService {
         item.trackId,
         item.artistName,
         item.voteCount,
-        item.lastVotedAt,
+        item.lastVotedAt
       );
       return this.prisma.queueItem.update({
         where: { id: item.id },
@@ -555,9 +525,10 @@ export class QueueService {
     return {
       remaining,
       limit: 3,
-      message: remaining > 0
-        ? `You have ${remaining} vote${remaining !== 1 ? 's' : ''} remaining this hour`
-        : 'Vote limit reached. Try again in an hour',
+      message:
+        remaining > 0
+          ? `You have ${remaining} vote${remaining !== 1 ? 's' : ''} remaining this hour`
+          : 'Vote limit reached. Try again in an hour',
     };
   }
 }

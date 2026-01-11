@@ -50,9 +50,7 @@ test.describe('Guest Voting Flow', () => {
     eventId = event.id;
 
     // Start the event
-    await request.post(
-      `http://localhost:4000/api/v1/events/${eventId}/start`
-    );
+    await request.post(`http://localhost:4000/api/v1/events/${eventId}/start`);
   });
 
   test.afterAll(async ({ request }) => {
@@ -206,24 +204,21 @@ test.describe('Guest Voting Flow', () => {
     }
 
     // Try to vote a 4th time (should fail)
-    const failedVote = await request.post(
-      `http://localhost:4000/api/v1/events/${eventId}/queue`,
-      {
-        data: {
-          trackId: 'test-track-4',
-          trackUri: 'spotify:track:test-track-4',
-          trackName: 'Test Track 4',
-          artistName: 'Test Artist',
-          albumName: 'Test Album',
-          albumArt: 'https://example.com/art.jpg',
-          duration: 180000,
-          addedBy: sessionId,
-        },
-        headers: {
-          'x-forwarded-for': '192.168.1.200',
-        },
-      }
-    );
+    const failedVote = await request.post(`http://localhost:4000/api/v1/events/${eventId}/queue`, {
+      data: {
+        trackId: 'test-track-4',
+        trackUri: 'spotify:track:test-track-4',
+        trackName: 'Test Track 4',
+        artistName: 'Test Artist',
+        albumName: 'Test Album',
+        albumArt: 'https://example.com/art.jpg',
+        duration: 180000,
+        addedBy: sessionId,
+      },
+      headers: {
+        'x-forwarded-for': '192.168.1.200',
+      },
+    });
 
     // Should return 429 (Too Many Requests)
     expect(failedVote.status()).toBe(429);
@@ -236,46 +231,40 @@ test.describe('Guest Voting Flow', () => {
     const sessionId = 'cooldown-test-session';
 
     // First vote
-    const firstVote = await request.post(
-      `http://localhost:4000/api/v1/events/${eventId}/queue`,
-      {
-        data: {
-          trackId: 'cooldown-track-1',
-          trackUri: 'spotify:track:cooldown-track-1',
-          trackName: 'Cooldown Track 1',
-          artistName: 'Test Artist',
-          albumName: 'Test Album',
-          albumArt: 'https://example.com/art.jpg',
-          duration: 180000,
-          addedBy: sessionId,
-        },
-        headers: {
-          'x-forwarded-for': '192.168.1.300',
-        },
-      }
-    );
+    const firstVote = await request.post(`http://localhost:4000/api/v1/events/${eventId}/queue`, {
+      data: {
+        trackId: 'cooldown-track-1',
+        trackUri: 'spotify:track:cooldown-track-1',
+        trackName: 'Cooldown Track 1',
+        artistName: 'Test Artist',
+        albumName: 'Test Album',
+        albumArt: 'https://example.com/art.jpg',
+        duration: 180000,
+        addedBy: sessionId,
+      },
+      headers: {
+        'x-forwarded-for': '192.168.1.300',
+      },
+    });
 
     expect(firstVote.ok()).toBeTruthy();
 
     // Immediate second vote (should fail due to 30-second cooldown)
-    const secondVote = await request.post(
-      `http://localhost:4000/api/v1/events/${eventId}/queue`,
-      {
-        data: {
-          trackId: 'cooldown-track-2',
-          trackUri: 'spotify:track:cooldown-track-2',
-          trackName: 'Cooldown Track 2',
-          artistName: 'Test Artist',
-          albumName: 'Test Album',
-          albumArt: 'https://example.com/art.jpg',
-          duration: 180000,
-          addedBy: sessionId,
-        },
-        headers: {
-          'x-forwarded-for': '192.168.1.300',
-        },
-      }
-    );
+    const secondVote = await request.post(`http://localhost:4000/api/v1/events/${eventId}/queue`, {
+      data: {
+        trackId: 'cooldown-track-2',
+        trackUri: 'spotify:track:cooldown-track-2',
+        trackName: 'Cooldown Track 2',
+        artistName: 'Test Artist',
+        albumName: 'Test Album',
+        albumArt: 'https://example.com/art.jpg',
+        duration: 180000,
+        addedBy: sessionId,
+      },
+      headers: {
+        'x-forwarded-for': '192.168.1.300',
+      },
+    });
 
     expect(secondVote.status()).toBe(429);
 
@@ -295,24 +284,21 @@ test.describe('Guest Voting Flow', () => {
 
     for (const track of tracks) {
       for (let i = 0; i < track.votes; i++) {
-        await request.post(
-          `http://localhost:4000/api/v1/events/${eventId}/queue`,
-          {
-            data: {
-              trackId: `track-${track.name}`,
-              trackUri: `spotify:track:track-${track.name}`,
-              trackName: track.name,
-              artistName: 'Test Artist',
-              albumName: 'Test Album',
-              albumArt: 'https://example.com/art.jpg',
-              duration: 180000,
-              addedBy: `session-${i}`,
-            },
-            headers: {
-              'x-forwarded-for': `192.168.1.${100 + i}`,
-            },
-          }
-        );
+        await request.post(`http://localhost:4000/api/v1/events/${eventId}/queue`, {
+          data: {
+            trackId: `track-${track.name}`,
+            trackUri: `spotify:track:track-${track.name}`,
+            trackName: track.name,
+            artistName: 'Test Artist',
+            albumName: 'Test Album',
+            albumArt: 'https://example.com/art.jpg',
+            duration: 180000,
+            addedBy: `session-${i}`,
+          },
+          headers: {
+            'x-forwarded-for': `192.168.1.${100 + i}`,
+          },
+        });
         await page.waitForTimeout(100);
       }
     }

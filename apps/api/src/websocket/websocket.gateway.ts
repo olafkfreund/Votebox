@@ -38,20 +38,14 @@ export class WebSocketGatewayService
   }
 
   @SubscribeMessage('joinEvent')
-  handleJoinEvent(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: { eventId: string },
-  ) {
+  handleJoinEvent(@ConnectedSocket() client: Socket, @MessageBody() data: { eventId: string }) {
     client.join(`event:${data.eventId}`);
     this.logger.log(`Client ${client.id} joined event ${data.eventId}`);
     return { success: true };
   }
 
   @SubscribeMessage('leaveEvent')
-  handleLeaveEvent(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() data: { eventId: string },
-  ) {
+  handleLeaveEvent(@ConnectedSocket() client: Socket, @MessageBody() data: { eventId: string }) {
     client.leave(`event:${data.eventId}`);
     this.logger.log(`Client ${client.id} left event ${data.eventId}`);
     return { success: true };
@@ -59,12 +53,7 @@ export class WebSocketGatewayService
 
   // Broadcast methods to be called from other services
 
-  emitVoteUpdate(
-    eventId: string,
-    trackId: string,
-    voteCount: number,
-    newPosition: number,
-  ) {
+  emitVoteUpdate(eventId: string, trackId: string, voteCount: number, newPosition: number) {
     this.server.to(`event:${eventId}`).emit('voteUpdate', {
       eventId,
       trackId,

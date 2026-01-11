@@ -1,8 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  NotFoundException,
-  BadRequestException,
-} from '@nestjs/common';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { PlaybackService } from './playback.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { SpotifyApiService } from '../spotify/spotify-api.service';
@@ -130,9 +127,9 @@ describe('PlaybackService', () => {
     it('should throw NotFoundException if event not found', async () => {
       mockPrismaService.event.findUnique.mockResolvedValue(null);
 
-      await expect(
-        service.initializePlayback('event-999', 'device-123'),
-      ).rejects.toThrow(new NotFoundException('Event with ID event-999 not found'));
+      await expect(service.initializePlayback('event-999', 'device-123')).rejects.toThrow(
+        new NotFoundException('Event with ID event-999 not found')
+      );
     });
 
     it('should throw BadRequestException if event not active', async () => {
@@ -141,10 +138,8 @@ describe('PlaybackService', () => {
         status: 'ENDED',
       });
 
-      await expect(
-        service.initializePlayback('event-123', 'device-123'),
-      ).rejects.toThrow(
-        new BadRequestException('Event must be active to enable playback'),
+      await expect(service.initializePlayback('event-123', 'device-123')).rejects.toThrow(
+        new BadRequestException('Event must be active to enable playback')
       );
     });
 
@@ -152,10 +147,8 @@ describe('PlaybackService', () => {
       mockPrismaService.event.findUnique.mockResolvedValue(mockEvent);
       mockSpotifyApi.getDevices.mockResolvedValue([]);
 
-      await expect(
-        service.initializePlayback('event-123', 'device-999'),
-      ).rejects.toThrow(
-        new NotFoundException('Spotify device with ID device-999 not found'),
+      await expect(service.initializePlayback('event-123', 'device-999')).rejects.toThrow(
+        new NotFoundException('Spotify device with ID device-999 not found')
       );
     });
   });
@@ -179,12 +172,9 @@ describe('PlaybackService', () => {
       expect(mockSpotifyApi.playTrack).toHaveBeenCalledWith(
         'venue-123',
         'spotify:track:track-123',
-        'device-123',
+        'device-123'
       );
-      expect(mockQueueService.markAsPlayed).toHaveBeenCalledWith(
-        'event-123',
-        'track-123',
-      );
+      expect(mockQueueService.markAsPlayed).toHaveBeenCalledWith('event-123', 'track-123');
       expect(mockWebSocket.emitNowPlayingUpdate).toHaveBeenCalled();
       expect(result.message).toBe('Track started playing');
       expect(result.nowPlaying).toBeDefined();
@@ -197,27 +187,18 @@ describe('PlaybackService', () => {
 
       expect(result.message).toBe('Queue is empty');
       expect(result.nowPlaying).toBeNull();
-      expect(mockWebSocket.emitNowPlayingUpdate).toHaveBeenCalledWith(
-        'event-123',
-        null,
-      );
+      expect(mockWebSocket.emitNowPlayingUpdate).toHaveBeenCalledWith('event-123', null);
     });
 
     it('should throw BadRequestException if playback not initialized', async () => {
-      await expect(service.playNext('event-999')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.playNext('event-999')).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException on Spotify error', async () => {
       mockQueueService.getNextTrack.mockResolvedValue(mockQueueItem);
-      mockSpotifyApi.playTrack.mockRejectedValue(
-        new Error('Spotify API error'),
-      );
+      mockSpotifyApi.playTrack.mockRejectedValue(new Error('Spotify API error'));
 
-      await expect(service.playNext('event-123')).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.playNext('event-123')).rejects.toThrow(BadRequestException);
     });
   });
 
@@ -239,10 +220,7 @@ describe('PlaybackService', () => {
 
       const result = await service.pause('event-123');
 
-      expect(mockSpotifyApi.pausePlayback).toHaveBeenCalledWith(
-        'venue-123',
-        'device-123',
-      );
+      expect(mockSpotifyApi.pausePlayback).toHaveBeenCalledWith('venue-123', 'device-123');
       expect(result.message).toBe('Playback paused');
     });
 
@@ -251,7 +229,7 @@ describe('PlaybackService', () => {
       await service.pause('event-123');
 
       await expect(service.pause('event-123')).rejects.toThrow(
-        new BadRequestException('Playback is already paused'),
+        new BadRequestException('Playback is already paused')
       );
     });
   });
@@ -288,7 +266,7 @@ describe('PlaybackService', () => {
       await service.resume('event-123');
 
       await expect(service.resume('event-123')).rejects.toThrow(
-        new BadRequestException('Playback is already active'),
+        new BadRequestException('Playback is already active')
       );
     });
   });
@@ -384,10 +362,7 @@ describe('PlaybackService', () => {
       const result = await service.stop('event-123');
 
       expect(result.message).toBe('Playback stopped');
-      expect(mockWebSocket.emitNowPlayingUpdate).toHaveBeenCalledWith(
-        'event-123',
-        null,
-      );
+      expect(mockWebSocket.emitNowPlayingUpdate).toHaveBeenCalledWith('event-123', null);
 
       // Verify state is cleaned up
       await expect(service.getStatus('event-123')).resolves.toMatchObject({
@@ -397,7 +372,7 @@ describe('PlaybackService', () => {
 
     it('should throw NotFoundException if not initialized', async () => {
       await expect(service.stop('event-999')).rejects.toThrow(
-        new NotFoundException('Playback not initialized for event event-999'),
+        new NotFoundException('Playback not initialized for event event-999')
       );
     });
   });

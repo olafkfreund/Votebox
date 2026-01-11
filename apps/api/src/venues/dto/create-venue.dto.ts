@@ -1,4 +1,12 @@
-import { IsEmail, IsString, MinLength, MaxLength, Matches, IsOptional, IsObject } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  MinLength,
+  MaxLength,
+  Matches,
+  IsOptional,
+  IsObject,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateVenueDto {

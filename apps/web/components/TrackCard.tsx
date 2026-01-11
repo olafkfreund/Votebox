@@ -15,21 +15,15 @@ export function TrackCard({ track, onVote, canVote }: TrackCardProps) {
       {/* Album Art */}
       {albumArt && (
         <div className="flex-shrink-0">
-          <img
-            src={albumArt}
-            alt={track.album.name}
-            className="w-16 h-16 rounded object-cover"
-          />
+          <img src={albumArt} alt={track.album.name} className="w-16 h-16 rounded object-cover" />
         </div>
       )}
 
       {/* Track Info */}
       <div className="flex-1 min-w-0">
-        <h4 className="font-medium text-gray-900 dark:text-white truncate">
-          {track.name}
-        </h4>
+        <h4 className="font-medium text-gray-900 dark:text-white truncate">{track.name}</h4>
         <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
-          {track.artists.map(a => a.name).join(', ')}
+          {track.artists.map((a) => a.name).join(', ')}
         </p>
         <div className="flex items-center gap-2 mt-1">
           <span className="text-xs text-gray-500 dark:text-gray-500">

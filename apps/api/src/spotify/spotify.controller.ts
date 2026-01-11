@@ -8,13 +8,7 @@ import {
   Redirect,
   BadRequestException,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiQuery,
-  ApiParam,
-} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam } from '@nestjs/swagger';
 import { SpotifyAuthService } from './spotify-auth.service';
 import { SpotifyApiService } from './spotify-api.service';
 import {
@@ -28,7 +22,7 @@ import {
 export class SpotifyController {
   constructor(
     private readonly spotifyAuthService: SpotifyAuthService,
-    private readonly spotifyApiService: SpotifyApiService,
+    private readonly spotifyApiService: SpotifyApiService
   ) {}
 
   @Get('authorize')
@@ -91,7 +85,7 @@ export class SpotifyController {
   async callback(
     @Query('code') code: string,
     @Query('state') state: string,
-    @Query('error') error?: string,
+    @Query('error') error?: string
   ) {
     // Handle user denial
     if (error) {
@@ -223,7 +217,7 @@ export class SpotifyController {
     @Param('venueId') venueId: string,
     @Query('q') query: string,
     @Query('limit') limit?: string,
-    @Query('offset') offset?: string,
+    @Query('offset') offset?: string
   ) {
     const limitNum = limit ? parseInt(limit, 10) : 20;
     const offsetNum = offset ? parseInt(offset, 10) : 0;
@@ -257,7 +251,7 @@ export class SpotifyController {
   async getUserPlaylists(
     @Param('venueId') venueId: string,
     @Query('limit') limit?: string,
-    @Query('offset') offset?: string,
+    @Query('offset') offset?: string
   ) {
     const limitNum = limit ? parseInt(limit, 10) : 20;
     const offsetNum = offset ? parseInt(offset, 10) : 0;
@@ -296,17 +290,12 @@ export class SpotifyController {
     @Param('venueId') venueId: string,
     @Param('playlistId') playlistId: string,
     @Query('limit') limit?: string,
-    @Query('offset') offset?: string,
+    @Query('offset') offset?: string
   ) {
     const limitNum = limit ? parseInt(limit, 10) : 100;
     const offsetNum = offset ? parseInt(offset, 10) : 0;
 
-    return this.spotifyApiService.getPlaylistTracks(
-      venueId,
-      playlistId,
-      limitNum,
-      offsetNum,
-    );
+    return this.spotifyApiService.getPlaylistTracks(venueId, playlistId, limitNum, offsetNum);
   }
 
   @Get('genres/:venueId')
@@ -354,7 +343,7 @@ export class SpotifyController {
   async getRecommendations(
     @Param('venueId') venueId: string,
     @Query('genres') genres?: string,
-    @Query('limit') limit?: string,
+    @Query('limit') limit?: string
   ) {
     const seedGenres = genres ? genres.split(',') : [];
     const limitNum = limit ? parseInt(limit, 10) : 20;

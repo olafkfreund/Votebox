@@ -33,6 +33,7 @@ Votebox is a cloud-native SaaS platform that transforms the music experience in 
 ### 💡 Our Solution
 
 Votebox bridges the gap by:
+
 - ✅ Giving guests a voice through democratic voting
 - ✅ Maintaining venue control with themed events and filters
 - ✅ Providing real-time updates via WebSocket technology
@@ -134,6 +135,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed system design.
 ## 🚀 Tech Stack
 
 ### Frontend
+
 - **Framework**: Next.js 14 (App Router) with React 18
 - **Language**: TypeScript 5.3
 - **Styling**: Tailwind CSS 4.0
@@ -142,6 +144,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed system design.
 - **PWA**: Service Workers, Web App Manifest
 
 ### Backend
+
 - **Framework**: NestJS 10
 - **Language**: TypeScript 5.3
 - **Database**: PostgreSQL 16 with Prisma ORM
@@ -150,6 +153,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed system design.
 - **Authentication**: JWT with Passport
 
 ### Infrastructure
+
 - **Containers**: Docker & Docker Compose
 - **CI/CD**: GitHub Actions
 - **Orchestration**: Kubernetes (optional)
@@ -157,6 +161,7 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed system design.
 - **Cloud**: AWS/Azure/GCP ready
 
 ### External APIs
+
 - **Music**: Spotify Web API + Web Playback SDK
 - **Payments**: Stripe (Phase 3)
 
@@ -179,6 +184,7 @@ Before you begin, ensure you have:
 Using NixOS? We have full Nix flake support! See [docs/NIXOS.md](./docs/NIXOS.md) for NixOS-specific instructions.
 
 **Quick start for NixOS:**
+
 ```bash
 cd Votebox
 nix develop  # or use direnv
@@ -210,6 +216,7 @@ cp .env.example .env
 ```
 
 Edit `.env` with your credentials:
+
 ```env
 # Database
 DATABASE_URL="postgresql://votebox:votebox_dev_password@localhost:5432/votebox_dev"
@@ -248,6 +255,7 @@ npm run db:seed
 ```
 
 This creates:
+
 - Demo venue: `demo-venue` (email: demo@votebox.com, password: DemoVenue123!)
 - Test event: "Doom Rock Night"
 
@@ -258,6 +266,7 @@ npm run dev
 ```
 
 This starts:
+
 - 🌐 **Web App**: http://localhost:3000
 - 🔌 **API Server**: http://localhost:4000
 - 📚 **API Docs**: http://localhost:4000/api/docs
@@ -300,21 +309,25 @@ votebox/
 ## 📚 Documentation
 
 ### Getting Started
+
 - [Setup Guide](./SETUP.md) - Quick setup instructions
 - [Getting Started](./GETTING_STARTED.md) - 5-minute quickstart
 - [Development Setup](./DEVELOPMENT_SETUP.md) - Detailed development guide
 
 ### Architecture & Design
+
 - [Architecture](./ARCHITECTURE.md) - System architecture, data flow
 - [Tech Stack](./TECH_STACK.md) - Technology choices and ADRs
 - [Database Schema](./DATABASE_SCHEMA.md) - Complete data model
 - [API Design](./API_DESIGN.md) - REST endpoints, WebSocket events
 
 ### API & Testing
+
 - [API Documentation](./docs/API.md) - Complete API reference
 - [Testing Guide](./docs/TESTING.md) - Testing strategy and guides
 
 ### Project Management
+
 - [Project Plan](./PROJECT_PLAN.md) - 12-week development timeline
 - [Documentation Index](./DOCUMENTATION_INDEX.md) - All documentation
 - [Claude Instructions](./CLAUDE.md) - AI assistant context
@@ -324,6 +337,7 @@ votebox/
 ## 🗓️ Development Roadmap
 
 ### ✅ Week 1: Foundation - **COMPLETE**
+
 - [x] Monorepo structure with Turborepo
 - [x] Next.js PWA setup
 - [x] NestJS API setup
@@ -334,12 +348,14 @@ votebox/
 - [x] Health check endpoints
 
 ### ✅ Week 2: Core Backend - **COMPLETE**
+
 - [x] Venue management API
 - [x] Event CRUD operations with lifecycle management
 - [x] Spotify OAuth integration
 - [x] Queue management system with intelligent scoring
 
 ### ✅ Week 3: Guest Interface - **COMPLETE**
+
 - [x] Guest PWA voting interface
 - [x] Track browsing and search with Spotify integration
 - [x] Voting mechanism with session tracking
@@ -347,6 +363,7 @@ votebox/
 - [x] Display screen for venues
 
 ### ✅ Week 4: Queue Algorithm & MVP - **COMPLETE**
+
 - [x] Weighted voting algorithm (vote count, recency, diversity, penalties)
 - [x] Anti-spam measures (4-layer system)
 - [x] Admin controls (clear queue, skip track, remove track, recalculate scores)
@@ -356,6 +373,7 @@ votebox/
 - [x] **WEEK 4 MVP FULLY COMPLETE** 🎉
 
 ### ⏳ Week 5-8: Admin Dashboard Enhancement
+
 - [ ] Admin authentication & authorization
 - [ ] Real-time analytics dashboard
 - [ ] Event monitoring and controls
@@ -411,27 +429,32 @@ docker-compose logs -f   # View logs
 We welcome contributions! Here's how to get started:
 
 ### 1. Fork & Clone
+
 ```bash
 git clone https://github.com/YOUR_USERNAME/Votebox.git
 cd Votebox
 ```
 
 ### 2. Create a Branch
+
 ```bash
 git checkout -b feature/your-feature-name
 ```
 
 ### 3. Make Changes
+
 - Follow the code style (ESLint + Prettier)
 - Write tests for new features
 - Update documentation as needed
 
 ### 4. Commit
+
 ```bash
 git commit -m "feat: add amazing feature"
 ```
 
 Use [Conventional Commits](https://www.conventionalcommits.org/):
+
 - `feat:` New features
 - `fix:` Bug fixes
 - `docs:` Documentation changes
@@ -440,6 +463,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/):
 - `chore:` Build process or auxiliary tool changes
 
 ### 5. Push & Create PR
+
 ```bash
 git push origin feature/your-feature-name
 ```
@@ -447,6 +471,7 @@ git push origin feature/your-feature-name
 Then create a Pull Request on GitHub.
 
 ### Code Review Process
+
 1. Automated CI checks must pass
 2. At least one maintainer review required
 3. All discussions must be resolved
@@ -459,6 +484,7 @@ Then create a Pull Request on GitHub.
 ### Current Status: Week 1-4 MVP Complete ✅
 
 **MVP Achievements:**
+
 - ✅ Complete backend API with NestJS (Venue, Event, Queue, Spotify, Playback)
 - ✅ Guest voting PWA with Next.js (voting, real-time updates, display screen)
 - ✅ Intelligent queue algorithm (weighted scoring with 4 factors)
@@ -471,6 +497,7 @@ Then create a Pull Request on GitHub.
 - ✅ CI/CD pipeline with GitHub Actions (unit + E2E)
 
 **Code Metrics:**
+
 - **Backend**: 8 modules (Playback added), 2,000+ lines of core logic
 - **Frontend**: 7+ React components, Zustand state management
 - **Tests**: 34+ unit tests + 31 E2E tests with Playwright
@@ -478,12 +505,14 @@ Then create a Pull Request on GitHub.
 - **Documentation**: 10+ comprehensive docs including API and testing guides
 
 **Next Steps:**
+
 - [ ] Production deployment setup
 - [ ] Admin authentication & dashboard
 - [ ] Real-time analytics dashboard
 - [ ] Subscription management system
 
 ### GitHub Stats
+
 - **Issues Closed**: Week 1-4 fully complete (all MVP milestones)
 - **Pull Requests**: Open PRs welcome
 - **Contributors**: 1 (join us!)
@@ -494,7 +523,9 @@ Then create a Pull Request on GitHub.
 ## 🐛 Troubleshooting
 
 ### Port Conflicts
+
 If ports are already in use:
+
 ```bash
 # Find processes using ports
 lsof -i :3000   # Web
@@ -506,6 +537,7 @@ lsof -i :6379   # Redis
 ```
 
 ### Database Issues
+
 ```bash
 # Reset database completely
 docker-compose down -v
@@ -515,6 +547,7 @@ npm run db:seed
 ```
 
 ### Node Module Issues
+
 ```bash
 # Clean reinstall
 rm -rf node_modules package-lock.json
@@ -522,6 +555,7 @@ npm install
 ```
 
 ### Prisma Issues
+
 ```bash
 # Regenerate Prisma Client
 npx prisma generate --schema=packages/database/prisma/schema.prisma
@@ -559,6 +593,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🌟 Show Your Support
 
 If you find this project interesting, please:
+
 - ⭐ Star the repository
 - 🐛 Report bugs via [Issues](https://github.com/olafkfreund/Votebox/issues)
 - 💡 Suggest features via [Discussions](https://github.com/olafkfreund/Votebox/discussions)
