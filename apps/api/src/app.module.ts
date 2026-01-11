@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { VenuesModule } from './venues/venues.module';
 import { EventsModule } from './events/events.module';
 import { SpotifyModule } from './spotify/spotify.module';
+import { QueueModule } from './queue/queue.module';
 
 @Module({
   imports: [
@@ -17,10 +18,10 @@ import { SpotifyModule } from './spotify/spotify.module';
     VenuesModule,
     EventsModule,
     SpotifyModule,
+    QueueModule,
     // Modules will be added here as we create them:
     // AuthModule,
     // VotesModule,
-    // QueueModule,
     // WebsocketModule,
   ],
   controllers: [AppController],
