@@ -1,168 +1,540 @@
 # Votebox 🎵
 
+<div align="center">
+
 **Democratic Music Selection for Venues**
 
-Votebox is a cloud-native platform that enables pub and club guests to democratically vote on music from their phones. Venues can create themed events (e.g., "Doom Rock Night", "Black Metal Evening") and guests vote on tracks from curated playlists or genres.
+[![CI](https://github.com/olafkfreund/Votebox/actions/workflows/ci.yml/badge.svg)](https://github.com/olafkfreund/Votebox/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-10-red.svg)](https://nestjs.com/)
 
-## 🎯 Vision
+[Documentation](./DOCUMENTATION_INDEX.md) • [Architecture](./ARCHITECTURE.md) • [Project Plan](./PROJECT_PLAN.md) • [Issues](https://github.com/olafkfreund/Votebox/issues)
 
-Transform the music experience in venues by:
-- Giving guests a voice in music selection
-- Maintaining venue control over atmosphere and theme
-- Creating engagement and interaction
-- Providing insights into customer preferences
+</div>
+
+---
+
+## 📖 Overview
+
+Votebox is a cloud-native SaaS platform that transforms the music experience in pubs, clubs, and venues by enabling guests to democratically vote on music from their phones in real-time. Venues create themed events (e.g., "Doom Rock Night", "90s Hip-Hop Session") and guests vote on tracks from curated playlists or genres, creating an engaging and interactive atmosphere.
+
+**🎯 Current Status**: Week 1 Foundation Complete - [View Progress](https://github.com/olafkfreund/Votebox/issues)
+
+### 🎪 The Problem We're Solving
+
+- **Venues** struggle to keep everyone happy with music selection
+- **DJs/Staff** face constant requests and interruptions
+- **Guests** feel disconnected from the music experience
+- **Traditional jukeboxes** are outdated and limited
+- **Existing solutions** lack real-time engagement and venue control
+
+### 💡 Our Solution
+
+Votebox bridges the gap by:
+- ✅ Giving guests a voice through democratic voting
+- ✅ Maintaining venue control with themed events and filters
+- ✅ Providing real-time updates via WebSocket technology
+- ✅ Offering actionable insights through analytics
+- ✅ Requiring no app installation (PWA-based)
+
+---
+
+## 🎯 Project Goals & Objectives
+
+### Primary Goals
+
+1. **Create Engagement** - Transform passive listeners into active participants
+2. **Enhance Experience** - Improve guest satisfaction and venue atmosphere
+3. **Provide Control** - Give venues full control over music selection boundaries
+4. **Generate Insights** - Help venues understand customer preferences
+5. **Scale Efficiently** - Build a multi-tenant SaaS platform for unlimited venues
+
+### Business Objectives
+
+- **MVP Launch**: 12 weeks (3 months)
+- **Target Market**: Pubs, bars, clubs, music venues in UK/Europe
+- **Revenue Model**: Subscription tiers (£29-£199/month)
+- **Success Metrics**:
+  - 50+ venues by Month 6
+  - £3,000+ MRR by Month 6
+  - <10% churn rate
+  - 99.5% uptime
+
+### Technical Objectives
+
+- **Performance**: <500ms API response time (p95)
+- **Real-time**: <100ms WebSocket latency
+- **Scalability**: Support 500+ concurrent voters per event
+- **Reliability**: 99.5% uptime SLA
+- **Security**: OWASP Top 10 compliance
+
+---
 
 ## ✨ Key Features
 
-### For Venues
-- **Event Management**: Schedule themed music nights with specific genres/playlists
-- **Smart Queue System**: Weighted voting algorithm for track selection
-- **Admin Dashboard**: Real-time monitoring and control
-- **Analytics**: Understand what your crowd loves
-- **Content Moderation**: Skip tracks, set filters, control the vibe
+### 🎤 For Venues
 
-### For Guests
-- **Easy Access**: QR code → instant voting (no app install)
-- **Real-time Updates**: See what's playing and what's coming next
-- **Vote Power**: Influence the playlist within event boundaries
-- **Discovery**: Find new artists in your favorite genres
+- **Event Management** - Schedule themed music nights with specific genres/playlists
+- **Smart Queue System** - Weighted voting algorithm considers recency, diversity, and vote count
+- **Admin Dashboard** - Real-time monitoring, manual controls, emergency skip
+- **Analytics Dashboard** - Popular tracks, peak voting times, genre preferences
+- **Content Moderation** - Explicit content filters, track blacklist, manual queue control
+- **Spotify Integration** - OAuth authentication, playlist access, playback control
+- **Subscription Management** - Multiple tiers (Free, Starter, Pro, Enterprise)
 
-### For Display Screens
-- **Now Playing**: Beautiful display of current track
-- **Queue Visualization**: Upcoming songs with vote counts
-- **Engagement Stats**: Top voters, popular tracks
+### 📱 For Guests
+
+- **Instant Access** - Scan QR code → vote immediately (no app install required)
+- **Real-time Updates** - See current track, upcoming queue, vote counts
+- **Vote Power** - 3 votes per hour, influence the playlist democratically
+- **Track Discovery** - Browse by genre, search tracks, see recommendations
+- **Vote Cooldown** - Fair voting with anti-spam measures
+- **Session Tracking** - Continue voting throughout the event
+
+### 📺 For Display Screens
+
+- **Now Playing** - Beautiful full-screen display with album art
+- **Queue Visualization** - Upcoming tracks with vote counts and progress
+- **Engagement Stats** - Most voted tracks, active voters, participation rate
+- **Venue Branding** - Custom colors, logos, themes
+- **QR Code Display** - Easy access for new guests
+
+---
 
 ## 🏗️ Architecture
 
 ```
-┌─────────────┐     ┌──────────────┐     ┌─────────────┐
-│   Guest     │────▶│   Backend    │────▶│   Spotify   │
-│   PWA       │◀────│   API        │◀────│     API     │
-└─────────────┘     └──────────────┘     └─────────────┘
-                           │
-                    ┌──────┴──────┐
-                    ▼             ▼
-              ┌──────────┐  ┌──────────┐
-              │  Admin   │  │ Display  │
-              │Dashboard │  │  Screen  │
-              └──────────┘  └──────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                         Internet                                 │
+└────────────────┬────────────────────────────────┬────────────────┘
+                 │                                │
+        ┌────────▼────────┐              ┌───────▼────────┐
+        │   Next.js PWA    │              │   NestJS API   │
+        │  Guest + Display │◄────────────►│  REST + WS     │
+        └──────────────────┘              └────────┬───────┘
+                                                   │
+                                          ┌────────┴────────┐
+                                          │                 │
+                                    ┌─────▼──────┐   ┌─────▼──────┐
+                                    │ PostgreSQL │   │   Redis    │
+                                    └────────────┘   └────────────┘
+                                          │
+                                    ┌─────▼──────┐
+                                    │  Spotify   │
+                                    │    API     │
+                                    └────────────┘
 ```
+
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for detailed system design.
+
+---
 
 ## 🚀 Tech Stack
 
-- **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS, PWA
-- **Backend**: Node.js, NestJS, TypeScript
-- **Real-time**: Socket.io for live updates
-- **Database**: PostgreSQL with Prisma ORM
-- **Cache**: Redis for session management and queue caching
-- **Auth**: NextAuth.js for venue authentication
-- **API**: Spotify Web API + Web Playback SDK
-- **Infrastructure**: Docker, Kubernetes (optional), GitHub Actions
-- **Monitoring**: Prometheus, Grafana
+### Frontend
+- **Framework**: Next.js 14 (App Router) with React 18
+- **Language**: TypeScript 5.3
+- **Styling**: Tailwind CSS 4.0
+- **State**: Zustand
+- **Real-time**: Socket.io Client
+- **PWA**: Service Workers, Web App Manifest
+
+### Backend
+- **Framework**: NestJS 10
+- **Language**: TypeScript 5.3
+- **Database**: PostgreSQL 16 with Prisma ORM
+- **Cache**: Redis 7
+- **Real-time**: Socket.io Server
+- **Authentication**: JWT with Passport
+
+### Infrastructure
+- **Containers**: Docker & Docker Compose
+- **CI/CD**: GitHub Actions
+- **Orchestration**: Kubernetes (optional)
+- **Monitoring**: Prometheus + Grafana
+- **Cloud**: AWS/Azure/GCP ready
+
+### External APIs
+- **Music**: Spotify Web API + Web Playback SDK
+- **Payments**: Stripe (Phase 3)
+
+See [TECH_STACK.md](./TECH_STACK.md) for detailed rationale.
+
+---
 
 ## 📋 Prerequisites
 
-- Node.js 20.x or later
-- Docker & Docker Compose
-- PostgreSQL 16+
-- Redis 7+
-- Spotify Premium account
-- Spotify Developer account (for API credentials)
+Before you begin, ensure you have:
+
+- **Node.js** 20.x or later
+- **Docker** & Docker Compose
+- **Git** for version control
+- **Spotify Developer Account** ([Get one here](https://developer.spotify.com/dashboard))
+- **Code Editor** (VS Code recommended)
+
+---
 
 ## 🛠️ Quick Start
 
+### 1. Clone the Repository
+
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/votebox.git
-cd votebox
+git clone https://github.com/olafkfreund/Votebox.git
+cd Votebox
+```
 
-# Install dependencies
-npm run install:all
+### 2. Install Dependencies
 
-# Set up environment variables
+```bash
+npm install
+```
+
+### 3. Set Up Environment Variables
+
+```bash
 cp .env.example .env
-# Edit .env with your Spotify credentials
+```
 
-# Start development environment
-docker-compose up -d
+Edit `.env` with your credentials:
+```env
+# Database
+DATABASE_URL="postgresql://votebox:votebox_dev_password@localhost:5432/votebox_dev"
 
-# Run database migrations
-npm run db:migrate
+# Redis
+REDIS_URL="redis://:votebox_redis_password@localhost:6379"
 
-# Start development servers
+# Spotify
+SPOTIFY_CLIENT_ID="your_spotify_client_id"
+SPOTIFY_CLIENT_SECRET="your_spotify_client_secret"
+
+# JWT
+JWT_SECRET="your_secure_random_secret"
+```
+
+### 4. Start Infrastructure
+
+```bash
+# Start PostgreSQL and Redis
+docker-compose up -d postgres redis
+```
+
+### 5. Run Database Migrations
+
+```bash
+cd packages/database
+npx prisma migrate dev --name init
+npx prisma generate
+cd ../..
+```
+
+### 6. Seed Demo Data (Optional)
+
+```bash
+npm run db:seed
+```
+
+This creates:
+- Demo venue: `demo-venue` (email: demo@votebox.com, password: DemoVenue123!)
+- Test event: "Doom Rock Night"
+
+### 7. Start Development Servers
+
+```bash
 npm run dev
 ```
 
-Visit:
-- Guest App: http://localhost:3000
-- Admin Dashboard: http://localhost:3000/admin
-- Display Screen: http://localhost:3000/display
-- API: http://localhost:4000
+This starts:
+- 🌐 **Web App**: http://localhost:3000
+- 🔌 **API Server**: http://localhost:4000
+- 📚 **API Docs**: http://localhost:4000/api/docs
+- 🗄️ **Prisma Studio**: `npm run db:studio` (separate terminal)
+
+---
+
+## 📁 Project Structure
+
+```
+votebox/
+├── apps/
+│   ├── web/                  # Next.js PWA (Guest + Display)
+│   │   ├── app/              # App Router pages
+│   │   ├── components/       # React components
+│   │   └── lib/              # Utilities, API client, Socket.io
+│   ├── admin/                # Next.js Admin Dashboard (TODO)
+│   └── api/                  # NestJS Backend API
+│       ├── src/
+│       │   ├── auth/         # Authentication module
+│       │   ├── venues/       # Venue management
+│       │   ├── events/       # Event CRUD
+│       │   ├── votes/        # Voting logic
+│       │   ├── queue/        # Queue management
+│       │   ├── spotify/      # Spotify integration
+│       │   └── websocket/    # Real-time gateway
+│       └── test/             # E2E tests
+├── packages/
+│   ├── database/             # Prisma schema, migrations, seed
+│   ├── types/                # Shared TypeScript types
+│   ├── config/               # Shared configs (TS, ESLint)
+│   └── utils/                # Shared utilities (TODO)
+├── docker/                   # Production Dockerfiles
+├── .github/workflows/        # CI/CD pipelines
+└── docs/                     # Comprehensive documentation
+```
+
+---
 
 ## 📚 Documentation
 
-- [Project Plan](./PROJECT_PLAN.md) - Development phases and timeline
-- [Architecture](./ARCHITECTURE.md) - System design and components
-- [Tech Stack](./TECH_STACK.md) - Technology choices and rationale
-- [Database Schema](./DATABASE_SCHEMA.md) - Data model and relationships
-- [API Design](./API_DESIGN.md) - REST endpoints and WebSocket events
-- [Development Setup](./DEVELOPMENT_SETUP.md) - Local development guide
-- [Deployment](./DEPLOYMENT.md) - Production deployment strategies
+### Getting Started
+- [Setup Guide](./SETUP.md) - Quick setup instructions
+- [Getting Started](./GETTING_STARTED.md) - 5-minute quickstart
+- [Development Setup](./DEVELOPMENT_SETUP.md) - Detailed development guide
+
+### Architecture & Design
+- [Architecture](./ARCHITECTURE.md) - System architecture, data flow
+- [Tech Stack](./TECH_STACK.md) - Technology choices and ADRs
+- [Database Schema](./DATABASE_SCHEMA.md) - Complete data model
+- [API Design](./API_DESIGN.md) - REST endpoints, WebSocket events
+
+### Project Management
+- [Project Plan](./PROJECT_PLAN.md) - 12-week development timeline
+- [Documentation Index](./DOCUMENTATION_INDEX.md) - All documentation
 - [Claude Instructions](./CLAUDE.md) - AI assistant context
+
+---
 
 ## 🗓️ Development Roadmap
 
-### Phase 1: MVP (Weeks 1-4)
-- Basic event management
-- Spotify integration
-- Voting system
-- Simple queue algorithm
-- Guest PWA
+### ✅ Phase 1: Foundation (Week 1) - **COMPLETE**
+- [x] Monorepo structure with Turborepo
+- [x] Next.js PWA setup
+- [x] NestJS API setup
+- [x] PostgreSQL + Prisma schema
+- [x] Redis configuration
+- [x] Docker Compose environment
+- [x] CI/CD with GitHub Actions
+- [x] Health check endpoints
 
-### Phase 2: Enhancement (Weeks 5-8)
-- Admin dashboard
-- Display screen
-- Advanced queue algorithms
-- Analytics basics
-- Multi-venue support
+### 🚧 Phase 2: Core Backend (Week 2) - **IN PROGRESS**
+- [ ] Venue management API
+- [ ] Event CRUD operations
+- [ ] Spotify OAuth integration
+- [ ] Basic queue management
 
-### Phase 3: Production (Weeks 9-12)
-- Payment integration
-- Advanced analytics
-- Performance optimization
-- Security hardening
-- Monitoring and logging
+### ⏳ Phase 3: Guest Interface (Week 3)
+- [ ] Guest PWA pages
+- [ ] Track browsing and search
+- [ ] Voting mechanism
+- [ ] Real-time WebSocket updates
 
-### Phase 4: Scale (Post-MVP)
-- Mobile apps (React Native)
-- Advanced features (rewards, gamification)
-- API for third-party integrations
-- White-label options
+### ⏳ Phase 4: Queue Algorithm (Week 4)
+- [ ] Weighted voting algorithm
+- [ ] Anti-spam measures
+- [ ] Playback automation
+- [ ] Admin controls
+- [ ] MVP completion
+
+See [PROJECT_PLAN.md](./PROJECT_PLAN.md) for the complete 12-week roadmap.
+
+---
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:ci
+
+# Run E2E tests
+npm run test:e2e
+```
+
+---
+
+## 🔧 Development Commands
+
+```bash
+# Development
+npm run dev              # Start all apps in development mode
+npm run build            # Build all apps
+npm run lint             # Lint all code
+npm run format           # Format all code with Prettier
+
+# Database
+npm run db:migrate       # Run Prisma migrations
+npm run db:studio        # Open Prisma Studio GUI
+npm run db:seed          # Seed demo data
+
+# Docker
+docker-compose up        # Start all services
+docker-compose up -d     # Start in detached mode
+docker-compose down      # Stop all services
+docker-compose logs -f   # View logs
+```
+
+---
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+We welcome contributions! Here's how to get started:
+
+### 1. Fork & Clone
+```bash
+git clone https://github.com/YOUR_USERNAME/Votebox.git
+cd Votebox
+```
+
+### 2. Create a Branch
+```bash
+git checkout -b feature/your-feature-name
+```
+
+### 3. Make Changes
+- Follow the code style (ESLint + Prettier)
+- Write tests for new features
+- Update documentation as needed
+
+### 4. Commit
+```bash
+git commit -m "feat: add amazing feature"
+```
+
+Use [Conventional Commits](https://www.conventionalcommits.org/):
+- `feat:` New features
+- `fix:` Bug fixes
+- `docs:` Documentation changes
+- `refactor:` Code refactoring
+- `test:` Adding tests
+- `chore:` Build process or auxiliary tool changes
+
+### 5. Push & Create PR
+```bash
+git push origin feature/your-feature-name
+```
+
+Then create a Pull Request on GitHub.
+
+### Code Review Process
+1. Automated CI checks must pass
+2. At least one maintainer review required
+3. All discussions must be resolved
+4. Branch must be up-to-date with main
+
+---
+
+## 📊 Project Status & Metrics
+
+### Current Status: Week 1 Complete ✅
+
+**Completed:**
+- 13/14 Week 1 tasks
+- 51 files created
+- 8,638 lines of code
+- Complete documentation set
+
+**In Progress:**
+- Admin dashboard setup
+- Core backend services
+
+**Next Up:**
+- Venue management API
+- Spotify integration
+- Guest voting interface
+
+### GitHub Stats
+- **Issues**: [View all issues](https://github.com/olafkfreund/Votebox/issues)
+- **Pull Requests**: Open PRs welcome
+- **Contributors**: 1 (join us!)
+
+---
+
+## 🐛 Troubleshooting
+
+### Port Conflicts
+If ports are already in use:
+```bash
+# Find processes using ports
+lsof -i :3000   # Web
+lsof -i :4000   # API
+lsof -i :5432   # PostgreSQL
+lsof -i :6379   # Redis
+
+# Or change ports in .env file
+```
+
+### Database Issues
+```bash
+# Reset database completely
+docker-compose down -v
+docker-compose up -d postgres
+npm run db:migrate
+npm run db:seed
+```
+
+### Node Module Issues
+```bash
+# Clean reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
+
+### Prisma Issues
+```bash
+# Regenerate Prisma Client
+npx prisma generate --schema=packages/database/prisma/schema.prisma
+```
+
+See [DEVELOPMENT_SETUP.md](./DEVELOPMENT_SETUP.md) for more troubleshooting.
+
+---
 
 ## 📝 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+---
+
 ## 🙏 Acknowledgments
 
-- Spotify for their excellent API
-- The open-source community
-- All the venues and music lovers who inspired this project
-
-## 📧 Contact
-
-- Project Lead: Olaf Kfreund
-- Email: [your-email]
-- Website: [your-website]
+- **Spotify** for their excellent Web API and Web Playback SDK
+- **NestJS** and **Next.js** communities for amazing frameworks
+- **Prisma** team for the best TypeScript ORM
+- The **open-source community** for countless tools and libraries
+- All the **venues and music lovers** who inspired this project
 
 ---
 
-Built with ❤️ by developers who love live music
+## 📧 Contact & Support
+
+- **Project Lead**: Olaf Kfreund
+- **GitHub**: [@olafkfreund](https://github.com/olafkfreund)
+- **Issues**: [GitHub Issues](https://github.com/olafkfreund/Votebox/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/olafkfreund/Votebox/discussions)
+
+---
+
+## 🌟 Show Your Support
+
+If you find this project interesting, please:
+- ⭐ Star the repository
+- 🐛 Report bugs via [Issues](https://github.com/olafkfreund/Votebox/issues)
+- 💡 Suggest features via [Discussions](https://github.com/olafkfreund/Votebox/discussions)
+- 🔀 Submit Pull Requests
+- 📢 Share with others
+
+---
+
+<div align="center">
+
+**Built with ❤️ by developers who love live music**
+
+[Documentation](./DOCUMENTATION_INDEX.md) • [Architecture](./ARCHITECTURE.md) • [Contributing](#-contributing) • [License](./LICENSE)
+
+</div>
