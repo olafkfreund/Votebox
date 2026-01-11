@@ -1,0 +1,397 @@
+// Votebox Database Schema
+// Based on DATABASE_SCHEMA.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// CORE ENTITIES
+// ============================================================================
+
+model Venue {
+  id                String   @id @default(cuid())
+  name              String
+  slug              String   @unique
+  email             String   @unique
+  hashedPassword    String
+
+  // Spotify Integration
+  spotifyAccountId  String?  @unique
+  spotifyAccessToken String? @db.Text
+  spotifyRefreshToken String? @db.Text
+  spotifyTokenExpiry DateTime?
+
+  // Settings
+  settings          Json     @default("{}")
+
+  // Metadata
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  lastLoginAt       DateTime?
+
+  // Relations
+  events            Event[]
+  subscription      Subscription?
+  users             User[]
+
+  @@index([slug])
+  @@index([email])
+  @@index([isActive])
+}
+
+model User {
+  id             String   @id @default(cuid())
+  venueId        String
+  email          String   @unique
+  hashedPassword String
+  role           UserRole @default(STAFF)
+
+  firstName      String
+  lastName       String
+
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  lastLoginAt    DateTime?
+
+  venue          Venue    @relation(fields: [venueId], references: [id], onDelete: Cascade)
+
+  @@index([venueId])
+  @@index([email])
+}
+
+enum UserRole {
+  OWNER
+  ADMIN
+  STAFF
+}
+
+// ============================================================================
+// EVENTS & PLAYLISTS
+// ============================================================================
+
+model Event {
+  id              String      @id @default(cuid())
+  venueId         String
+
+  // Basic Info
+  name            String
+  description     String?     @db.Text
+
+  // Scheduling
+  scheduledDate   DateTime    @db.Date
+  startTime       DateTime
+  endTime         DateTime
+  timezone        String      @default("UTC")
+
+  // Recurrence
+  recurrence      Recurrence  @default(NONE)
+  recurrenceEnd   DateTime?   @db.Date
+
+  // Playlist Configuration
+  playlistSource  PlaylistSource
+  playlistConfig  Json
+
+  // Voting Rules
+  votingRules     Json        @default("{}")
+
+  // State
+  status          EventStatus @default(UPCOMING)
+  activatedAt     DateTime?
+  endedAt         DateTime?
+
+  // Spotify Playback
+  spotifyDeviceId String?
+  currentTrackId  String?
+  currentTrackStartedAt DateTime?
+
+  // Stats
+  totalVotes      Int         @default(0)
+  totalTracks     Int         @default(0)
+  uniqueVoters    Int         @default(0)
+
+  // Metadata
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  // Relations
+  venue           Venue       @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  votes           Vote[]
+  queue           QueueItem[]
+  playHistory     PlayHistory[]
+
+  @@index([venueId, status])
+  @@index([venueId, scheduledDate])
+  @@index([status, startTime])
+  @@index([currentTrackId])
+}
+
+enum Recurrence {
+  NONE
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum PlaylistSource {
+  GENRE
+  SPOTIFY_PLAYLIST
+  CUSTOM
+}
+
+enum EventStatus {
+  UPCOMING
+  ACTIVE
+  ENDED
+  CANCELLED
+}
+
+// ============================================================================
+// VOTING & QUEUE
+// ============================================================================
+
+model Vote {
+  id             String   @id @default(cuid())
+  eventId        String
+  sessionId      String   // Guest session identifier
+
+  // Track Info
+  trackId        String   // Spotify track ID
+  trackName      String
+  artistName     String
+  albumArt       String?
+  duration       Int      // in seconds
+
+  // Vote Metadata
+  votedAt        DateTime @default(now())
+  weight         Int      @default(1)
+  ipAddress      String?
+  userAgent      String?
+
+  // Relations
+  event          Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, trackId])
+  @@index([eventId, sessionId])
+  @@index([eventId, votedAt])
+  @@index([sessionId])
+}
+
+model QueueItem {
+  id              String   @id @default(cuid())
+  eventId         String
+
+  // Track Info
+  trackId         String   // Spotify track ID
+  trackUri        String   // Full Spotify URI
+  trackName       String
+  artistName      String
+  albumName       String
+  albumArt        String?
+  duration        Int      // in seconds
+
+  // Queue Position
+  position        Int
+  score           Float    @default(0)
+
+  // Vote Stats
+  voteCount       Int      @default(0)
+  lastVotedAt     DateTime?
+
+  // Metadata
+  addedAt         DateTime @default(now())
+  addedBy         String   @default("system") // "system" or sessionId
+
+  // State
+  isPlayed        Boolean  @default(false)
+  playedAt        DateTime?
+  skipped         Boolean  @default(false)
+  skippedReason   String?
+
+  // Relations
+  event           Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, trackId])
+  @@index([eventId, position])
+  @@index([eventId, score])
+  @@index([eventId, isPlayed])
+}
+
+model PlayHistory {
+  id             String   @id @default(cuid())
+  eventId        String
+
+  // Track Info
+  trackId        String
+  trackUri       String
+  trackName      String
+  artistName     String
+  albumName      String
+  albumArt       String?
+  duration       Int
+
+  // Playback Info
+  startedAt      DateTime
+  endedAt        DateTime?
+  completed      Boolean  @default(false)
+  skipped        Boolean  @default(false)
+  skipReason     String?
+
+  // Stats
+  voteCount      Int      @default(0)
+  score          Float    @default(0)
+
+  // Relations
+  event          Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, startedAt])
+  @@index([trackId])
+}
+
+// ============================================================================
+// SESSIONS & RATE LIMITING
+// ============================================================================
+
+model Session {
+  id             String   @id @default(cuid())
+  sessionId      String   @unique
+
+  // Session Info
+  fingerprint    String   // Browser fingerprint
+  ipAddress      String
+  userAgent      String
+
+  // Activity
+  firstSeen      DateTime @default(now())
+  lastSeen       DateTime @default(now())
+
+  // Stats
+  totalVotes     Int      @default(0)
+  eventsVisited  String[] // Array of event IDs
+
+  @@index([sessionId])
+  @@index([fingerprint])
+  @@index([lastSeen])
+}
+
+// ============================================================================
+// SUBSCRIPTIONS & BILLING
+// ============================================================================
+
+model Subscription {
+  id               String           @id @default(cuid())
+  venueId          String           @unique
+
+  // Plan Info
+  plan             SubscriptionPlan @default(FREE)
+  status           SubscriptionStatus @default(ACTIVE)
+
+  // Billing
+  stripeCustomerId String?          @unique
+  stripeSubscriptionId String?      @unique
+
+  // Period
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+
+  // Trial
+  trialStart       DateTime?
+  trialEnd         DateTime?
+
+  // Metadata
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  cancelledAt      DateTime?
+
+  // Relations
+  venue            Venue            @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  invoices         Invoice[]
+
+  @@index([venueId])
+  @@index([status])
+  @@index([stripeCustomerId])
+}
+
+enum SubscriptionPlan {
+  FREE
+  STARTER
+  PRO
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  PAST_DUE
+  UNPAID
+  TRIALING
+}
+
+model Invoice {
+  id               String   @id @default(cuid())
+  subscriptionId   String
+
+  // Stripe Info
+  stripeInvoiceId  String   @unique
+
+  // Invoice Details
+  amount           Int      // in cents
+  currency         String   @default("gbp")
+  status           String   // paid, open, void, etc.
+
+  // Dates
+  invoiceDate      DateTime
+  dueDate          DateTime?
+  paidAt           DateTime?
+
+  // Metadata
+  createdAt        DateTime @default(now())
+
+  // Relations
+  subscription     Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@index([subscriptionId])
+  @@index([stripeInvoiceId])
+}
+
+// ============================================================================
+// ANALYTICS & METRICS
+// ============================================================================
+
+model VenueMetrics {
+  id               String   @id @default(cuid())
+  venueId          String
+  date             DateTime @db.Date
+
+  // Event Stats
+  eventsActive     Int      @default(0)
+  eventsTotal      Int      @default(0)
+  eventsCompleted  Int      @default(0)
+
+  // Vote Stats
+  totalVotes       Int      @default(0)
+  uniqueVoters     Int      @default(0)
+  avgVotesPerEvent Float    @default(0)
+
+  // Track Stats
+  totalTracks      Int      @default(0)
+  tracksPlayed     Int      @default(0)
+  tracksSkipped    Int      @default(0)
+
+  // Engagement
+  avgSessionDuration Int    @default(0) // in seconds
+  returningVoters  Int      @default(0)
+
+  createdAt        DateTime @default(now())
+
+  @@unique([venueId, date])
+  @@index([venueId])
+  @@index([date])
+}
