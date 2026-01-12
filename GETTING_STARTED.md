@@ -48,11 +48,50 @@ npm run dev
 ### For Venues (Admin)
 
 1. **Create Account** → Sign up as a venue
-2. **Connect Spotify** → Link your Spotify Premium account
+2. **Connect Spotify** → Link your Spotify Premium account (see below)
 3. **Create Event** → Set up "Black Metal Night" for tomorrow
 4. **Choose Music** → Select genre or specific playlist
 5. **Generate QR Code** → Display at venue for guests
 6. **Monitor Live** → Watch votes come in real-time
+
+### Connecting Your Spotify Account
+
+**Requirements:**
+- ✓ Spotify Premium Account (required for playback control)
+- ✓ Active Spotify App (desktop, mobile, or web player)
+- ✓ Internet Connection
+
+**Steps:**
+
+1. **Navigate to Settings**
+   - Log into Admin Dashboard at http://localhost:3001
+   - Click on "Settings" in the sidebar
+   - Select "Spotify" from the settings menu
+
+2. **Connect Your Account**
+   - Click the green "Connect Spotify Account" button
+   - A popup window will open with Spotify's authorization page
+   - Log into Spotify (if not already logged in)
+   - Review the permissions Votebox is requesting
+   - Click "Agree" to authorize Votebox
+
+3. **Verify Connection**
+   - The popup will close automatically
+   - You'll see a ✅ Connected status with your account details
+   - Your available Spotify devices will be listed
+
+4. **Start Playing Music**
+   - Open Spotify on your preferred device
+   - Play any song to activate the device
+   - Refresh the device list in Votebox
+   - You're ready to create events!
+
+**Troubleshooting:**
+- **No devices showing?** Open Spotify and play a song on any device
+- **Connection failed?** Verify you're using a Spotify Premium account
+- **Need to reconnect?** Click the "Reconnect" button in Settings > Spotify
+
+See [GitHub Issue #34](https://github.com/olafkfreund/Votebox/issues/34) for upcoming improvements to the Spotify setup experience.
 
 ### For Guests
 
@@ -233,9 +272,49 @@ PORT=4001
 
 ### Spotify Integration Not Working
 
-1. Verify credentials in `apps/api/.env`
-2. Check redirect URI matches in Spotify Dashboard
-3. Ensure Spotify Premium account is active
+**For Venue Owners:**
+
+1. **Connection Failed**
+   - Verify you have a Spotify Premium account (free accounts won't work)
+   - Try disconnecting and reconnecting in Settings > Spotify
+   - Ensure popup blocker isn't blocking the authorization window
+   - Check your internet connection
+
+2. **No Devices Found**
+   - Open Spotify on any device (desktop, mobile, or web player)
+   - Play any song to activate the device
+   - Click "Refresh" in the Devices section
+   - Wait a few seconds and refresh again if needed
+
+3. **Connection Test Failed**
+   - Click "Test Connection" in Settings > Spotify
+   - If it fails, try reconnecting your account
+   - Check that your Spotify Premium subscription is active
+   - Verify you granted all requested permissions during authorization
+
+**For Developers:**
+
+1. Verify credentials in `apps/api/.env`:
+   ```bash
+   echo $SPOTIFY_CLIENT_ID
+   echo $SPOTIFY_CLIENT_SECRET
+   ```
+
+2. Check redirect URI matches exactly in [Spotify Dashboard](https://developer.spotify.com/dashboard):
+   - Development: `http://localhost:4000/api/v1/spotify/callback`
+   - Production: `https://api.yourdomain.com/api/v1/spotify/callback`
+
+3. Review API logs for detailed errors:
+   ```bash
+   docker-compose logs -f api | grep -i spotify
+   ```
+
+4. Test the OAuth flow manually:
+   ```bash
+   # Get auth URL
+   curl http://localhost:4000/api/v1/spotify/auth-url/YOUR_VENUE_ID \
+     -H "Authorization: Bearer YOUR_TOKEN"
+   ```
 
 ## 📚 Learn More
 

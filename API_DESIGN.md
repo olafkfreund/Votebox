@@ -123,47 +123,139 @@ Response: 200 OK
 
 ### Spotify Integration
 
-#### Connect Spotify Account
+#### Simplified OAuth Flow (For Venue Owners)
+
+The modern Spotify integration uses a simplified OAuth flow accessible via the Admin Dashboard. See [GitHub Issue #34](https://github.com/olafkfreund/Votebox/issues/34) for the planned web interface.
+
+#### Get Spotify Auth URL
 
 ```http
-GET /venues/:venueId/spotify/auth
+GET /spotify/auth-url/:venueId
 Authorization: Bearer eyJ...
 
-Response: 302 Redirect
-Location: https://accounts.spotify.com/authorize?client_id=...
+Response: 200 OK
+{
+  "authUrl": "https://accounts.spotify.com/authorize?client_id=...&redirect_uri=...&scope=...&state=...",
+  "state": "random-state-string-for-csrf-protection"
+}
 ```
 
-#### Handle Spotify Callback
+**Required Scopes**:
+- `user-read-email` - Read user's email address
+- `user-read-private` - Read user's subscription details
+- `user-read-playback-state` - Read current playback
+- `user-modify-playback-state` - Control playback
+- `streaming` - Web Playback SDK access
+- `playlist-read-private` - Read private playlists
+- `playlist-read-collaborative` - Read collaborative playlists
+
+#### Handle Spotify OAuth Callback
 
 ```http
-GET /venues/:venueId/spotify/callback?code=AQD...
+GET /spotify/callback?code=AQD...&state=...
+# Public endpoint - no auth required
+# Redirects to Admin Dashboard after processing
+
+Response: 302 Redirect
+Location: http://localhost:3001/settings/spotify?success=true
+```
+
+**Backend Processing**:
+1. Validates state parameter (CSRF protection)
+2. Exchanges authorization code for access/refresh tokens
+3. Stores tokens securely in database (encrypted)
+4. Associates tokens with venue account
+5. Redirects user back to Admin Dashboard
+
+#### Get Spotify Connection Status
+
+```http
+GET /spotify/status/:venueId
+Authorization: Bearer eyJ...
+
+Response: 200 OK
+{
+  "connected": true,
+  "accountId": "spotify123",
+  "displayName": "John's Spotify",
+  "email": "john@example.com",
+  "tokenExpiry": "2026-01-21T15:30:00Z",
+  "lastRefreshed": "2026-01-20T15:30:00Z"
+}
+```
+
+#### Disconnect Spotify Account
+
+```http
+DELETE /spotify/disconnect/:venueId
 Authorization: Bearer eyJ...
 
 Response: 200 OK
 {
   "success": true,
-  "spotifyAccountId": "spotify123"
+  "message": "Spotify account disconnected successfully"
 }
 ```
 
 #### Get Spotify Devices
 
 ```http
-GET /venues/:venueId/spotify/devices
+GET /spotify/:venueId/devices
+Authorization: Bearer eyJ...
+
+Response: 200 OK
+[
+  {
+    "id": "device123abc",
+    "name": "John's MacBook Pro",
+    "type": "Computer",
+    "is_active": true,
+    "volume_percent": 75
+  },
+  {
+    "id": "device456def",
+    "name": "Living Room Speaker",
+    "type": "Speaker",
+    "is_active": false,
+    "volume_percent": 50
+  }
+]
+```
+
+#### Test Spotify Connection
+
+```http
+GET /spotify/playlists/:venueId?limit=1
 Authorization: Bearer eyJ...
 
 Response: 200 OK
 {
-  "devices": [
+  "playlists": [
     {
-      "id": "device123",
-      "name": "Web Player",
-      "type": "Computer",
-      "isActive": true
+      "id": "playlist123",
+      "name": "My Playlist",
+      "trackCount": 50
     }
   ]
 }
 ```
+
+**Note**: This endpoint is used by the "Test Connection" feature in the Admin Dashboard to verify API access is working.
+
+#### Refresh Spotify Token (Automatic)
+
+```http
+POST /spotify/refresh/:venueId
+Authorization: Bearer eyJ...
+
+Response: 200 OK
+{
+  "success": true,
+  "expiresAt": "2026-01-21T16:30:00Z"
+}
+```
+
+**Note**: The API automatically refreshes access tokens when they expire. This endpoint is primarily for manual troubleshooting.
 
 ### Events
 

@@ -25,11 +25,46 @@ This guide will help you set up your local development environment for Votebox.
 ### Accounts Needed
 
 1. **Spotify Developer Account** ([Register](https://developer.spotify.com/))
-   - Create an app
+   - Create an app in the [Spotify Dashboard](https://developer.spotify.com/dashboard)
    - Note your Client ID and Client Secret
-   - Add redirect URI: `http://localhost:3000/auth/spotify/callback`
+   - Add redirect URIs:
+     - Development: `http://localhost:4000/api/v1/spotify/callback`
+     - Production: `https://api.yourdomain.com/api/v1/spotify/callback`
+   - Enable the following scopes in your app settings:
+     - `user-read-email` - Read user's email address
+     - `user-read-private` - Read user's subscription details
+     - `user-read-playback-state` - Read user's current playback
+     - `user-modify-playback-state` - Control playback
+     - `streaming` - Web Playback SDK access
+     - `playlist-read-private` - Read private playlists
+     - `playlist-read-collaborative` - Read collaborative playlists
 
 2. **GitHub Account** (for version control and CI/CD)
+
+### Spotify OAuth Setup (For Venue Owners)
+
+**Note**: End users (venue owners) will use a simplified OAuth flow via the Admin Dashboard. The setup below is only for developers setting up the Spotify API integration.
+
+#### For Developers
+
+The API uses OAuth 2.0 Authorization Code Flow to connect venue Spotify accounts:
+
+1. **Authorization URL Generation**: Admin Dashboard requests an auth URL from the API
+2. **User Authorization**: Venue owner authorizes the app in a popup window
+3. **Token Exchange**: API exchanges the authorization code for access/refresh tokens
+4. **Token Storage**: Tokens are securely stored in the database (encrypted)
+5. **Auto Refresh**: Access tokens are automatically refreshed when they expire
+
+#### For Venue Owners (End Users)
+
+Venue owners don't need to create Spotify Developer accounts or manage credentials manually. Instead, they:
+
+1. Navigate to **Settings > Spotify** in the Admin Dashboard
+2. Click **"Connect Spotify Account"** button
+3. Authorize Votebox in the popup window
+4. Done! Their Spotify account is now connected
+
+See [GitHub Issue #34](https://github.com/olafkfreund/Votebox/issues/34) for the planned local web interface feature.
 
 ## 🚀 Quick Start
 
@@ -474,6 +509,66 @@ npm install
 - Implement caching (already done in code)
 - Wait a few minutes
 - Use multiple Spotify API keys (advanced)
+
+### Issue: Spotify OAuth Connection Failed
+
+**Error**: `Failed to connect Spotify account` or `Invalid redirect URI`
+
+**Solution**:
+
+```bash
+# 1. Verify Spotify credentials in .env
+echo $SPOTIFY_CLIENT_ID
+echo $SPOTIFY_CLIENT_SECRET
+
+# 2. Check redirect URI matches exactly in Spotify Dashboard
+# Development: http://localhost:4000/api/v1/spotify/callback
+# Production: https://api.yourdomain.com/api/v1/spotify/callback
+
+# 3. Verify the venue has Spotify Premium
+# Free accounts cannot use Web Playback API
+
+# 4. Check API logs for detailed error
+docker-compose logs -f api | grep -i spotify
+```
+
+### Issue: Spotify Tokens Expired
+
+**Error**: `Access token expired` or `Invalid token`
+
+**Solution**:
+
+The API should automatically refresh expired tokens. If issues persist:
+
+```bash
+# Check token expiry in database
+cd apps/api
+npx prisma studio
+
+# Navigate to Venue table → spotifyRefreshToken field
+# If refresh token is invalid, venue must reconnect
+
+# Test token refresh endpoint
+curl -X POST http://localhost:4000/api/v1/spotify/refresh/:venueId \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Issue: No Spotify Devices Found
+
+**Error**: `No active devices found`
+
+**Solution**:
+
+1. Open Spotify on any device (desktop, mobile, or web player)
+2. Play any song (this activates the device)
+3. Refresh the device list in Admin Dashboard
+4. Verify the account has Spotify Premium (required for API access)
+
+```bash
+# Test devices endpoint directly
+curl http://localhost:4000/api/v1/spotify/:venueId/devices \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
 
 ## 🐳 Docker Development
 
